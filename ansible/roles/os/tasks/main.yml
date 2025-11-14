@@ -1,0 +1,18 @@
+---
+- name: SSH configuration
+  ansible.builtin.import_tasks: ssh.yaml
+
+- name: Package management
+  ansible.builtin.import_tasks: packages.yaml
+
+- name: Kernel configuration
+  ansible.builtin.import_tasks: kernel.yaml
+
+- name: Filesystem configuration
+  ansible.builtin.import_tasks: fs.yaml
+
+- name: Network configuration
+  ansible.builtin.import_tasks: network.yaml
+
+- name: Firewall configuration
+  ansible.builtin.import_tasks: firewall.yaml

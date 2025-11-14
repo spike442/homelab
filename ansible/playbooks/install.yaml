@@ -1,0 +1,42 @@
+---
+- name: K3s Cluster Install
+  hosts: kubernetes
+  any_errors_fatal: true
+  become: true
+  gather_facts: true
+
+  pre_tasks:
+    - name: Pausing for 2 seconds...
+      ansible.builtin.pause:
+        seconds: 2
+
+  tasks:
+    - name: Check if k3s is installed
+      ansible.builtin.stat:
+        path: /etc/rancher/k3s/k3s.yaml
+      register: k3s_check_installed
+      check_mode: false
+
+    - name: Install Kubernetes
+      ansible.builtin.include_role:
+        name: xanmanning.k3s
+        public: true
+      vars:
+        k3s_state: installed
+      when: not k3s_check_installed.stat.exists
+
+    - name: Ensure control-plane node is schedulable when requested
+      when:
+        - k3s_allow_schedule_on_control | default(false)
+        - inventory_hostname == groups['controller'][0]
+      block:
+        - name: Remove master and control-plane taints if present
+          ansible.builtin.shell: |
+            kubectl taint nodes --all node-role.kubernetes.io/master- || true
+            kubectl taint nodes --all node-role.kubernetes.io/control-plane- || true
+          args:
+            warn: false
+          environment:
+            KUBECONFIG: /etc/rancher/k3s/k3s.yaml
+          failed_when: false
+          changed_when: false

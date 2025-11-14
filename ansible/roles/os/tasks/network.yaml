@@ -1,0 +1,29 @@
+---
+- name: Update hostname
+  ansible.builtin.hostname:
+    name: "{{ inventory_hostname }}"
+  notify: Reboot
+
+- name: Update /etc/hosts to include hostname
+  ansible.builtin.blockinfile:
+    path: /etc/hosts
+    block: |
+      127.0.1.1 {{ inventory_hostname }}
+
+- name: Set sysctls
+  ansible.posix.sysctl:
+    name: "{{ item.key }}"
+    value: "{{ item.value }}"
+    sysctl_file: /etc/sysctl.d/99-kubernetes.conf
+    reload: true
+  loop: "{{ sysctl_config | dict2items }}"
+  vars:
+    sysctl_config:
+      net.ipv4.ip_forward: 1
+      net.ipv4.conf.all.forwarding: 1
+      net.ipv4.conf.all.rp_filter: 0
+      net.ipv4.conf.default.rp_filter: 0
+      net.ipv6.conf.all.forwarding: 1
+      net.bridge.bridge-nf-call-iptables: 1
+      net.bridge.bridge-nf-call-ip6tables: 1
+  when: inventory_hostname in groups['kubernetes']

@@ -1,0 +1,15 @@
+---
+- name: Reboot
+  ansible.builtin.reboot:
+    msg: "Reboot requested by Ansible (os role)"
+    reboot_timeout: 600
+
+- name: Restart sshd
+  ansible.builtin.systemd:
+    name: sshd
+    state: restarted
+
+- name: Reload kernel modules
+  ansible.builtin.systemd:
+    name: systemd-modules-load.service
+    state: restarted

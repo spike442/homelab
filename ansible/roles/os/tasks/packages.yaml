@@ -1,0 +1,24 @@
+---
+- name: Upgrade all system packages
+  ansible.builtin.apt:
+    upgrade: full
+    update_cache: true
+    cache_valid_time: 3600
+    autoclean: true
+    autoremove: true
+  register: os_apt_upgrade
+  retries: 5
+  until: os_apt_upgrade is success
+  notify: Reboot
+
+- name: Install apt packages list
+  ansible.builtin.apt:
+    name: "{{ apt_install_packages }}"
+    state: present
+    update_cache: true
+    force_apt_get: true
+
+- name: Remove no longer required dependencies
+  ansible.builtin.apt:
+    autoremove: true
+    purge: true
