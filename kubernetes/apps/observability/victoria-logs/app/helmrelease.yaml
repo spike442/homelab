@@ -14,13 +14,13 @@ spec:
     server:
       persistentVolume:
         enabled: true
-        storageClassName: ceph-block
+        storageClassName: nfs
         size: 20Gi
       retentionPeriod: 14d
       route:
         enabled: true
         hostnames:
-        - logs.homelab.io
+        - victoria-logs.homelab.io
         parentRefs:
         - name: envoy-internal
           namespace: network

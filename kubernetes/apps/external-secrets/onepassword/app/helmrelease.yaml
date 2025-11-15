@@ -18,17 +18,18 @@ spec:
         containers:
           api:
             image:
-              repository: docker.io/1password/connect-api
+              repository: ghcr.io/1password/connect-api
               tag: 1.8.1@sha256:ac6e9efe4f54cc351393fcb8f01b10e667b08b68ff47ebf6024ff93eae642e5c
             env:
               XDG_DATA_HOME: &configDir /config
               OP_HTTP_PORT: &apiPort 80
               OP_BUS_PORT: 11220
               OP_BUS_PEERS: localhost:11221
+              OP_LOG_LEVEL: debug
               OP_SESSION:
                 valueFrom:
                   secretKeyRef:
-                    name: {{ Release.Name }}-secret
+                    name: "{{ .Release.Name }}-secret"
                     key: 1password-credentials.json
             probes:
               liveness:
@@ -52,7 +53,7 @@ spec:
             securityContext: &securityContext
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
+              capabilities: { drop: [ "ALL" ] }
             resources: &resources
               requests:
                 cpu: 10m
@@ -60,17 +61,18 @@ spec:
                 memory: 256M
           sync:
             image:
-              repository: docker.io/1password/connect-sync
+              repository: ghcr.io/1password/connect-sync
               tag: 1.8.1@sha256:565e1765aff957379acbb46fab2b2d67380a149d70ef22507d05a5316a100052
             env:
               XDG_DATA_HOME: *configDir
               OP_HTTP_PORT: &syncPort 8081
               OP_BUS_PORT: 11221
               OP_BUS_PEERS: localhost:11220
+              OP_LOG_LEVEL: debug
               OP_SESSION:
                 valueFrom:
                   secretKeyRef:
-                    name: {{ Release.Name }}-secret
+                    name: "{{ .Release.Name }}-secret"
                     key: 1password-credentials.json
             probes:
               liveness:
@@ -111,4 +113,4 @@ spec:
       config:
         type: emptyDir
         globalMounts:
-          - path: *configDir
+        - path: *configDir

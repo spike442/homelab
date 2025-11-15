@@ -6,11 +6,11 @@ metadata:
   name: grafana
 spec:
   hostnames:
-    - grafana.home.io
+  - grafana.homelab.io
   parentRefs:
-    - name: envoy-internal
-      namespace: network
+  - name: envoy-internal
+    namespace: network
   rules:
-    - backendRefs:
-        - name: grafana-service
-          port: 3000
+  - backendRefs:
+    - name: grafana-service
+      port: 3000
