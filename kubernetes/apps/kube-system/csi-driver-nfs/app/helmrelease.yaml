@@ -14,12 +14,12 @@ spec:
       create: true
       name: nfs
       parameters:
-        server: http://192.168.1.7/
+        server: 192.168.1.7
         share: /mnt/oasis/Kubernetes
       mountOptions:
-        - nfsvers=4.2
-        - nconnect=16
-        - hard
-        - noatime
+      - nfsvers=4.2
+      - nconnect=16
+      - hard
+      - noatime
       reclaimPolicy: Delete
       volumeBindingMode: Immediate
