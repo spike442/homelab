@@ -1,8 +1,13 @@
-
-# Environments
 .envrc
-
 kubeconfig
-
-.idea/
 *.pem
+./.idea
+.env
+*.age
+*.key
+
+.venv/
+*.crt
+*.env
+*.key
+kubeconfig

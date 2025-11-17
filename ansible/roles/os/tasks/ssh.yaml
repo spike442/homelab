@@ -1,0 +1,50 @@
+---
+- name: Copy ssh login banner to remote
+  ansible.builtin.copy:
+    src: "ssh_banner.txt"
+    dest: "/etc/ssh/"
+    mode: "0644"
+
+- name: Secure SSH configuration
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    state: present
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+  loop:
+    - regexp: "^#?PermitRootLogin"
+      line: "PermitRootLogin no"
+    - regexp: "^#?PasswordAuthentication"
+      line: "PasswordAuthentication no"
+    - regexp: "^#?AllowAgentForwarding"
+      line: "AllowAgentForwarding no"
+    - regexp: "^#?AllowTcpForwarding"
+      line: "AllowTcpForwarding no"
+    - regexp: "^#?MaxAuthTries"
+      line: "MaxAuthTries 2"
+    - regexp: "^#?MaxSessions"
+      line: "MaxSessions 2"
+    - regexp: "^#?TCPKeepAlive"
+      line: "TCPKeepAlive no"
+    - regexp: "^#?UseDNS"
+      line: "UseDNS no"
+    - regexp: "^#?AllowUsers"
+      line: "AllowUsers spike"
+    - regexp: "^#?Banner"
+      line: "Banner /etc/ssh/ssh_banner.txt"
+  notify: Restart sshd
+
+- name: Validate SSH configuration
+  ansible.builtin.command: sshd -t
+  changed_when: false
+  check_mode: false
+
+- name: Configure user environment
+  ansible.builtin.file:
+    dest: "/home/spike/.hushlogin"
+    state: touch
+    owner: "spike"
+    group: "spike"
+    mode: "0644"
+    modification_time: preserve
+    access_time: preserve

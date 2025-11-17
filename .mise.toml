@@ -1,0 +1,24 @@
+[env]
+KUBECONFIG = "{{config_root}}/kubeconfig"
+MINIJINJA_CONFIG_FILE = "{{config_root}}/.minijinja.toml"
+SOPS_AGE_KEY_FILE = "{{config_root}}/age.key"
+ANSIBLE_CONFIG = "{{config_root}}/ansible/ansible.cfg"
+JUST_UNSTABLE = "1"
+LEFTHOOK_OUTPUT = "false"
+
+_.file = ["{{config_root}}/.secrets.env"]
+
+[tools]
+"pipx:detect-secrets" = "1.4"
+"pre-commit" = "3"
+"uv" = "latest"
+"yamllint" = "1.37.1"
+"pipx:ansible-lint" = "25.11.0"
+"pipx:flux-local" = "7.11.0"
+"yq" = "4.44.3"
+"kubectl" = "1.30.3"
+"kustomize" = "5.4.3"
+"pipx:jinja2-cli" = "latest"
+"flux2" = "2.4.0"
+"helm" = "3.16.2"
+"helmfile" = "0.169.1"

@@ -1,0 +1,20 @@
+---
+- name: Ensure /sys/fs/bpf is mounted
+  ansible.posix.mount:
+    path: /sys/fs/bpf
+    src: bpf
+    fstype: bpf
+    state: mounted
+  become: true
+
+- name: Create kernel modules load files
+  ansible.builtin.copy:
+    dest: "/etc/modules-load.d/{{ item }}.conf"
+    mode: "0644"
+    content: "{{ item }}"
+  loop:
+    - br_netfilter
+    - vxlan
+    - nf_conntrack
+  notify:
+    - Reboot
