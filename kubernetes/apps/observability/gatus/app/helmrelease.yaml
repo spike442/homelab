@@ -89,7 +89,7 @@ spec:
     route:
       app:
         annotations:
-          gatus.home-operations.com/enabled: "false"
+          gatus.homelab.com/enabled: "false"
         hostnames:
         - "{{ .Release.Name }}.timcasa.me"
         - status.timcasa.me
