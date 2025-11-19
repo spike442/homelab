@@ -13,8 +13,15 @@
     mode: "0644"
     content: "{{ item }}"
   loop:
-    - br_netfilter
-    - vxlan
-    - nf_conntrack
+  - br_netfilter
+  - vxlan
+  - nf_conntrack
+  - iscsi_tcp
+
+- name: Ensure iscsi_tcp module is loaded before iscsid
+  ansible.builtin.command:
+    cmd: modprobe iscsi_tcp
+  changed_when: false
+
   notify:
-    - Reboot
+  - Reboot
