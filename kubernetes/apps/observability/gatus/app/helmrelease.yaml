@@ -94,7 +94,7 @@ spec:
         - "{{ .Release.Name }}.timcasa.me"
         - status.timcasa.me
         parentRefs:
-        - name: envoy-external
+        - name: envoy-internal
           namespace: network
     rbac:
       roles:

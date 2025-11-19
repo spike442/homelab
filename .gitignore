@@ -11,3 +11,5 @@ kubeconfig
 *.env
 *.key
 kubeconfig
+
+.history/
