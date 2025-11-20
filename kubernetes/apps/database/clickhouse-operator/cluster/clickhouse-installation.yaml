@@ -1,0 +1,92 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Altinity/clickhouse-operator/master/deploy/helm/clickhouse-operator/crds/CustomResourceDefinition-clickhouseinstallations.clickhouse.altinity.com.yaml
+---
+apiVersion: clickhouse.altinity.com/v1
+kind: ClickHouseInstallation
+metadata:
+  name: clickhouse-cluster
+  namespace: database
+spec:
+  defaults:
+    templates:
+      dataVolumeClaimTemplate: volumeclaim-template
+      serviceTemplate: service-template
+  configuration:
+    profiles:
+      default/max_memory_usage: 6871947672 # 6.4GB (80% of 8GB limit)
+      default/max_bytes_before_external_group_by: 4294967296 # 4GB
+    clusters:
+    - name: clickhouse-cluster
+      layout:
+        shardsCount: 1
+        replicasCount: 1
+      templates:
+        podTemplate: pod-template
+    files:
+      config.d/path.xml: resources/config.d-path.xml
+      config.d/server.xml: resources/config.d-server.xml
+      config.d/logger.xml: resources/config.d-logger.xml
+      users.d/langfuse.xml: resources/users.d-langfuse.xml
+  templates:
+    volumeClaimTemplates:
+    - name: volumeclaim-template
+      generateName: clickhouse-pvc
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 20Gi
+        storageClassName: longhorn
+    serviceTemplates:
+    - name: service-template
+      generateName: clickhouse-svc
+      spec:
+        ports:
+        - name: http
+          port: 8123
+        - name: tcp
+          port: 9000
+        type: ClusterIP
+    podTemplates:
+    - name: pod-template
+      spec:
+        containers:
+        - name: clickhouse
+          image: clickhouse/clickhouse-server:25.10
+          resources:
+            requests:
+              cpu: 100m
+              memory: 2Gi
+            limits:
+              memory: 4Gi
+          securityContext:
+            runAsUser: 101
+            runAsGroup: 101
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [ "ALL" ]
+          env:
+          - name: CLICKHOUSE_DB
+            value: default
+          - name: CLICKHOUSE_USER
+            value: clickhouse
+          - name: CLICKHOUSE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: clickhouse-admin-password
+                key: CLICKHOUSE_PASSWORD
+        securityContext:
+          runAsUser: 101
+          runAsGroup: 101
+          fsGroup: 101
+          fsGroupChangePolicy: OnRootMismatch
+        affinity:
+          podAntiAffinity:
+            preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    clickhouse.altinity.com/chi: clickhouse-cluster
+                topologyKey: kubernetes.io/hostname
