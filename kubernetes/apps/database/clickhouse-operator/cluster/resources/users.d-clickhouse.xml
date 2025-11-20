@@ -8,6 +8,6 @@
       <profile>default</profile>
       <quota>default</quota>
       <access_management>1</access_management>
-    </langfuse>
+    </clickhouse>
   </users>
 </clickhouse>

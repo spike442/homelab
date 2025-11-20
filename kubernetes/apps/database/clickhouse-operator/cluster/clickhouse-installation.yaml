@@ -6,31 +6,16 @@ metadata:
   name: clickhouse-cluster
   namespace: database
 spec:
-  defaults:
-    templates:
-      dataVolumeClaimTemplate: volumeclaim-template
-      serviceTemplate: service-template
   configuration:
-    profiles:
-      default/max_memory_usage: 6871947672 # 6.4GB (80% of 8GB limit)
-      default/max_bytes_before_external_group_by: 4294967296 # 4GB
     clusters:
-    - name: clickhouse-cluster
-      layout:
+    - layout:
         shardsCount: 1
         replicasCount: 1
       templates:
         podTemplate: pod-template
-    files:
-      config.d/path.xml: resources/config.d-path.xml
-      config.d/server.xml: resources/config.d-server.xml
-      config.d/logger.xml: resources/config.d-logger.xml
-      users.d/langfuse.xml: resources/users.d-langfuse.xml
   templates:
     volumeClaimTemplates:
-    - name: volumeclaim-template
-      generateName: clickhouse-pvc
-      spec:
+    - spec:
         accessModes:
         - ReadWriteOnce
         resources:
@@ -38,9 +23,7 @@ spec:
             storage: 20Gi
         storageClassName: longhorn
     serviceTemplates:
-    - name: service-template
-      generateName: clickhouse-svc
-      spec:
+    - spec:
         ports:
         - name: http
           port: 8123
@@ -76,6 +59,19 @@ spec:
               secretKeyRef:
                 name: clickhouse-admin-password
                 key: CLICKHOUSE_PASSWORD
+          volumeMounts:
+          - name: config-d-logger
+            mountPath: /etc/clickhouse-server/config.d/logger.xml
+            subPath: config.d-logger.xml
+          - name: config-d-path
+            mountPath: /etc/clickhouse-server/config.d/path.xml
+            subPath: config.d-path.xml
+          - name: config-d-server
+            mountPath: /etc/clickhouse-server/config.d/server.xml
+            subPath: config.d-server.xml
+          - name: users-d-clickhouse
+            mountPath: /etc/clickhouse-server/users.d/clickhouse.xml
+            subPath: users.d-clickhouse.xml
         securityContext:
           runAsUser: 101
           runAsGroup: 101
@@ -90,3 +86,16 @@ spec:
                   matchLabels:
                     clickhouse.altinity.com/chi: clickhouse-cluster
                 topologyKey: kubernetes.io/hostname
+        volumes:
+        - name: config-d-logger
+          configMap:
+            name: clickhouse-config-d-logger
+        - name: config-d-path
+          configMap:
+            name: clickhouse-config-d-path
+        - name: config-d-server
+          configMap:
+            name: clickhouse-config-d-server
+        - name: users-d-clickhouse
+          configMap:
+            name: clickhouse-users-d-clickhouse

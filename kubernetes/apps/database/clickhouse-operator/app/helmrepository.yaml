@@ -4,7 +4,6 @@ apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
   name: altinity
-  namespace: flux-system
 spec:
   interval: 1h
   url: https://docs.altinity.com/clickhouse-operator
