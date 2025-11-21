@@ -6,17 +6,3 @@ kind: Kustomization
 resources:
 - ./externalsecret.yaml
 - ./clickhouse-installation.yaml
-
-configMapGenerator:
-- name: clickhouse-config-d-logger
-  files:
-  - resources/config.d-logger.xml
-- name: clickhouse-config-d-path
-  files:
-  - resources/config.d-path.xml
-- name: clickhouse-config-d-server
-  files:
-  - resources/config.d-server.xml
-- name: clickhouse-users-d-clickhouse
-  files:
-  - resources/users.d-clickhouse.xml

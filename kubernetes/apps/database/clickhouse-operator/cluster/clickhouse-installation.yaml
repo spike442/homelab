@@ -8,94 +8,106 @@ metadata:
 spec:
   configuration:
     clusters:
-    - layout:
+    - name: main
+      layout:
         shardsCount: 1
         replicasCount: 1
       templates:
         podTemplate: pod-template
-  templates:
-    volumeClaimTemplates:
-    - spec:
-        accessModes:
-        - ReadWriteOnce
-        resources:
-          requests:
-            storage: 20Gi
-        storageClassName: longhorn
-    serviceTemplates:
-    - spec:
-        ports:
-        - name: http
-          port: 8123
-        - name: tcp
-          port: 9000
-        type: ClusterIP
-    podTemplates:
-    - name: pod-template
-      spec:
-        containers:
-        - name: clickhouse
-          image: clickhouse/clickhouse-server:25.10
-          resources:
-            requests:
-              cpu: 100m
-              memory: 2Gi
-            limits:
-              memory: 4Gi
-          securityContext:
-            runAsUser: 101
-            runAsGroup: 101
-            runAsNonRoot: true
-            allowPrivilegeEscalation: false
-            capabilities:
-              drop: [ "ALL" ]
-          env:
-          - name: CLICKHOUSE_DB
-            value: default
-          - name: CLICKHOUSE_USER
-            value: clickhouse
-          - name: CLICKHOUSE_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: clickhouse-admin-password
-                key: CLICKHOUSE_PASSWORD
-          volumeMounts:
-          - name: config-d-logger
-            mountPath: /etc/clickhouse-server/config.d/logger.xml
-            subPath: config.d-logger.xml
-          - name: config-d-path
-            mountPath: /etc/clickhouse-server/config.d/path.xml
-            subPath: config.d-path.xml
-          - name: config-d-server
-            mountPath: /etc/clickhouse-server/config.d/server.xml
-            subPath: config.d-server.xml
-          - name: users-d-clickhouse
-            mountPath: /etc/clickhouse-server/users.d/clickhouse.xml
-            subPath: users.d-clickhouse.xml
-        securityContext:
-          runAsUser: 101
-          runAsGroup: 101
-          fsGroup: 101
-          fsGroupChangePolicy: OnRootMismatch
-        affinity:
-          podAntiAffinity:
-            preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 100
-              podAffinityTerm:
-                labelSelector:
-                  matchLabels:
-                    clickhouse.altinity.com/chi: clickhouse-cluster
-                topologyKey: kubernetes.io/hostname
-        volumes:
-        - name: config-d-logger
-          configMap:
-            name: clickhouse-config-d-logger
-        - name: config-d-path
-          configMap:
-            name: clickhouse-config-d-path
-        - name: config-d-server
-          configMap:
-            name: clickhouse-config-d-server
-        - name: users-d-clickhouse
-          configMap:
-            name: clickhouse-users-d-clickhouse
+    files:
+      config.d/logger.xml: |
+        <?xml version="1.0"?>
+        <yandex>
+          <logger>
+            <level>information</level>
+            <log>/var/log/clickhouse-server/clickhouse-server.log</log>
+            <errorlog>/var/log/clickhouse-server/clickhouse-server.err.log</errorlog>
+            <size>1000M</size>
+            <count>10</count>
+          </logger>
+        </yandex>
+      config.d/path.xml: |
+        <?xml version="1.0"?>
+        <yandex>
+          <path>/var/lib/clickhouse/</path>
+        </yandex>
+      config.d/server.xml: |
+        <?xml version="1.0"?>
+        <yandex>
+          <tcp_port>9000</tcp_port>
+          <http_port>8123</http_port>
+        </yandex>
+      users.d/clickhouse.xml: |
+        <?xml version="1.0"?>
+        <yandex>
+          <users>
+            <clickhouse>
+              <password from_env="CLICKHOUSE_PASSWORD" />
+              <profile>default</profile>
+              <quota>default</quota>
+              <access_management>1</access_management>
+            </clickhouse>
+          </users>
+        </yandex>
+      templates:
+        volumeClaimTemplates:
+        - spec:
+            name: clickhouse-data
+            accessModes:
+            - ReadWriteOnce
+            resources:
+              requests:
+                storage: 20Gi
+            storageClassName: longhorn
+        serviceTemplates:
+        - spec:
+            name: clickhouse-service
+            ports:
+            - name: http
+              port: 8123
+            - name: tcp
+              port: 9000
+            type: ClusterIP
+        podTemplates:
+        - name: pod-template
+          spec:
+            containers:
+            - name: clickhouse
+              image: clickhouse/clickhouse-server:25.10
+              resources:
+                requests:
+                  cpu: 100m
+                  memory: 2Gi
+                limits:
+                  memory: 4Gi
+              securityContext:
+                runAsUser: 101
+                runAsGroup: 101
+                runAsNonRoot: true
+                allowPrivilegeEscalation: false
+                capabilities:
+                  drop: [ "ALL" ]
+              env:
+              - name: CLICKHOUSE_DB
+                value: default
+              - name: CLICKHOUSE_USER
+                value: clickhouse
+              - name: CLICKHOUSE_PASSWORD
+                valueFrom:
+                  secretKeyRef:
+                    name: clickhouse-admin-password
+                    key: CLICKHOUSE_PASSWORD
+            securityContext:
+              runAsUser: 101
+              runAsGroup: 101
+              fsGroup: 101
+              fsGroupChangePolicy: OnRootMismatch
+            affinity:
+              podAntiAffinity:
+                preferredDuringSchedulingIgnoredDuringExecution:
+                - weight: 100
+                  podAffinityTerm:
+                    labelSelector:
+                      matchLabels:
+                        clickhouse.altinity.com/chi: clickhouse-cluster
+                    topologyKey: kubernetes.io/hostname
