@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<yandex>
+  <tcp_port>9000</tcp_port>
+  <http_port>8123</http_port>
+  <https_port>8443</https_port>
+  <openSSL>
+    <server>
+      <certificateFile>/etc/clickhouse-server/tls/tls.crt</certificateFile>
+      <privateKeyFile>/etc/clickhouse-server/tls/tls.key</privateKeyFile>
+    </server>
+  </openSSL>
+</yandex>

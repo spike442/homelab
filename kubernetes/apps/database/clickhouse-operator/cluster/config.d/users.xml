@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<yandex>
+  <users>
+    <clickhouse>
+      <password from_env="CLICKHOUSE_PASSWORD" />
+      <profile>default</profile>
+      <quota>default</quota>
+      <access_management>1</access_management>
+    </clickhouse>
+  </users>
+</yandex>
