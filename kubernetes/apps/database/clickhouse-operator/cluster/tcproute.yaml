@@ -1,0 +1,14 @@
+---
+apiVersion: gateway.networking.k8s.io/v1alpha2
+kind: TCPRoute
+metadata:
+  name: clickhouse
+spec:
+  parentRefs:
+  - name: envoy-internal
+    namespace: network
+    sectionName: tcp
+  rules:
+  - backendRefs:
+    - name: clickhouse-clickhouse-cluster
+      port: 9000
