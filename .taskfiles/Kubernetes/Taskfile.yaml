@@ -1,0 +1,89 @@
+# .taskfiles/Kubernetes/Taskfile.yaml
+---
+version: "3"
+
+vars:
+  KUBERNETES_DIR: "{{.ROOT_DIR}}/kubernetes"
+
+tasks:
+  apply-ks:
+    desc: apply local Flux Kustomization
+    cmds:
+      - task: render-local-ks
+        vars:
+          ns: "{{.CLI_ARGS | get 0}}"
+          ks: "{{.CLI_ARGS | get 1}}"
+      - kubectl apply --server-side --field-manager=kustomize-controller -f /dev/stdin
+
+  delete-ks:
+    desc: delete local Flux Kustomization
+    cmds:
+      - task: render-local-ks
+        vars:
+          ns: "{{.CLI_ARGS | get 0}}"
+          ks: "{{.CLI_ARGS | get 1}}"
+      - kubectl delete -f /dev/stdin
+
+  node-shell:
+    desc: open a shell on a node
+    cmds:
+      - kubectl debug node/{{.CLI_ARGS | get 0}} -n default -it --image="mirror.gcr.io/alpine:latest" --profile sysadmin
+      - kubectl delete pod -n default -l app.kubernetes.ioio/managed-by=kubectl-debug
+
+  prune-pods:
+    desc: prune pods in Failed, Pending, or Succeeded state
+    cmds:
+      - |
+        for phase in Failed Pending Succeeded; do
+            kubectl delete pods -A --field-selector status.phase="$phase" --ignore-not-found=true
+        done
+
+  sync-es:
+    desc: sync ExternalSecrets
+    cmds:
+      - |
+        kubectl get es --no-headers -A | while read -r ns name _; do
+            kubectl -n "$ns" annotate --field-manager flux-client-side-apply --overwrite es "$name" force-sync="$(date +%s)"
+        done
+
+  sync-git:
+    desc: sync GitRepositories
+    cmds:
+      - |
+        kubectl get gitrepo --no-headers -A | while read -r ns name _; do
+            kubectl -n "$ns" annotate --field-manager flux-client-side-apply --overwrite gitrepo "$name" reconcile.fluxcd.io/requestedAt="$(date +%s)"
+        done
+
+  sync-hr:
+    desc: sync HelmReleases
+    cmds:
+      - |
+        kubectl get hr --no-headers -A | while read -r ns name _; do
+            kubectl -n "$ns" annotate --field-manager flux-client-side-apply --overwrite hr "$name" reconcile.fluxcd.io/requestedAt="$(date +%s)" reconcile.fluxcd.io/forceAt="$(date +%s)"
+        done
+
+  sync-ks:
+    desc: sync Kustomizations
+    cmds:
+      - |
+        kubectl get ks --no-headers -A | while read -r ns name _; do
+            kubectl -n "$ns" annotate --field-manager flux-client-side-apply --overwrite ks "$name" reconcile.fluxcd.io/requestedAt="$(date +%s)"
+        done
+
+  sync-oci:
+    desc: sync OCIRepositories
+    cmds:
+      - |
+        kubectl get ocirepo --no-headers -A | while read -r ns name _; do
+            kubectl -n "$ns" annotate --field-manager flux-client-side-apply --overwrite ocirepo "$name" reconcile.fluxcd.io/requestedAt="$(date +%s)"
+        done
+
+  view-secret:
+    desc: View a secret
+    cmds:
+      - kubectl view-secret -n {{.CLI_ARGS | get 0}} {{.CLI_ARGS | get 1}}
+
+  render-local-ks:
+    internal: true
+    cmds:
+      - flux-local build ks --namespace "{{.ns}}" --path "{{.KUBERNETES_DIR}}/flux/cluster" "{{.ks}}"

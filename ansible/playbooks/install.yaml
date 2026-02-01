@@ -24,19 +24,3 @@
       vars:
         k3s_state: installed
       when: not k3s_check_installed.stat.exists
-
-    - name: Ensure control-plane node is schedulable when requested
-      when:
-        - k3s_allow_schedule_on_control | default(false)
-        - inventory_hostname == groups['controller'][0]
-      block:
-        - name: Remove master and control-plane taints if present
-          ansible.builtin.shell: |
-            kubectl taint nodes --all node-role.kubernetes.io/master- || true
-            kubectl taint nodes --all node-role.kubernetes.io/control-plane- || true
-          args:
-            warn: false
-          environment:
-            KUBECONFIG: /etc/rancher/k3s/k3s.yaml
-          failed_when: false
-          changed_when: false

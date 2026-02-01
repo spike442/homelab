@@ -1,0 +1,47 @@
+version: '3'
+
+vars:
+  BOOTSTRAP_DIR: "{{.ROOT_DIR}}/bootstrap"
+  ANSIBLE_DIR: "{{.ROOT_DIR}}/ansible"
+
+env:
+  KUBECONFIG: "{{.ROOT_DIR}}/kubeconfig"
+  ANSIBLE_CONFIG: "{{.ROOT_DIR}}/ansible/ansible.cfg"
+
+includes:
+  ansible:
+    taskfile: .taskfiles/Ansible/Taskfile.yaml
+    dir: "{{ .ANSIBLE_DIR }}"
+  bootstrap:
+    taskfile: .taskfiles/Bootstrap/Taskfile.yaml
+  kubernetes:
+    taskfile: .taskfiles/Kubernetes/Taskfile.yaml
+
+tasks:
+  default:
+    cmds:
+    - task --list
+
+  setup:
+    desc: Install project dependencies
+    cmds:
+    - aqua install
+    - uv tool install ansible-core --with ansible
+    - uv tool install ansible-lint==25.11.0
+    - uv tool install flux-local==7.11.0
+    - uv tool install yamllint==1.37.1
+    - uv tool install detect-secrets==1.4
+    - pre-commit install
+
+  log:
+    cmds:
+    - gum log -t rfc3339 -s -l "{{.level}}" "{{.msg}}" {{.args}}
+
+  pre-commit:
+    desc: Run pre-commit hooks
+    cmds:
+    - pre-commit run --all-files
+
+  template:
+    cmds:
+    - jinja2 "{{.file}}" {{.args}} | op inject

@@ -22,6 +22,3 @@
   ansible.builtin.command:
     cmd: modprobe iscsi_tcp
   changed_when: false
-
-  notify:
-  - Reboot

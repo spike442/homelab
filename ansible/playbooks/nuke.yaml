@@ -34,7 +34,7 @@
             kubeconfig: /etc/rancher/k3s/k3s.yaml
             state: present
           delegate_to: "{{ groups['controller'][0] }}"
-          when: node_info.resources | length > 0
+          when: (node_info.resources | default([])) | length > 0
 
         - name: Get all pods on this node
           kubernetes.core.k8s_info:
@@ -45,7 +45,7 @@
             kubeconfig: /etc/rancher/k3s/k3s.yaml
           register: node_pods
           delegate_to: "{{ groups['controller'][0] }}"
-          when: node_info.resources | length > 0
+          when: (node_info.resources | default([])) | length > 0
 
         - name: Delete non-DaemonSet pods from node
           kubernetes.core.k8s:
@@ -59,13 +59,13 @@
             wait_timeout: 300
           loop: "{{ node_pods.resources | default([]) }}"
           when:
-            - node_info.resources | length > 0
+            - (node_info.resources | default([])) | length > 0
             - item.metadata.ownerReferences is defined
             - item.metadata.ownerReferences | selectattr('kind', 'equalto', 'DaemonSet') | list | length == 0
           delegate_to: "{{ groups['controller'][0] }}"
           failed_when: false
 
-    - name: Stop k3s
+    - name: Uninstall k3s
       ansible.builtin.include_role:
         name: xanmanning.k3s
         public: true
@@ -156,7 +156,6 @@
       ansible.builtin.package:
         update_cache: true
       failed_when: false
-      when: ansible_pkg_mgr in ['apt', 'yum', 'dnf']
 
     - name: Reboot | Restart system after K3s nuke
       ansible.builtin.reboot:
