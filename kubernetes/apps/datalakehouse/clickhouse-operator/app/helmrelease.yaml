@@ -13,27 +13,19 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: altinity
-        namespace: flux-system
   install:
     crds: CreateReplace
     remediation:
       retries: -1
-  upgrade:
-    crds: CreateReplace
-    cleanupOnFail: true
-    remediation:
-      retries: 3
   values:
     operator:
       create: true
-      namespace: database
       image:
         repository: altinity/clickhouse-operator
         tag: "0.25.5"
         pullPolicy: IfNotPresent
     metrics:
       create: true
-      namespace: database
       image:
         repository: altinity/metrics-exporter
         tag: "0.26.0"

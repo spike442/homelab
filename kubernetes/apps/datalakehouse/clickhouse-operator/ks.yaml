@@ -6,13 +6,13 @@ metadata:
   name: clickhouse-operator
 spec:
   interval: 1h
-  path: ./kubernetes/apps/database/clickhouse-operator/app
+  path: ./kubernetes/apps/datalakehouse/clickhouse-operator/app
   prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: database
+  targetNamespace: datalakehouse
   wait: true
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
@@ -25,13 +25,13 @@ spec:
   - name: external-secrets
     namespace: external-secrets
   - name: clickhouse-operator
-    namespace: database
+    namespace: datalakehouse
   interval: 1h
   wait: true
   prune: true
-  path: ./kubernetes/apps/database/clickhouse-operator/cluster
+  path: ./kubernetes/apps/datalakehouse/clickhouse-operator/cluster
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: database
+  targetNamespace: datalakehouse

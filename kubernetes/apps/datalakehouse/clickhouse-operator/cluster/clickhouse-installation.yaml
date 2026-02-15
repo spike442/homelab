@@ -4,7 +4,7 @@ apiVersion: clickhouse.altinity.com/v1
 kind: ClickHouseInstallation
 metadata:
   name: clickhouse-cluster
-  namespace: database
+  namespace: datalakehouse
 spec:
   templates:
     podTemplates:
