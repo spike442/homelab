@@ -3,13 +3,13 @@
 version: "3"
 
 vars:
-  ANSIBLE_PLAYBOOK_DIR: "{{.ROOT_DIR}}/ansible/playbooks"
+  ANSIBLE_PLAYBOOK_DIR: "{{.ROOT_DIR}}/ansible/playbooks/kubernetes"
   BOOTSTRAP_DIR: "{{.ROOT_DIR}}/bootstrap"
   KUBERNETES_DIR: "{{.ROOT_DIR}}/kubernetes"
 
 tasks:
   os:
-    desc: Prepare os
+    desc: Prepare debian servers
     cmds:
     - ansible-playbook {{.ANSIBLE_PLAYBOOK_DIR}}/prepare.yaml
 

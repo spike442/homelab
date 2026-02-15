@@ -1,0 +1,57 @@
+---
+- name: Install local infra
+  hosts: rift
+  any_errors_fatal: true
+  become: false
+  gather_facts: true
+
+  pre_tasks:
+    - name: Pausing for 2 seconds...
+      ansible.builtin.pause:
+        seconds: 2
+
+    - name: Ensure applications directory exists
+      ansible.builtin.file:
+        path: "{{ ansible_env.HOME }}/apps"
+        state: directory
+        mode: '0755'
+
+  roles:
+    - role: geerlingguy.docker
+      become: true
+
+    - role: pihole
+
+  tasks:
+    - name: Add user to docker group
+      ansible.builtin.user:
+        name: "{{ ansible_env.USER }}"
+        groups: docker
+        append: true
+      become: true
+
+    - name: Check if the apps directory exists
+      ansible.builtin.stat:
+        path: "{{ ansible_env.HOME }}/apps/"
+      register: apps_dir
+
+    - name: Prune everything
+      community.docker.docker_prune:
+        containers: true
+        images: true
+        networks: true
+        volumes: true
+        builder_cache: true
+      failed_when: false
+      become: true
+
+    - name: Deploy and start docker compose services
+      community.docker.docker_compose_v2:
+        project_src: "{{ ansible_env.HOME }}/apps"
+        state: present
+      register: compose_output
+      become: true
+
+    - name: Show docker compose results
+      ansible.builtin.debug:
+        var: compose_output
