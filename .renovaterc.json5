@@ -1,0 +1,65 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    ":timezone(Europe/Paris)",
+    "config:recommended",
+    "docker:enableMajor",
+    "helpers:pinGitHubActionDigests",
+    ":disableRateLimiting",
+    ":dependencyDashboard",
+    ":semanticCommits",
+    ":enablePreCommit",
+    ":automergeBranch",
+    "github>spike442/homelab//.renovate/autoMerge.json5",
+    "github>spike442/homelab//.renovate/labels.json5",
+    "github>spike442/homelab//.renovate/semanticCommits.json5",
+    "github>spike442/homelab//.renovate/packageGroups.json5"
+  ],
+  "ignorePaths": [
+        "**/resources/**",
+  ],
+  "flux": {
+    "fileMatch": [
+      "(^|/)kubernetes/.+\\.ya?ml$"
+    ]
+  },
+  "helm-values": {
+    "fileMatch": [
+      "(^|/)kubernetes/.+\\.ya?ml$"
+    ]
+  },
+  "kubernetes": {
+    "fileMatch": [
+      "(^|/)kubernetes/.+\\.ya?ml$"
+    ]
+  },
+  "docker-compose": {
+    "fileMatch": [
+      "(^|/)ansible/.+compose\\.ya?ml$"
+    ]
+  },
+  "ansible-galaxy": {
+    "fileMatch": [
+      "(^|/)ansible/requirements\\.ya?ml$"
+    ]
+  },
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Ansible git collections with GitHub URLs",
+      "fileMatch": ["(^|/)ansible/requirements\\.ya?ml$"],
+      "matchStrings": [
+        "- name: https://github\\.com/(?<depName>[^\\s]+?)\\s*\\n\\s*type: git\\s*\\n\\s*version: (?<currentValue>[^\\s]+)"
+      ],
+      "datasourceTemplate": "github-tags"
+    }
+  ],
+  "packageRules": [
+    {
+      "description": "Disable ansible-galaxy manager for git-type collections",
+      "matchManagers": ["ansible-galaxy"],
+      "matchPackageNames": ["https://github.com/k3s-io/k3s-ansible"],
+      "enabled": false
+    }
+  ]
+}

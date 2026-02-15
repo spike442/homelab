@@ -1,0 +1,57 @@
+---
+- name: Nuke dockercompose
+  hosts: dockercompose
+  any_errors_fatal: true
+  become: false
+  gather_facts: true
+
+  pre_tasks:
+    - name: Pausing for 5 seconds...
+      ansible.builtin.pause:
+        seconds: 5
+
+  tasks:
+    - name: Check if apps directory exists
+      ansible.builtin.stat:
+        path: "{{ ansible_env.HOME }}/apps"
+      register: apps_dir
+
+    - name: Tear down docker compose services
+      community.docker.docker_compose_v2:
+        project_src: "{{ ansible_env.HOME }}/apps"
+        state: absent
+        remove_orphans: true
+        remove_volumes: true
+      become: true
+      when: apps_dir.stat.exists
+
+    - name: Get all containers
+      community.docker.docker_host_info:
+        containers: true
+      register: containers_info
+      become: true
+
+    - name: Force stop all containers
+      community.docker.docker_container:
+        name: "{{ item.Names[0] | regex_replace('^/', '') }}"
+        state: absent
+        force_kill: true
+      loop: "{{ containers_info.containers }}"
+      when: containers_info.containers | length > 0
+      become: true
+
+    - name: Prune everything
+      community.docker.docker_prune:
+        containers: true
+        images: true
+        networks: true
+        volumes: true
+        builder_cache: true
+      failed_when: false
+      become: true
+
+    - name: Remove apps directory
+      ansible.builtin.file:
+        path: "{{ ansible_env.HOME }}/apps"
+        state: absent
+      become: true

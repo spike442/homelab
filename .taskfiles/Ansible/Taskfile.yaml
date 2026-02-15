@@ -8,28 +8,54 @@ tasks:
     cmds:
     - ansible-galaxy install -r requirements.yaml --force
 
-  nuke:
-    desc: "Nuclear option: destroy cluster"
+  install:pihole:
+    desc: "Install pihole service"
+    cmds:
+    - |
+      if gum confirm "confirm install pihole ?!" --negative "No" --default; then
+         ansible-playbook playbooks/pihole/install.yaml
+      fi
+
+  pihole-reset-password:
+    desc: Reset Pi-hole admin password
+    cmds:
+    - |
+      NEW_PASSWORD=$(openssl rand -base64 32)
+      echo "Generated new password: $NEW_PASSWORD"
+      sudo docker exec -it pihole pihole -a -p "$NEW_PASSWORD"
+      echo ""
+      echo "Pi-hole admin password has been reset to: $NEW_PASSWORD"
+
+  nuke:pihole:
+    desc: "Destroy pihole service"
+    cmds:
+    - |
+      if gum confirm "confirm pihole instalation ?!" --negative "No" --default; then
+         ansible-playbook playbooks/pihole/nuke.yaml
+      fi
+
+  nuke:k8s:
+    desc: "Destroy kubernetes cluster"
     cmds:
     - |
       if gum confirm "confirm cluster nuke ?!" --negative "No" --default; then
-         ansible-playbook playbooks/nuke.yaml
+         ansible-playbook playbooks/kubernetes/nuke.yaml
       fi
 
-  reboot:
+  reboot:k8s:
     desc: Reboot cluster
     cmds:
     - |
       if gum confirm "confirm cluster reboot ?" --negative "No"; then
-         ansible all -a '/usr/bin/systemctl reboot' --become
+         ansible k3s_cluster -a '/usr/bin/systemctl reboot' --become
       fi
 
-  poweroff:
+  poweroff:k8s:
     desc: Poweroff cluster
     cmds:
     - |
       if gum confirm "confirm cluster shutdown ?" --negative "No"; then
-         ansible all -a '/usr/bin/systemctl poweroff' --become
+         ansible k3s_cluster -a '/usr/bin/systemctl poweroff' --become
       fi
 
   ping:
