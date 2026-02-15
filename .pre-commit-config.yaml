@@ -33,6 +33,6 @@ repos:
     additional_dependencies: []
 
 - repo: https://github.com/zricethezav/gitleaks
-  rev: v8.18.4
+  rev: v8.30.0
   hooks:
   - id: gitleaks
