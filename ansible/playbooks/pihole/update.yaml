@@ -1,0 +1,26 @@
+---
+- name: Update pihole DNS configuration
+  hosts: pihole
+  any_errors_fatal: true
+  become: false
+  gather_facts: true
+
+  tasks:
+    - name: Copy dnsmasq config template
+      ansible.builtin.template:
+        src: '{{ playbook_dir }}/../../roles/pihole/templates/00-custom-dnsmasq-settings.conf.j2'
+        dest: '{{ ansible_env.HOME }}/apps/pihole/config/00-custom-dnsmasq-settings.conf'
+        mode: '0644'
+      register: dnsmasq_config
+
+    - name: Enable dnsmasq.d directory loading
+      ansible.builtin.command:
+        cmd: docker exec pihole pihole-FTL --config misc.etc_dnsmasq_d true
+      become: true
+      changed_when: false
+
+    - name: Reload pihole DNS
+      ansible.builtin.command:
+        cmd: docker exec pihole pihole reloaddns
+      become: true
+      when: dnsmasq_config.changed

@@ -1,6 +1,6 @@
 ---
 - name: Nuke dockercompose
-  hosts: dockercompose
+  hosts: pihole
   any_errors_fatal: true
   become: false
   gather_facts: true

@@ -16,15 +16,20 @@ tasks:
          ansible-playbook playbooks/pihole/install.yaml
       fi
 
-  pihole-reset-password:
+  reset-password:pihole:
     desc: Reset Pi-hole admin password
     cmds:
     - |
       NEW_PASSWORD=$(openssl rand -base64 32)
       echo "Generated new password: $NEW_PASSWORD"
-      sudo docker exec -it pihole pihole -a -p "$NEW_PASSWORD"
+      sudo docker exec -it pihole pihole setpassword "$NEW_PASSWORD"
       echo ""
       echo "Pi-hole admin password has been reset to: $NEW_PASSWORD"
+
+  update-dns:pihole:
+    desc: "Update pihole DNS configuration"
+    cmds:
+    - ansible-playbook playbooks/pihole/update.yaml
 
   nuke:pihole:
     desc: "Destroy pihole service"

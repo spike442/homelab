@@ -1,6 +1,6 @@
 ---
 - name: Install local infra
-  hosts: rift
+  hosts: pihole
   any_errors_fatal: true
   become: false
   gather_facts: true
@@ -55,3 +55,14 @@
     - name: Show docker compose results
       ansible.builtin.debug:
         var: compose_output
+
+    - name: Enable dnsmasq.d directory loading
+      ansible.builtin.command:
+        cmd: docker exec pihole pihole-FTL --config misc.etc_dnsmasq_d true
+      become: true
+      changed_when: false
+
+    - name: Reload pihole DNS
+      ansible.builtin.command:
+        cmd: docker exec pihole pihole reloaddns
+      become: true
