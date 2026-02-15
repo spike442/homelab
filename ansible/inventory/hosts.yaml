@@ -1,6 +1,6 @@
-all:
+k3s_cluster:
   children:
-    kubernetes:
+    server:
       hosts:
         quasar:
           ansible_host: 192.168.1.13
@@ -8,9 +8,6 @@ all:
           ansible_host: 192.168.1.9
         atlas:
           ansible_host: 192.168.1.12
-      children:
-        controller:
-          hosts:
-            quasar: {}
-            nexus: {}
-            atlas: {}
+  vars:
+    ansible_port: 22
+    ansible_user: spike

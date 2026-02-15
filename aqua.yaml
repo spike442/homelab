@@ -14,4 +14,4 @@ packages:
 - name: pre-commit/pre-commit@v3.7.1
 - name: getsops/sops@v3.9.0
 - name: FiloSottile/age@v1.2.0
-- name: go-task/task@v3.38.0
+- name: mitsuhiko/minijinja@2.15.1

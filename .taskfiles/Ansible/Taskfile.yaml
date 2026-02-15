@@ -6,21 +6,11 @@ tasks:
   init:
     desc: Initialize ansible dependencies
     cmds:
-    - task: :log
-      vars:
-        level: "info"
-        msg: "running stage..."
-        args: "stage=init"
     - ansible-galaxy install -r requirements.yaml --force
 
   nuke:
     desc: "Nuclear option: destroy cluster"
     cmds:
-    - task: :log
-      vars:
-        level: "info"
-        msg: "running stage..."
-        args: "stage=nuke"
     - |
       if gum confirm "confirm cluster nuke ?!" --negative "No" --default; then
          ansible-playbook playbooks/nuke.yaml
@@ -29,11 +19,6 @@ tasks:
   reboot:
     desc: Reboot cluster
     cmds:
-    - task: :log
-      vars:
-        level: "info"
-        msg: "running stage..."
-        args: "stage=reboot"
     - |
       if gum confirm "confirm cluster reboot ?" --negative "No"; then
          ansible all -a '/usr/bin/systemctl reboot' --become
@@ -42,11 +27,6 @@ tasks:
   poweroff:
     desc: Poweroff cluster
     cmds:
-    - task: :log
-      vars:
-        level: "info"
-        msg: "running stage..."
-        args: "stage=poweroff"
     - |
       if gum confirm "confirm cluster shutdown ?" --negative "No"; then
          ansible all -a '/usr/bin/systemctl poweroff' --become
@@ -55,21 +35,11 @@ tasks:
   ping:
     desc: Test connectivity
     cmds:
-    - task: :log
-      vars:
-        level: "info"
-        msg: "running stage..."
-        args: "stage=ping"
     - ansible all -m 'ping'
 
   status:
     desc: Show cluster status
     cmds:
-    - task: :log
-      vars:
-        level: "info"
-        msg: "gathering cluster status..."
-        args: "stage=status"
     - echo "=== CONNECTIVITY ==="
     - ansible all -m 'ping' --one-line
     - echo "=== UPTIME ==="

@@ -13,6 +13,8 @@ spec:
     storageClass:
       create: true
       name: nfs
+      annotations:
+        storageclass.kubernetes.io/is-default-class: "true"
       parameters:
         server: 192.168.1.7
         share: /mnt/oasis/Kubernetes

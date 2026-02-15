@@ -1,0 +1,14 @@
+---
+apt_install_packages:
+- yq
+- curl
+- ca-certificates
+- nfs-common
+- dnsutils
+- iputils-ping
+- python3-kubernetes
+- open-iscsi
+- python3-yaml
+- rsync
+- conntrack
+- bpftool

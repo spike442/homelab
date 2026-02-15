@@ -1,77 +1,13 @@
 ---
-- name: K3s Cluster Nuke
-  hosts: kubernetes
+- name: Reset K3s
+  ansible.builtin.import_playbook: k3s.orchestration.reset
+
+- name: Clean cluster
+  hosts: k3s_cluster
   any_errors_fatal: true
   become: true
   gather_facts: true
-
-  pre_tasks:
-    - name: Pausing for 5 seconds...
-      ansible.builtin.pause:
-        seconds: 5
-
   tasks:
-    - name: Stop scheduling pods
-      block:
-        - name: Get node information
-          kubernetes.core.k8s_info:
-            api_version: v1
-            kind: Node
-            name: "{{ inventory_hostname }}"
-            kubeconfig: /etc/rancher/k3s/k3s.yaml
-          register: node_info
-          delegate_to: "{{ groups['controller'][0] }}"
-          failed_when: false
-
-        - name: Cordon node
-          kubernetes.core.k8s:
-            api_version: v1
-            kind: Node
-            name: "{{ inventory_hostname }}"
-            definition:
-              spec:
-                unschedulable: true
-            kubeconfig: /etc/rancher/k3s/k3s.yaml
-            state: present
-          delegate_to: "{{ groups['controller'][0] }}"
-          when: (node_info.resources | default([])) | length > 0
-
-        - name: Get all pods on this node
-          kubernetes.core.k8s_info:
-            api_version: v1
-            kind: Pod
-            field_selectors:
-              - spec.nodeName={{ inventory_hostname }}
-            kubeconfig: /etc/rancher/k3s/k3s.yaml
-          register: node_pods
-          delegate_to: "{{ groups['controller'][0] }}"
-          when: (node_info.resources | default([])) | length > 0
-
-        - name: Delete non-DaemonSet pods from node
-          kubernetes.core.k8s:
-            api_version: v1
-            kind: Pod
-            name: "{{ item.metadata.name }}"
-            namespace: "{{ item.metadata.namespace }}"
-            kubeconfig: /etc/rancher/k3s/k3s.yaml
-            state: absent
-            wait: true
-            wait_timeout: 300
-          loop: "{{ node_pods.resources | default([]) }}"
-          when:
-            - (node_info.resources | default([])) | length > 0
-            - item.metadata.ownerReferences is defined
-            - item.metadata.ownerReferences | selectattr('kind', 'equalto', 'DaemonSet') | list | length == 0
-          delegate_to: "{{ groups['controller'][0] }}"
-          failed_when: false
-
-    - name: Uninstall k3s
-      ansible.builtin.include_role:
-        name: xanmanning.k3s
-        public: true
-      vars:
-        k3s_state: uninstalled
-
     - name: Cleanup | Delete CNI directory
       ansible.builtin.file:
         path: /etc/cni/net.d
@@ -127,17 +63,6 @@
         - { table: filter, chain: INPUT }
         - { table: filter, chain: FORWARD }
         - { table: filter, chain: OUTPUT }
-      failed_when: false
-
-    - name: Cleanup | Remove K3s hard links
-      when:
-        - k3s_install_hard_links is defined
-        - k3s_install_hard_links
-        - not ansible_check_mode
-      ansible.builtin.file:
-        path: "{{ k3s_install_dir | default('/usr/local/bin') }}/{{ item }}"
-        state: absent
-      loop: ["kubectl", "crictl", "ctr"]
       failed_when: false
 
     - name: Cleanup | Remove K3s binaries from common locations

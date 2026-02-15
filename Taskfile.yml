@@ -5,7 +5,6 @@ vars:
   ANSIBLE_DIR: "{{.ROOT_DIR}}/ansible"
 
 env:
-  KUBECONFIG: "{{.ROOT_DIR}}/kubeconfig"
   ANSIBLE_CONFIG: "{{.ROOT_DIR}}/ansible/ansible.cfg"
 
 includes:
@@ -44,4 +43,4 @@ tasks:
 
   template:
     cmds:
-    - jinja2 "{{.file}}" {{.args}} | op inject
+    - minijinja-cli "{{.file}}" {{.args}} | op inject

@@ -9,63 +9,32 @@ vars:
 
 tasks:
   os:
-    desc: prepare os
+    desc: Prepare os
     cmds:
-    - task: :log
-      vars:
-        level: "info"
-        msg: "Running stage..."
-        args: "stage=os"
     - ansible-playbook {{.ANSIBLE_PLAYBOOK_DIR}}/prepare.yaml
 
   k8s:
-    desc: install kubernetes
+    desc: Install Kubernetes
     cmds:
-    - task: :log
-      vars:
-        level: "info"
-        msg: "Running stage..."
-        args: "stage=k8s"
     - ansible-playbook {{.ANSIBLE_PLAYBOOK_DIR}}/install.yaml
 
-  kubeconfig:
-    desc: fetch kubeconfig
-    cmds:
-    - task: :log
-      vars:
-        level: "info"
-        msg: "Running stage..."
-        args: "stage=kubeconfig"
-    - ansible-playbook {{.ANSIBLE_PLAYBOOK_DIR}}/kubeconfig.yaml
-
   wait:
-    desc: wait for nodes to be not-ready
+    desc: Wait for nodes to be not-ready
     cmds:
-    - task: :log
-      vars:
-        level: "info"
-        msg: "Running stage..."
-        args: "stage=wait"
     - |
-      if ! kubectl wait nodes --for=condition=Ready=True --all --timeout=10s &>/dev/null; then
-          until kubectl wait nodes --for=condition=Ready=False --all --timeout=10s &>/dev/null; do
-              task: :log
-                vars:
-                  level: "info"
-                  msg: "Nodes not available, waiting for nodes to be available. Retrying in 5 seconds..."
-                  args: "stage=wait"
-              sleep 5
-          done
-      fi
+      until kubectl get nodes &>/dev/null; do
+          echo "Nodes not available yet, waiting... Retrying in 5 seconds..."
+          sleep 5
+      done
+      until ! kubectl wait nodes --for=condition=Ready --all --timeout=1s &>/dev/null; do
+          echo "Waiting for nodes to be registered but not ready... Retrying in 5 seconds..."
+          sleep 5
+      done
+      echo "Nodes are up and not ready, proceeding with bootstrap..."
 
   namespaces:
-    desc: apply kubernetes namespaces
+    desc: Apply kubernetes namespaces
     cmds:
-    - task: :log
-      vars:
-        level: "info"
-        msg: "Running stage..."
-        args: "stage=namespaces"
     - |
       find "{{.KUBERNETES_DIR}}/apps" -mindepth 1 -maxdepth 1 -type d | while IFS= read -r dir; do
           if ! kustomize build "$dir" | yq ea -e 'select(.kind == "Namespace")' | kubectl apply --server-side --field-manager bootstrap --force-conflicts -f -; then
@@ -80,55 +49,20 @@ tasks:
   resources:
     desc: Apply Kubernetes resources
     cmds:
-    - task: :log
-      vars:
-        level: "info"
-        msg: "Running stage..."
-        args: "stage=resources"
     - |
-      if ! task: template file="{{.BOOTSTRAP_DIR}}/resources.yaml.j2" | kubectl apply --server-side --field-manager bootstrap --force-conflicts -f -; then
-          task: :log
-            vars:
-              level: "fatal"
-              msg: "Failed to apply resources"
-              args: "stage=resources"
-      fi
+      task template file="{{.BOOTSTRAP_DIR}}/resources.yaml.j2" | kubectl apply --server-side --field-manager bootstrap --force-conflicts -f -;
 
   crds:
-    desc: apply helmfile crds
+    desc: Apply helmfile crds
     cmds:
-    - task: :log
-      vars:
-        level: "info"
-        msg: "Running stage..."
-        args: "stage=crds"
-    - |
-      if ! helmfile -f "{{.BOOTSTRAP_DIR}}/helmfile.d/00-crds.yaml" template -q | kubectl apply --server-side --field-manager bootstrap --force-conflicts -f -; then
-          task: :log
-            vars:
-              level: "fatal"
-              msg: "Failed to apply crds"
-              args: "stage=crds"
-      fi
+    - helmfile -f "{{.BOOTSTRAP_DIR}}/helmfile.d/00-crds.yaml" template -q | kubectl apply --server-side --field-manager bootstrap --force-conflicts -f -;
 
   apps:
-    desc: apply helmfile apps
+    desc: Apply helmfile apps
     cmds:
-    - task: :log
-      vars:
-        level: "info"
-        msg: "Running stage..."
-        args: "stage=apps"
-    - |
-      if ! helmfile -f "{{.BOOTSTRAP_DIR}}/helmfile.d/01-apps.yaml" sync --hide-notes; then
-          task: :log
-            vars:
-              level: "fatal"
-              msg: "Failed to sync helmfile"
-              args: "stage=apps"
-      fi
+    - helmfile -f "{{.BOOTSTRAP_DIR}}/helmfile.d/01-apps.yaml" sync --hide-notes
 
   template:
     internal: true
     cmds:
-    - jinja2 "{{.file}}" {{.args}} | op inject
+    - minijinja-cli "{{.file}}" {{.args}} | op inject

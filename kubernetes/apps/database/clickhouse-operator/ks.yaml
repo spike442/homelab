@@ -26,8 +26,6 @@ spec:
     namespace: external-secrets
   - name: clickhouse-operator
     namespace: database
-  - name: longhorn
-    namespace: storage
   interval: 1h
   wait: true
   prune: true

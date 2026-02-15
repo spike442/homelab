@@ -1,0 +1,40 @@
+---
+k3s_version: v1.31.12+k3s1
+api_endpoint: "{{ hostvars[groups['server'][0]]['ansible_host'] | default(groups['server'][0]) }}"
+extra_server_args: ""
+extra_agent_args: ""
+
+server_config_yaml:
+  cluster_context: homelab
+  write-kubeconfig-mode: "644"
+  docker: false
+  flannel-backend: "none"
+  disable:
+  - flannel
+  - metrics-server
+  - servicelb
+  - traefik
+  - local-storage
+  - coredns
+
+  disable-network-policy: true
+  disable-cloud-controller: true
+  disable-kube-proxy: true
+  disable-helm-controller: false
+
+  cluster-cidr: "10.42.0.0/16"
+  service-cidr: "10.43.0.0/16"
+  tls-san:
+  - "{{ api_endpoint }}"
+
+  kubelet-arg:
+  - "image-gc-high-threshold=64"
+  - "image-gc-low-threshold=55"
+  kube-controller-manager-arg:
+  - "bind-address=0.0.0.0" # Required to monitor kube-controller-manager with kube-prometheus-stack
+  kube-scheduler-arg:
+  - "bind-address=0.0.0.0" # Required to monitor kube-scheduler with kube-prometheus-stack
+  k3s_extra_args:
+  - "--kube-reserved=cpu=500m,memory=1Gi"
+  - "--system-reserved=cpu=250m,memory=512Mi"
+  - "--eviction-hard=memory.available<200Mi"

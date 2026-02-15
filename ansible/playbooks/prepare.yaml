@@ -1,15 +1,9 @@
 ---
 - name: Prepare debian servers
-  hosts: kubernetes
+  hosts: k3s_cluster
   any_errors_fatal: true
   become: true
   gather_facts: true
-
-  pre_tasks:
-    - name: Pausing for 2 seconds...
-      ansible.builtin.pause:
-        seconds: 2
-
   roles:
     - name: Prepare debian servers
       role: os
