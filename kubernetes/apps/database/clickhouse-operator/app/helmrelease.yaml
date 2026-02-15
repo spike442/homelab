@@ -30,7 +30,7 @@ spec:
       namespace: database
       image:
         repository: altinity/metrics-exporter
-        tag: "0.25.5"
+        tag: "0.26.0"
         pullPolicy: IfNotPresent
     clickhouse:
       create: false # We'll create our own ClickHouseInstallation
