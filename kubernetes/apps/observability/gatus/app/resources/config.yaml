@@ -43,13 +43,11 @@ storage:
 ui:
   title: Status | Gatus
   header: Status
-  logo: https://avatars.githubusercontent.com/u/213795
+  logo: https://avatars.githubusercontent.com/u/13041487
   link: https://github.com/spike442
   buttons:
   - name: Github
     link: https://github.com/spike442
-  - name: Homelab
-    link: https://github.com/spike442/homelab
 
 web:
   port: ${GATUS_WEB_PORT}
