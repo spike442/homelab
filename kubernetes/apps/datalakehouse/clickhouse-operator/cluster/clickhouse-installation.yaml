@@ -40,22 +40,6 @@ spec:
           - name: clickhouse-tls
             mountPath: /etc/clickhouse-server/tls
             readOnly: true
-          - name: clickhouse-config-logger
-            mountPath: /etc/clickhouse-server/config.d/logger.xml
-            subPath: logger.xml
-            readOnly: true
-          - name: clickhouse-config-path
-            mountPath: /etc/clickhouse-server/config.d/path.xml
-            subPath: path.xml
-            readOnly: true
-          - name: clickhouse-config-server
-            mountPath: /etc/clickhouse-server/config.d/server.xml
-            subPath: server.xml
-            readOnly: true
-          - name: clickhouse-config-users
-            mountPath: /etc/clickhouse-server/config.d/users.xml
-            subPath: users.xml
-            readOnly: true
         securityContext:
           runAsUser: 101
           runAsGroup: 101
@@ -74,18 +58,6 @@ spec:
         - name: clickhouse-tls
           secret:
             secretName: timcasa-me-tls
-        - name: clickhouse-config-logger
-          configMap:
-            name: clickhouse-config-logger
-        - name: clickhouse-config-path
-          configMap:
-            name: clickhouse-config-path
-        - name: clickhouse-config-server
-          configMap:
-            name: clickhouse-config-server
-        - name: clickhouse-config-users
-          configMap:
-            name: clickhouse-config-users
     serviceTemplates:
     - name: clickhouse-service
       spec:
@@ -105,6 +77,23 @@ spec:
             storage: 20Gi
         storageClassName: nfs
   configuration:
+    settings:
+      tcp_port: "9000"
+      http_port: "8123"
+      https_port: "8443"
+      openSSL/server/certificateFile: /etc/clickhouse-server/tls/tls.crt
+      openSSL/server/privateKeyFile: /etc/clickhouse-server/tls/tls.key
+      path: /var/lib/clickhouse/
+      logger/level: information
+      logger/log: /var/log/clickhouse-server/clickhouse-server.log
+      logger/errorlog: /var/log/clickhouse-server/clickhouse-server.err.log
+      logger/size: 1000M
+      logger/count: "10"
+    users:
+      clickhouse/password_env: CLICKHOUSE_PASSWORD
+      clickhouse/profile: default
+      clickhouse/quota: default
+      clickhouse/access_management: "1"
     clusters:
     - name: main
       layout:
