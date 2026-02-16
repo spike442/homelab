@@ -10,4 +10,5 @@ components:
 resources:
 - ./namespace.yaml
 - ./clickhouse-operator/ks.yaml
+- ./minio/ks.yaml
 - ./spark-operator/ks.yaml
