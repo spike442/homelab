@@ -1,0 +1,74 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: airflow
+spec:
+  interval: 1h
+  chart:
+    spec:
+      chart: airflow
+      version: "1.18.0"
+      sourceRef:
+        kind: HelmRepository
+        name: apache-airflow
+  install:
+    remediation:
+      retries: -1
+  values:
+    executor: KubernetesExecutor
+    fernetKeySecretName: airflow-secret
+    webserverSecretKeySecretName: airflow-secret
+    migrateDatabaseJob:
+      useHelmHooks: false
+    createUserJob:
+      useHelmHooks: false
+    webserver:
+      defaultUser:
+        enabled: true
+        username: admin
+        email: admin@timcasa.me
+        firstName: Admin
+        lastName: User
+      replicas: 1
+      resources:
+        requests:
+          cpu: 50m
+          memory: 512Mi
+        limits:
+          memory: 1Gi
+    scheduler:
+      replicas: 1
+      resources:
+        requests:
+          cpu: 50m
+          memory: 512Mi
+        limits:
+          memory: 1Gi
+    triggerer:
+      replicas: 1
+      resources:
+        requests:
+          cpu: 10m
+          memory: 128Mi
+        limits:
+          memory: 512Mi
+    postgresql:
+      enabled: false
+    data:
+      metadataSecretName: airflow-metadata-secret
+    redis:
+      enabled: false
+    flower:
+      enabled: false
+    workers:
+      replicas: 0
+    logs:
+      persistence:
+        enabled: true
+        storageClassName: nfs
+        size: 5Gi
+    dags:
+      gitSync:
+        enabled: false
