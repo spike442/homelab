@@ -24,4 +24,5 @@ resources:
 - ./dnsendpoint.yaml
 - ./tcproute.yaml
 - ./externalsecret.yaml
+- ./externalsecret-tls.yaml
 - ./clickhouse-installation.yaml
