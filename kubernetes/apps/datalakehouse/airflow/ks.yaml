@@ -27,6 +27,8 @@ spec:
   dependsOn:
   - name: external-secrets
     namespace: external-secrets
+  - name: redis
+    namespace: datalakehouse
   - name: minio
     namespace: datalakehouse
   - name: airflow-pg

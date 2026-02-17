@@ -6,12 +6,9 @@ metadata:
   name: redis
 spec:
   interval: 1h
-  chart:
-    spec:
-      chart: redis
-      sourceRef:
-        kind: HelmRepository
-        name: bitnami
+  chartRef:
+    kind: OCIRepository
+    name: redis
   install:
     remediation:
       retries: -1
