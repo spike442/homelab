@@ -22,6 +22,7 @@ server_config_yaml:
   disable-kube-proxy: true
   disable-helm-controller: false
 
+  node-ip: "{{ ansible_host }}"
   cluster-cidr: "10.42.0.0/16"
   service-cidr: "10.43.0.0/16"
   tls-san:
@@ -30,11 +31,10 @@ server_config_yaml:
   kubelet-arg:
   - "image-gc-high-threshold=64"
   - "image-gc-low-threshold=55"
+  - "kube-reserved=cpu=500m,memory=1Gi"
+  - "system-reserved=cpu=250m,memory=512Mi"
+  - "eviction-hard=memory.available<200Mi"
   kube-controller-manager-arg:
   - "bind-address=0.0.0.0" # Required to monitor kube-controller-manager with kube-prometheus-stack
   kube-scheduler-arg:
   - "bind-address=0.0.0.0" # Required to monitor kube-scheduler with kube-prometheus-stack
-  k3s_extra_args:
-  - "--kube-reserved=cpu=500m,memory=1Gi"
-  - "--system-reserved=cpu=250m,memory=512Mi"
-  - "--eviction-hard=memory.available<200Mi"

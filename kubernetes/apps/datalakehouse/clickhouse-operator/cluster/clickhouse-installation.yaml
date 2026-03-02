@@ -90,7 +90,7 @@ spec:
       logger/size: 1000M
       logger/count: "10"
     users:
-      default/password_env: CLICKHOUSE_PASSWORD
+      default/k8s_secret_password: clickhouse-admin-password/CLICKHOUSE_PASSWORD
       default/profile: default
       default/quota: default
       default/access_management: "1"
