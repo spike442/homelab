@@ -28,7 +28,7 @@ spec:
       create: true
       image:
         repository: altinity/metrics-exporter
-        tag: "0.26.0"
+        tag: "0.26.1"
         pullPolicy: IfNotPresent
     clickhouse:
       create: false # We'll create our own ClickHouseInstallation
