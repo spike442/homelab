@@ -8,16 +8,12 @@
   become: true
   gather_facts: true
   tasks:
-    - name: Cleanup | Delete CNI directory
-      ansible.builtin.file:
-        path: /etc/cni/net.d
-        state: absent
-
-    - name: Cleanup | Remove K3s configuration directories
+    - name: Cleanup | Remove K3s directories
       ansible.builtin.file:
         path: "{{ item }}"
         state: absent
       loop:
+        - /etc/cni/net.d
         - /etc/rancher/k3s
         - /var/lib/rancher/k3s
         - /var/lib/kubelet
@@ -26,18 +22,44 @@
         - /run/k3s
         - /run/flannel
 
-    - name: Cleanup | Remove K3s systemd services
+    - name: Cleanup | Remove K3s systemd files
       ansible.builtin.file:
         path: "{{ item }}"
         state: absent
       loop:
         - /etc/systemd/system/k3s.service
+        - /etc/systemd/system/k3s.service.env
         - /etc/systemd/system/k3s-agent.service
         - /etc/systemd/system/k3s-node.service
 
-    - name: Reload systemd daemon
+    - name: Cleanup | Remove K3s binaries
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /usr/local/bin/k3s
+        - /usr/local/bin/k3s-install.sh
+        - /usr/local/bin/k3s-uninstall.sh
+        - /usr/local/bin/k3s-agent-uninstall.sh
+        - /usr/local/bin/k3s-killall.sh
+      failed_when: false
+
+    - name: Cleanup | Remove user kubeconfig
+      ansible.builtin.file:
+        path: "~{{ ansible_user }}/.kube/config"
+        state: absent
+
+    - name: Cleanup | Reload systemd daemon
       ansible.builtin.systemd:
         daemon_reload: true
+
+    - name: Networking | Delete CNI network interfaces
+      ansible.builtin.shell: |
+        for iface in $(ip -o link show | awk -F': ' '{print $2}' | grep -E '^(cni|flannel|vxlan|cilium_|lxc)'); do
+          ip link delete "$iface" 2>/dev/null || true
+        done
+      changed_when: false
+      failed_when: false
 
     - name: Networking | Flush iptables
       ansible.builtin.iptables:
@@ -59,30 +81,26 @@
         table: "{{ item.table }}"
         chain: "{{ item.chain }}"
         policy: ACCEPT
+        ip_version: "{{ item.ip_version }}"
       loop:
-        - { table: filter, chain: INPUT }
-        - { table: filter, chain: FORWARD }
-        - { table: filter, chain: OUTPUT }
+        - { table: filter, chain: INPUT, ip_version: ipv4 }
+        - { table: filter, chain: FORWARD, ip_version: ipv4 }
+        - { table: filter, chain: OUTPUT, ip_version: ipv4 }
+        - { table: filter, chain: INPUT, ip_version: ipv6 }
+        - { table: filter, chain: FORWARD, ip_version: ipv6 }
+        - { table: filter, chain: OUTPUT, ip_version: ipv6 }
+      loop_control:
+        label: "{{ item.ip_version }} {{ item.chain }}"
       failed_when: false
 
-    - name: Cleanup | Remove K3s binaries from common locations
-      ansible.builtin.file:
-        path: "{{ item }}"
-        state: absent
-      loop:
-        - /usr/local/bin/k3s
-        - /usr/local/bin/k3s-uninstall.sh
-        - /usr/local/bin/k3s-agent-uninstall.sh
-        - /usr/local/bin/k3s-killall.sh
+    - name: Networking | Clean BPF filesystem
+      ansible.builtin.shell: |
+        find /sys/fs/bpf -mindepth 1 -maxdepth 1 -type d -exec rm -rf {} + 2>/dev/null || true
+      changed_when: false
       failed_when: false
 
   post_tasks:
-    - name: Cleanup | Update package cache
-      ansible.builtin.package:
-        update_cache: true
-      failed_when: false
-
-    - name: Reboot | Restart system after K3s nuke
+    - name: Reboot
       ansible.builtin.reboot:
         msg: "Rebooting {{ inventory_hostname }} after K3s cluster nuke"
         reboot_timeout: 600
