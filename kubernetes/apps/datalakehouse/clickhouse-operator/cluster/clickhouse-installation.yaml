@@ -12,7 +12,7 @@ spec:
       spec:
         containers:
         - name: clickhouse
-          image: clickhouse/clickhouse-server:26.2
+          image: clickhouse/clickhouse-server:26.3
           resources:
             requests:
               cpu: 100m
