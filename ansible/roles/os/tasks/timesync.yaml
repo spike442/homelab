@@ -1,0 +1,27 @@
+---
+- name: Install systemd-timesyncd
+  ansible.builtin.apt:
+    name: systemd-timesyncd
+    state: present
+    update_cache: true
+    force_apt_get: true
+
+- name: Enable and start systemd-timesyncd
+  ansible.builtin.systemd:
+    name: systemd-timesyncd
+    enabled: true
+    state: started
+
+- name: Enable NTP synchronization
+  ansible.builtin.command:
+    cmd: timedatectl set-ntp true
+  changed_when: false
+
+- name: Wait for system clock synchronization
+  ansible.builtin.command:
+    cmd: timedatectl show --property=NTPSynchronized --value
+  register: os_timesync_status
+  changed_when: false
+  until: os_timesync_status.stdout | trim == "yes"
+  retries: 18
+  delay: 10

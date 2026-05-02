@@ -1,4 +1,31 @@
 ---
+- name: Stop K3s
+  hosts: k3s_cluster
+  any_errors_fatal: true
+  become: true
+  gather_facts: false
+  tasks:
+    - name: Stop | K3s service
+      ansible.builtin.systemd:
+        name: k3s
+        state: stopped
+      failed_when: false
+
+    - name: Stop | Run k3s-killall.sh
+      ansible.builtin.shell: /usr/local/bin/k3s-killall.sh
+      failed_when: false
+      changed_when: false
+
+    - name: Stop | Kill remaining K3s processes
+      ansible.builtin.shell: |
+        pkill -9 -f 'k3s server' 2>/dev/null || true
+        pkill -9 -f 'k3s agent' 2>/dev/null || true
+        pkill -9 containerd-shim 2>/dev/null || true
+        pkill -9 containerd 2>/dev/null || true
+        sleep 1
+      changed_when: false
+      failed_when: false
+
 - name: Reset K3s
   ansible.builtin.import_playbook: k3s.orchestration.reset
 
@@ -6,7 +33,7 @@
   hosts: k3s_cluster
   any_errors_fatal: true
   become: true
-  gather_facts: true
+  gather_facts: false
   tasks:
     - name: Cleanup | Remove K3s directories
       ansible.builtin.file:
@@ -15,12 +42,15 @@
       loop:
         - /etc/cni/net.d
         - /etc/rancher/k3s
+        - /etc/rancher/node
         - /var/lib/rancher/k3s
         - /var/lib/kubelet
         - /var/lib/cni
         - /opt/cni
         - /run/k3s
         - /run/flannel
+        - /run/cilium
+        - /var/run/cilium
 
     - name: Cleanup | Remove K3s systemd files
       ansible.builtin.file:
@@ -46,7 +76,7 @@
 
     - name: Cleanup | Remove user kubeconfig
       ansible.builtin.file:
-        path: "~{{ ansible_user }}/.kube/config"
+        path: "/home/{{ ansible_user }}/.kube/config"
         state: absent
 
     - name: Cleanup | Reload systemd daemon
@@ -55,7 +85,7 @@
 
     - name: Networking | Delete CNI network interfaces
       ansible.builtin.shell: |
-        for iface in $(ip -o link show | awk -F': ' '{print $2}' | grep -E '^(cni|flannel|vxlan|cilium_|lxc)'); do
+        for iface in $(ip -o link show | awk -F': ' '{print $2}' | grep -E '^(cni|flannel|vxlan|cilium|lxc)'); do
           ip link delete "$iface" 2>/dev/null || true
         done
       changed_when: false
@@ -93,9 +123,14 @@
         label: "{{ item.ip_version }} {{ item.chain }}"
       failed_when: false
 
+    - name: Networking | Flush nftables
+      ansible.builtin.shell: nft flush ruleset
+      changed_when: false
+      failed_when: false
+
     - name: Networking | Clean BPF filesystem
       ansible.builtin.shell: |
-        find /sys/fs/bpf -mindepth 1 -maxdepth 1 -type d -exec rm -rf {} + 2>/dev/null || true
+        find /sys/fs/bpf -mindepth 1 -not -path '/sys/fs/bpf/ip*' -delete 2>/dev/null || true
       changed_when: false
       failed_when: false
 

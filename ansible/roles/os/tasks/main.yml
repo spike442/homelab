@@ -5,6 +5,9 @@
 - name: Package management
   ansible.builtin.import_tasks: packages.yaml
 
+- name: Time synchronization
+  ansible.builtin.import_tasks: timesync.yaml
+
 - name: Kernel configuration
   ansible.builtin.import_tasks: kernel.yaml
 

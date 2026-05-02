@@ -9,8 +9,6 @@ components:
 
 resources:
 - ./namespace.yaml
-- ./airflow/ks.yaml
-- ./clickhouse-operator/ks.yaml
 - ./kafka/ks.yaml
 - ./minio/ks.yaml
 - ./redis/ks.yaml
