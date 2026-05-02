@@ -19,19 +19,54 @@ alerting:
     user-key: ${GATUS_PUSHOVER_USER_KEY}
 
 endpoints:
-- name: Cloudflare
-  group: connectivity
-  url: icmp://1.1.1.1
+- name: Gatus
+  group: observability
+  url: http://gatus.observability.svc.cluster.local/health
   interval: 1m
   conditions:
-  - "[CONNECTED] == true"
+  - "[STATUS] == 200"
 
-- name: Google
-  group: connectivity
-  url: icmp://8.8.8.8
+- name: Grafana
+  group: observability
+  url: http://grafana-service.observability.svc.cluster.local:3000/api/health
   interval: 1m
   conditions:
-  - "[CONNECTED] == true"
+  - "[STATUS] == 200"
+
+- name: Prometheus
+  group: observability
+  url: http://kube-prometheus-stack-prometheus.observability.svc.cluster.local:9090/-/healthy
+  interval: 1m
+  conditions:
+  - "[STATUS] == 200"
+
+- name: Alertmanager
+  group: observability
+  url: http://kube-prometheus-stack-alertmanager.observability.svc.cluster.local:9093/-/healthy
+  interval: 1m
+  conditions:
+  - "[STATUS] == 200"
+
+- name: Echo
+  group: network
+  url: http://echo.network.svc.cluster.local/healthz
+  interval: 1m
+  conditions:
+  - "[STATUS] == 200"
+
+- name: MinIO Console
+  group: datalakehouse
+  url: http://minio-console.datalakehouse.svc.cluster.local:9001/
+  interval: 1m
+  conditions:
+  - "[STATUS] == 200"
+
+- name: Victoria Logs
+  group: observability
+  url: http://victoria-logs-server.observability.svc.cluster.local:9428/select/vmui/
+  interval: 1m
+  conditions:
+  - "[STATUS] == 200"
 
 metrics: true
 
