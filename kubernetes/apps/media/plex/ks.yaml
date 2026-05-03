@@ -3,13 +3,15 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: prowlarr
+  name: plex
 spec:
   dependsOn:
+  - name: intel-gpu-resource-driver
+    namespace: kube-system
   - name: openebs
     namespace: storage
   interval: 1h
-  path: ./kubernetes/apps/media/prowlarr/app
+  path: ./kubernetes/apps/media/plex/app
   prune: true
   sourceRef:
     kind: GitRepository
