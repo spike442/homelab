@@ -8,7 +8,7 @@ spec:
   interval: 1h
   chartRef:
     kind: OCIRepository
-    name: app-template
+    name: qbittorrent
   install:
     remediation:
       retries: -1
@@ -67,25 +67,27 @@ spec:
               QBT_WEBUI_PORT: &httpPort 80
               QBT_TORRENTING_PORT: &torrentPort 50413
             probes:
-              liveness: &probes
+              liveness:
+                enabled: true
+                spec:
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 5
+              readiness:
                 enabled: true
                 custom: true
                 spec:
-                  tcpSocket:
+                  httpGet:
+                    path: /api/v2/app/version
                     port: *httpPort
-                  initialDelaySeconds: 10
                   periodSeconds: 10
                   timeoutSeconds: 5
-                  failureThreshold: 3
-              readiness: *probes
+                  failureThreshold: 5
               startup:
                 enabled: true
                 spec:
-                  tcpSocket:
-                    port: *httpPort
-                  initialDelaySeconds: 5
                   failureThreshold: 30
-                  periodSeconds: 5
+                  periodSeconds: 10
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
@@ -128,5 +130,7 @@ spec:
         type: nfs
         server: 192.168.1.7
         path: /mnt/oasis/Kubernetes
+        globalMounts:
+        - path: /media
       tmp:
         type: emptyDir

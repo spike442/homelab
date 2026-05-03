@@ -10,3 +10,6 @@ components:
 resources:
 - ./namespace.yaml
 - ./qbittorrent/ks.yaml
+- ./prowlarr/ks.yaml
+- ./sonarr/ks.yaml
+- ./radarr/ks.yaml
