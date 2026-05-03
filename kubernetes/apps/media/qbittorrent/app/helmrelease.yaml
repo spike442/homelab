@@ -1,0 +1,139 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app qbittorrent
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+  install:
+    remediation:
+      retries: -1
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  values:
+    controllers:
+      qbittorrent:
+        containers:
+          gluetun:
+            image:
+              repository: ghcr.io/qdm12/gluetun
+              tag: v3.41.1
+            env:
+              TZ: Europe/Paris
+              VPN_SERVICE_PROVIDER: protonvpn
+              VPN_TYPE: wireguard
+              SERVER_COUNTRIES: Netherlands
+              WIREGUARD_ADDRESSES: "10.14.0.2/16"
+              FIREWALL_INPUT_PORTS: "50413,80"
+              DNS_KEEP_NAMESERVER: "on"
+              DOT: "off"
+              WIREGUARD_IMPLEMENTATION: userspace
+            envFrom:
+            - secretRef:
+                name: qbittorrent-gluetun-secret
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  exec:
+                    command: [ "/bin/sh", "-c", "wget -qO /dev/null http://127.0.0.1:9999" ]
+                  initialDelaySeconds: 30
+                  periodSeconds: 30
+                  failureThreshold: 3
+            securityContext:
+              runAsNonRoot: false
+              runAsUser: 0
+              capabilities:
+                add: [ "NET_ADMIN" ]
+              allowPrivilegeEscalation: false
+            resources:
+              requests:
+                cpu: 50m
+                memory: 64Mi
+              limits:
+                memory: 128Mi
+          app:
+            image:
+              repository: ghcr.io/home-operations/qbittorrent
+              tag: 5.1.4@sha256:bb82ad6668f8eda1d0fcce6c1341498bfa879155bb1295cd9d314a2c35c07a01
+            env:
+              TZ: Europe/Paris
+              QBT_WEBUI_PORT: &httpPort 80
+              QBT_TORRENTING_PORT: &torrentPort 50413
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  tcpSocket:
+                    port: *httpPort
+                  initialDelaySeconds: 10
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 3
+              readiness: *probes
+              startup:
+                enabled: true
+                spec:
+                  tcpSocket:
+                    port: *httpPort
+                  initialDelaySeconds: 5
+                  failureThreshold: 30
+                  periodSeconds: 5
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: [ "ALL" ] }
+            resources:
+              requests:
+                cpu: 100m
+              limits:
+                memory: 2Gi
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+    service:
+      app:
+        forceRename: *app
+        primary: true
+        ports:
+          http:
+            port: *httpPort
+      bittorrent:
+        type: LoadBalancer
+        ports:
+          bittorrent-tcp:
+            port: *torrentPort
+            protocol: TCP
+    route:
+      app:
+        hostnames:
+        - "{{ .Release.Name }}.timcasa.me"
+        - torrent.timcasa.me
+        parentRefs:
+        - name: envoy-internal
+          namespace: network
+        rules:
+        - backendRefs:
+          - identifier: app
+            port: *httpPort
+    persistence:
+      config:
+        existingClaim: qbittorrent
+      media:
+        type: nfs
+        server: 192.168.1.7
+        path: /mnt/oasis/Kubernetes
+      tmp:
+        type: emptyDir
