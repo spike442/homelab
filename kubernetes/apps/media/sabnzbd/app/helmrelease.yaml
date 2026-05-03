@@ -3,26 +3,27 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: plex
+  name: sabnzbd
 spec:
   chartRef:
     kind: OCIRepository
-    name: plex
+    name: sabnzbd
   interval: 1h
   values:
     controllers:
-      plex:
-        annotations:
-          reloader.stakater.com/auto: "true"
+      sabnzbd:
         containers:
           app:
             image:
-              repository: ghcr.io/home-operations/plex
-              tag: 1.43.1.10611@sha256:a9c3723cb31cc9621df27cf5801184c290293adf1df2bfaea4b8b6fc01dbfd96
+              repository: ghcr.io/home-operations/sabnzbd
+              tag: 5.0.1@sha256:c22ada9eb6f6306a4e94d3372c784a5330818f2021b2fa9233ff4ae92d9f3582
             env:
+              SABNZBD__PORT: &port 80
+              SABNZBD__HOST_WHITELIST_ENTRIES: sabnzbd.timcasa.me
               TZ: Europe/Paris
-              PLEX_ADVERTISE_URL: https://plex.timcasa.me:443,http://192.168.1.210:32400,http://plex.media.svc.cluster.local:32400
-              PLEX_NO_AUTH_NETWORKS: 192.168.1.0/24
+            envFrom:
+            - secretRef:
+                name: "{{ .Release.Name }}-secret"
             probes:
               liveness:
                 enabled: true
@@ -35,8 +36,8 @@ spec:
                 custom: true
                 spec:
                   httpGet:
-                    path: /identity
-                    port: &port 32400
+                    path: /api?mode=version
+                    port: *port
                   periodSeconds: 10
                   timeoutSeconds: 5
                   failureThreshold: 5
@@ -50,16 +51,11 @@ spec:
               readOnlyRootFilesystem: true
               capabilities: { drop: [ "ALL" ] }
             resources:
-              claims:
-              - name: gpu
               requests:
                 cpu: 100m
               limits:
-                memory: 4Gi
+                memory: 12Gi
     defaultPodOptions:
-      resourceClaims:
-      - name: gpu
-        resourceClaimTemplateName: plex
       securityContext:
         runAsNonRoot: true
         runAsUser: 1000
@@ -68,18 +64,11 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
     service:
       app:
-        type: LoadBalancer
-        annotations:
-          lbipam.cilium.io/ips: 192.168.1.210
-        externalTrafficPolicy: Cluster
         ports:
           http:
             port: *port
     route:
       app:
-        annotations:
-          gatus.home-operations.com/endpoint: |-
-            conditions: ["[STATUS] == 401"]
         hostnames:
         - "{{ .Release.Name }}.timcasa.me"
         parentRefs:
@@ -94,6 +83,5 @@ spec:
         path: /mnt/oasis/Media
         globalMounts:
         - path: /media
-          readOnly: true
       tmp:
         type: emptyDir
