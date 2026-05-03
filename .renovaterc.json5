@@ -15,6 +15,7 @@
     'github>spike442/homelab//.renovate/semanticCommits.json5',
     'github>spike442/homelab//.renovate/packageGroups.json5',
   ],
+  rebaseWhen: 'behind-base-branch',
   ignorePaths: [
     '**/resources/**',
   ],
