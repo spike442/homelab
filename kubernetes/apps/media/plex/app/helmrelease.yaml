@@ -91,7 +91,7 @@ spec:
       media:
         type: nfs
         server: 192.168.1.7
-        path: /mnt/oasis/Kubernetes
+        path: /mnt/oasis/Media
         globalMounts:
         - path: /media
           readOnly: true
