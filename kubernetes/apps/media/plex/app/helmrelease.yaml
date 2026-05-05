@@ -88,12 +88,19 @@ spec:
     persistence:
       config:
         existingClaim: "{{ .Release.Name }}"
-      media:
+      movies:
         type: nfs
         server: 192.168.1.7
-        path: /mnt/oasis/Media
+        path: /mnt/oasis/Media/Movies
         globalMounts:
-        - path: /media
+        - path: /media/Movies
+          readOnly: true
+      tv:
+        type: nfs
+        server: 192.168.1.7
+        path: /mnt/oasis/Media/TV
+        globalMounts:
+        - path: /media/TV
           readOnly: true
       tmp:
         type: emptyDir

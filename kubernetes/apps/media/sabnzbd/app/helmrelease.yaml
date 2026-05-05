@@ -77,11 +77,11 @@ spec:
     persistence:
       config:
         existingClaim: "{{ .Release.Name }}"
-      media:
+      downloads:
         type: nfs
         server: 192.168.1.7
-        path: /mnt/oasis/Media
+        path: /mnt/oasis/Media/Downloads
         globalMounts:
-        - path: /media
+        - path: /media/Downloads
       tmp:
         type: emptyDir
