@@ -11,6 +11,7 @@ resources:
 - ./namespace.yaml
 - ./qbittorrent/ks.yaml
 - ./flaresolverr/ks.yaml
+- ./filebrowser/ks.yaml
 - ./prowlarr/ks.yaml
 - ./sonarr/ks.yaml
 - ./radarr/ks.yaml

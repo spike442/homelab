@@ -1,0 +1,92 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: filebrowser
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: filebrowser
+  interval: 1h
+  values:
+    controllers:
+      filebrowser:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: filebrowser/filebrowser
+              tag: v2.63.2@sha256:4dce87308b9f9cfbcf8d0a284fc9565d2b515530a6bae2d920b388161e093f26
+            env:
+              TZ: Europe/Paris
+              FB_DATABASE: /config/filebrowser.db
+              FB_ROOT: /srv
+              FB_LOG: stdout
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health
+                    port: &port 80
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+              startup:
+                enabled: false
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: [ "ALL" ] }
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 512Mi
+        pod:
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            runAsNonRoot: true
+            fsGroup: 1000
+            fsGroupChangePolicy: OnRootMismatch
+    service:
+      app:
+        controller: filebrowser
+        ports:
+          http:
+            port: *port
+    route:
+      app:
+        hostnames:
+        - filebrowser.timcasa.me
+        parentRefs:
+        - name: envoy-internal
+          namespace: network
+    persistence:
+      config:
+        existingClaim: filebrowser
+      movies:
+        type: nfs
+        server: 192.168.1.7
+        path: /mnt/oasis/Media/Movies
+        globalMounts:
+        - path: /srv/Movies
+      tv:
+        type: nfs
+        server: 192.168.1.7
+        path: /mnt/oasis/Media/TV
+        globalMounts:
+        - path: /srv/TV
+      downloads:
+        type: nfs
+        server: 192.168.1.7
+        path: /mnt/oasis/Media/Downloads
+        globalMounts:
+        - path: /srv/Downloads
+      tmp:
+        type: emptyDir
