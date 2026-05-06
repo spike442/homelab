@@ -67,7 +67,7 @@ spec:
         statefulset:
           volumeClaimTemplates:
           - name: config
-            storageClass: nfs
+            storageClass: openebs-hostpath
             accessMode: ReadWriteOnce
             size: 5Gi
     defaultPodOptions:

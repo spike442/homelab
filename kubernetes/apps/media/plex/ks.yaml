@@ -5,13 +5,23 @@ kind: Kustomization
 metadata:
   name: plex
 spec:
+  components:
+  - ../../../../components/volsync
   dependsOn:
   - name: intel-gpu-resource-driver
     namespace: kube-system
   - name: openebs
     namespace: storage
+  - name: onepassword
+    namespace: external-secrets
+  - name: volsync
+    namespace: storage
   interval: 1h
   path: ./kubernetes/apps/media/plex/app
+  postBuild:
+    substitute:
+      APP: plex
+      VOLSYNC_CAPACITY: 20Gi
   prune: true
   sourceRef:
     kind: GitRepository

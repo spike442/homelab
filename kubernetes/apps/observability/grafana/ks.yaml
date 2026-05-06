@@ -21,8 +21,21 @@ kind: Kustomization
 metadata:
   name: grafana-instance
 spec:
+  components:
+  - ../../../../components/volsync-existing-pvc
+  dependsOn:
+  - name: onepassword
+    namespace: external-secrets
+  - name: volsync
+    namespace: storage
   interval: 1h
   path: ./kubernetes/apps/observability/grafana/instance
+  postBuild:
+    substitute:
+      APP: grafana
+      VOLSYNC_CLAIM: grafana-pvc
+      VOLSYNC_CAPACITY: 10Gi
+      VOLSYNC_STORAGECLASS: openebs-hostpath
   prune: true
   sourceRef:
     kind: GitRepository

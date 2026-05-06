@@ -21,8 +21,7 @@ spec:
     existingSecret: minio-secret
     persistence:
       enabled: true
-      storageClass: nfs
-      size: 20Gi
+      existingClaim: minio
     resources:
       requests:
         cpu: 50m

@@ -9,13 +9,14 @@ spec:
     kind: OCIRepository
     name: victoria-logs
   interval: 1h
+  upgrade:
+    force: true
   values:
     fullnameOverride: victoria-logs
     server:
       persistentVolume:
         enabled: true
-        storageClassName: nfs
-        size: 20Gi
+        existingClaim: victoria-logs
       retentionPeriod: 14d
       route:
         enabled: true

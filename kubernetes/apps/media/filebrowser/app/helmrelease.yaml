@@ -70,23 +70,11 @@ spec:
     persistence:
       config:
         existingClaim: filebrowser
-      movies:
+      media:
         type: nfs
         server: 192.168.1.7
-        path: /mnt/oasis/Media/Movies
+        path: /mnt/oasis/Media
         globalMounts:
-        - path: /srv/Movies
-      tv:
-        type: nfs
-        server: 192.168.1.7
-        path: /mnt/oasis/Media/TV
-        globalMounts:
-        - path: /srv/TV
-      downloads:
-        type: nfs
-        server: 192.168.1.7
-        path: /mnt/oasis/Media/Downloads
-        globalMounts:
-        - path: /srv/Downloads
+        - path: /media
       tmp:
         type: emptyDir
