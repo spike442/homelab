@@ -5,21 +5,13 @@ kind: Kustomization
 metadata:
   name: recyclarr
 spec:
-  components:
-  - ../../../../components/volsync
   dependsOn:
   - name: openebs
     namespace: storage
   - name: onepassword
     namespace: external-secrets
-  - name: volsync
-    namespace: storage
   interval: 1h
   path: ./kubernetes/apps/media/recyclarr/app
-  postBuild:
-    substitute:
-      APP: recyclarr
-      VOLSYNC_CAPACITY: 5Gi
   prune: true
   sourceRef:
     kind: GitRepository
