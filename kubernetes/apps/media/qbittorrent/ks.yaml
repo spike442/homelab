@@ -5,11 +5,21 @@ kind: Kustomization
 metadata:
   name: qbittorrent
 spec:
-  interval: 1h
-  path: ./kubernetes/apps/media/qbittorrent/app
+  components:
+  - ../../../../components/volsync
   dependsOn:
   - name: openebs
     namespace: storage
+  - name: onepassword
+    namespace: external-secrets
+  - name: volsync
+    namespace: storage
+  interval: 1h
+  path: ./kubernetes/apps/media/qbittorrent/app
+  postBuild:
+    substitute:
+      APP: qbittorrent
+      VOLSYNC_CAPACITY: 5Gi
   prune: true
   sourceRef:
     kind: GitRepository

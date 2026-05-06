@@ -126,11 +126,11 @@ spec:
     persistence:
       config:
         existingClaim: qbittorrent
-      downloads:
+      media:
         type: nfs
         server: 192.168.1.7
-        path: /mnt/oasis/Media/Downloads
+        path: /mnt/oasis/Media
         globalMounts:
-        - path: /media/Downloads
+        - path: /media
       tmp:
         type: emptyDir

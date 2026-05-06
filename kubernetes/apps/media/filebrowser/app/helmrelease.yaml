@@ -22,8 +22,11 @@ spec:
             env:
               TZ: Europe/Paris
               FB_DATABASE: /config/filebrowser.db
-              FB_ROOT: /srv
+              FB_ROOT: /data
               FB_LOG: stdout
+            envFrom:
+            - secretRef:
+                name: filebrowser-secret
             probes:
               liveness: &probes
                 enabled: true
@@ -70,23 +73,17 @@ spec:
     persistence:
       config:
         existingClaim: filebrowser
-      movies:
+      media:
         type: nfs
         server: 192.168.1.7
-        path: /mnt/oasis/Media/Movies
+        path: /mnt/oasis/Media
         globalMounts:
-        - path: /srv/Movies
-      tv:
+        - path: /data/Media
+      backups:
         type: nfs
         server: 192.168.1.7
-        path: /mnt/oasis/Media/TV
+        path: /mnt/oasis/Backups
         globalMounts:
-        - path: /srv/TV
-      downloads:
-        type: nfs
-        server: 192.168.1.7
-        path: /mnt/oasis/Media/Downloads
-        globalMounts:
-        - path: /srv/Downloads
+        - path: /data/Backups
       tmp:
         type: emptyDir
