@@ -31,7 +31,8 @@ spec:
               SERVER_COUNTRIES: Netherlands
               WIREGUARD_ADDRESSES: "10.14.0.2/16"
               FIREWALL_INPUT_PORTS: "50413,80"
-              DOT: "off"
+              DNS_SERVER: "off"
+              VPN_IPV6: "off"
               WIREGUARD_IMPLEMENTATION: userspace
             envFrom:
             - secretRef:
