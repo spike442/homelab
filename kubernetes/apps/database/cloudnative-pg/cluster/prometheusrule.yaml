@@ -4,7 +4,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: postgres-v1-alerts
-  namespace: db
+  namespace: database
 spec:
   groups:
   - name: cnp-default.rules

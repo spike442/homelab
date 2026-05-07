@@ -41,8 +41,6 @@ spec:
         maxParallel: 2
       destinationPath: s3://cloudnative-pg/
       endpointURL: http://minio.storage.svc.cluster.local:9000
-      # Note: serverName version needs to be incremented
-      # when recovering from an existing cnpg cluster
       serverName: &currentCluster postgres0-v1
       s3Credentials:
         accessKeyId:
@@ -51,12 +49,9 @@ spec:
         secretAccessKey:
           name: cloudnative-pg-secret
           key: aws-secret-access-key
-  # Note: previousCluster needs to be set to the name of the previous
-  # cluster when recovering from an existing cnpg cluster
   # bootstrap:
   #   recovery:
   #     source: &previousCluster postgres0-v1
-  # Note: externalClusters is needed when recovering from an existing cnpg cluster
   # externalClusters:
   #   - name: *previousCluster
   #     barmanObjectStore:
