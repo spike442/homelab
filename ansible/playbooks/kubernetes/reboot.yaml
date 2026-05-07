@@ -1,0 +1,40 @@
+---
+- name: Rolling reboot Kubernetes nodes
+  hosts: "{{ target | default('k3s_cluster') }}"
+  any_errors_fatal: true
+  serial: 1
+  become: true
+  gather_facts: false
+  vars:
+    kubectl_wait_timeout: 15m
+    kubeconfig: "{{ lookup('env', 'KUBECONFIG') | default(lookup('env', 'HOME') + '/.kube/config', true) }}"
+  tasks:
+    - name: Cordon node
+      ansible.builtin.command:
+        cmd: kubectl cordon {{ inventory_hostname }}
+      delegate_to: localhost
+      become: false
+      environment:
+        KUBECONFIG: "{{ kubeconfig }}"
+
+    - name: Reboot node
+      ansible.builtin.reboot:
+        msg: "Rolling reboot for {{ inventory_hostname }}"
+        reboot_timeout: 900
+        connect_timeout: 10
+        pre_reboot_delay: 5
+        post_reboot_delay: 15
+
+    - name: Wait for node Ready
+      ansible.builtin.shell: |
+        set -euo pipefail
+        timeout 900 bash -c '
+          until k3s kubectl get --raw=/readyz >/dev/null 2>&1; do
+            sleep 5
+          done
+        '
+        k3s kubectl wait node/{{ inventory_hostname }} --for=condition=Ready --timeout={{ kubectl_wait_timeout }}
+
+    - name: Uncordon node
+      ansible.builtin.command:
+        cmd: k3s kubectl uncordon {{ inventory_hostname }}

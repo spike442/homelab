@@ -52,7 +52,7 @@ tasks:
     cmds:
     - |
       if gum confirm "confirm cluster reboot ?" --negative "No"; then
-         ansible k3s_cluster -a '/usr/bin/systemctl reboot' --become
+         ansible-playbook playbooks/kubernetes/reboot.yaml
       fi
 
   poweroff:k8s:
