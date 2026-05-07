@@ -85,5 +85,11 @@ spec:
         path: /mnt/oasis/Backups
         globalMounts:
         - path: /data/Backups
+      appdata:
+        type: nfs
+        server: 192.168.1.7
+        path: /mnt/oasis/Appdata
+        globalMounts:
+        - path: /data/Appdata
       tmp:
         type: emptyDir
