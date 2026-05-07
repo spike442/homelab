@@ -9,5 +9,4 @@ components:
 
 resources:
 - ./namespace.yaml
-- ./minio/ks.yaml
 - ./spark-operator/ks.yaml

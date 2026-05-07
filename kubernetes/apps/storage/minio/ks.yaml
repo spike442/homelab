@@ -9,11 +9,11 @@ spec:
   - name: external-secrets
     namespace: external-secrets
   interval: 1h
-  path: ./kubernetes/apps/datalakehouse/minio/app
+  path: ./kubernetes/apps/storage/minio/app
   prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: datalakehouse
+  targetNamespace: storage
   wait: true

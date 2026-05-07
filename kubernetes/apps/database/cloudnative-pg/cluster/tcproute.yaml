@@ -1,0 +1,15 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/gateway.networking.k8s.io/tcproute_v1alpha2.json
+apiVersion: gateway.networking.k8s.io/v1alpha2
+kind: TCPRoute
+metadata:
+  name: postgres0
+spec:
+  parentRefs:
+  - name: envoy-internal
+    namespace: network
+    sectionName: tcp
+  rules:
+  - backendRefs:
+    - name: postgres0-rw
+      port: 5432

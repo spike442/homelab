@@ -18,9 +18,10 @@ spec:
     remediation:
       retries: -1
   values:
-    resources:
-      requests:
-        cpu: 10m
-        memory: 128Mi
-      limits:
-        memory: 256Mi
+    crds:
+      create: true
+    replicaCount: 1
+    monitoring:
+      podMonitorEnabled: true
+      grafanaDashboard:
+        create: true
