@@ -19,6 +19,7 @@ spec:
   values:
     controllers:
       qbittorrent:
+        strategy: Recreate
         containers:
           gluetun:
             image:
@@ -35,6 +36,10 @@ spec:
               DNS_SERVER: "off"
               VPN_IPV6: "off"
               WIREGUARD_IMPLEMENTATION: userspace
+            lifecycle:
+              postStart:
+                exec:
+                  command: [ "/bin/sh", "-c", "(ip rule del table 51820; ip -6 rule del table 51820) || true" ]
             envFrom:
             - secretRef:
                 name: qbittorrent-gluetun-secret
