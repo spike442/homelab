@@ -21,7 +21,7 @@ spec:
               tag: v1.10.1
             env:
               TZ: Europe/Paris
-              HOMEPAGE_ALLOWED_HOSTS: 192.168.1.212,192.168.1.212:3000,homepage.timcasa.me
+              HOMEPAGE_ALLOWED_HOSTS: 192.168.1.212,192.168.1.212:3000,homepage,homepage:80,homepage.tailb9e58c.ts.net,homepage.timcasa.me
             probes:
               liveness: &probe
                 type: HTTP
@@ -54,6 +54,16 @@ spec:
         ports:
           http:
             port: &port 3000
+      tailnet:
+        controller: *app
+        type: LoadBalancer
+        loadBalancerClass: tailscale
+        annotations:
+          tailscale.com/hostname: homepage
+        ports:
+          http:
+            port: 80
+            targetPort: *port
     route:
       app:
         hostnames:
@@ -61,6 +71,10 @@ spec:
         parentRefs:
         - name: envoy-internal
           namespace: network
+        rules:
+        - backendRefs:
+          - identifier: app
+            port: *port
     persistence:
       config-dir:
         type: emptyDir
