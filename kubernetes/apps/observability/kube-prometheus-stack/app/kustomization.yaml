@@ -8,3 +8,4 @@ resources:
 - ./ocirepository.yaml
 - ./grafanadashboard.yaml
 - ./alertmanagerconfig.yaml
+- ./prometheus-lan-service.yaml

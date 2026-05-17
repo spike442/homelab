@@ -1,0 +1,82 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app homepage
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: homepage
+  interval: 1h
+  values:
+    controllers:
+      homepage:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: ghcr.io/gethomepage/homepage
+              tag: v1.10.1
+            env:
+              TZ: Europe/Paris
+              HOMEPAGE_ALLOWED_HOSTS: 192.168.1.212,192.168.1.212:3000,homepage.timcasa.me
+            probes:
+              liveness: &probe
+                type: HTTP
+                path: /
+              readiness: *probe
+              startup: *probe
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities: { drop: [ "ALL" ] }
+            resources:
+              requests:
+                cpu: 25m
+                memory: 128Mi
+              limits:
+                memory: 512Mi
+        pod:
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
+            fsGroup: 1000
+            fsGroupChangePolicy: OnRootMismatch
+    service:
+      app:
+        controller: *app
+        type: LoadBalancer
+        annotations:
+          lbipam.cilium.io/ips: 192.168.1.212
+        externalTrafficPolicy: Cluster
+        ports:
+          http:
+            port: &port 3000
+    route:
+      app:
+        hostnames:
+        - homepage.timcasa.me
+        parentRefs:
+        - name: envoy-internal
+          namespace: network
+    persistence:
+      config-dir:
+        type: emptyDir
+        globalMounts:
+        - path: /app/config
+      config:
+        type: configMap
+        name: homepage-configmap
+        globalMounts:
+        - path: /app/config/bookmarks.yaml
+          subPath: bookmarks.yaml
+        - path: /app/config/services.yaml
+          subPath: services.yaml
+        - path: /app/config/settings.yaml
+          subPath: settings.yaml
+        - path: /app/config/widgets.yaml
+          subPath: widgets.yaml
+      tmp:
+        type: emptyDir

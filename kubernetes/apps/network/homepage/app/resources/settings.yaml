@@ -1,0 +1,32 @@
+---
+background:
+  image: "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&w=2400&q=80"
+  blur: sm
+  saturate: 80
+  brightness: 45
+  opacity: 65
+title: TimCasa
+language: en
+theme: dark
+color: slate
+headerStyle: boxed
+statusStyle: dot
+hideVersion: true
+useEqualHeights: true
+quicklaunch:
+  searchDescriptions: true
+  hideInternetSearch: true
+mobileButtonPosition: bottom-right
+layout:
+  Media:
+    style: row
+    columns: 2
+  Downloads:
+    style: row
+    columns: 2
+  Observability:
+    style: row
+    columns: 2
+  Infrastructure:
+    style: row
+    columns: 2

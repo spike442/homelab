@@ -59,6 +59,10 @@ spec:
             fsGroupChangePolicy: OnRootMismatch
     service:
       app:
+        type: LoadBalancer
+        annotations:
+          lbipam.cilium.io/ips: 192.168.1.219
+        externalTrafficPolicy: Cluster
         controller: filebrowser
         ports:
           http:

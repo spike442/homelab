@@ -1,0 +1,14 @@
+---
+- datetime:
+    text_size: xl
+    format:
+      dateStyle: short
+      timeStyle: short
+      hour12: false
+- openmeteo:
+    label: Home
+    latitude: 48.8566
+    longitude: 2.3522
+    timezone: Europe/Paris
+    units: metric
+    cache: 5

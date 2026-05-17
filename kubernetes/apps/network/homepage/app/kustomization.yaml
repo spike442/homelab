@@ -1,0 +1,16 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- ./helmrelease.yaml
+- ./ocirepository.yaml
+configMapGenerator:
+- name: homepage-configmap
+  files:
+  - bookmarks.yaml=./resources/bookmarks.yaml
+  - services.yaml=./resources/services.yaml
+  - settings.yaml=./resources/settings.yaml
+  - widgets.yaml=./resources/widgets.yaml
+generatorOptions:
+  disableNameSuffixHash: true

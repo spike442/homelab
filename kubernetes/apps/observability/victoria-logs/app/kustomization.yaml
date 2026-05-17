@@ -8,3 +8,4 @@ resources:
 - ./ocirepository.yaml
 - ./persistentvolume.yaml
 - ./persistentvolumeclaim.yaml
+- ./lan-service.yaml
