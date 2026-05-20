@@ -51,10 +51,6 @@
         href: http://192.168.1.204
         description: Logs
 - Infrastructure:
-    - Tailscale:
-        icon: tailscale.png
-        href: https://login.tailscale.com/admin/machines
-        description: Tailnet devices and subnet routes
     - Envoy Gateway:
         icon: mdi-router-network
         href: http://192.168.1.200
