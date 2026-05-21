@@ -74,8 +74,6 @@ spec:
         type: configMap
         name: homepage-configmap
         globalMounts:
-        - path: /app/config/bookmarks.yaml
-          subPath: bookmarks.yaml
         - path: /app/config/services.yaml
           subPath: services.yaml
         - path: /app/config/settings.yaml

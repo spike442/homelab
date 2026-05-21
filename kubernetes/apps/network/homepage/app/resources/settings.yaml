@@ -1,26 +1,35 @@
 ---
 title: TimCasa
+description: Homelab command deck
 language: en
 theme: dark
 color: slate
-headerStyle: boxed
+background:
+  image: https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=2560&q=85
+  blur: xs
+  saturate: 100
+  brightness: 50
+  opacity: 55
+cardBlur: xs
+headerStyle: boxedWidgets
 statusStyle: dot
 hideVersion: true
 useEqualHeights: true
+fullWidth: true
+maxGroupColumns: 5
+target: _self
 quicklaunch:
   searchDescriptions: true
   hideInternetSearch: true
+  showSearchSuggestions: true
 mobileButtonPosition: bottom-right
 layout:
   Media:
     style: row
-    columns: 2
+    columns: 3
   Downloads:
     style: row
-    columns: 2
+    columns: 3
   Observability:
-    style: row
-    columns: 2
-  Infrastructure:
     style: row
     columns: 2

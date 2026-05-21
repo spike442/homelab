@@ -13,5 +13,3 @@ resources:
 - ./coredns/ks.yaml
 - ./reloader/ks.yaml
 - ./metrics-server/ks.yaml
-- ./node-feature-discovery/ks.yaml
-- ./intel-gpu-resource-driver/ks.yaml
