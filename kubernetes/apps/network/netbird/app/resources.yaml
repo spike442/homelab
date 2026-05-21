@@ -1,0 +1,15 @@
+---
+apiVersion: netbird.io/v1alpha1
+kind: Group
+metadata:
+  name: homelab
+spec:
+  name: homelab
+---
+apiVersion: netbird.io/v1alpha1
+kind: NetworkRouter
+metadata:
+  name: homelab
+spec:
+  dnsZoneRef:
+    name: home.internal
