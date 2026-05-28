@@ -26,7 +26,7 @@ Git repository
 | `nexus` | `192.168.1.9` | K3s server / control-plane | `16 CPU`, `32 GiB RAM`, `amd64` | Debian 13 | Main cluster node and workload host |
 | `atlas` | `192.168.1.12` | K3s server / control-plane | `8 CPU`, `16 GiB RAM`, `amd64` | Debian 13 | Secondary control-plane and workload host |
 | `rift` | `192.168.1.11` | External Pi-hole host | TBD | Debian 13 | DNS host managed by Ansible, outside K3s |
-| `truenas` | `192.168.1.7` | NAS / NFS storage | TBD | TrueNAS | Shared media, downloads, backups, and bulk storage |
+| `truenas` | `192.168.1.17` | NAS / NFS storage | TBD | TrueNAS | Shared media, downloads, backups, and bulk storage |
 
 Ansible manages the machine layer, then Flux manages Kubernetes state from this repository.
 
