@@ -1,7 +1,9 @@
 ---
 - datetime:
     text_size: xl
+    locale: en-GB
     format:
-      dateStyle: short
-      timeStyle: short
+      dateStyle: medium
+      timeStyle: medium
+      timeZone: Europe/Paris
       hour12: false

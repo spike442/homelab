@@ -24,6 +24,9 @@ quicklaunch:
   showSearchSuggestions: true
 mobileButtonPosition: bottom-right
 layout:
+  Home Internet:
+    style: row
+    columns: 1
   Media:
     style: row
     columns: 3
