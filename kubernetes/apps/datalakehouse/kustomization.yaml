@@ -9,5 +9,4 @@ components:
 
 resources:
 - ./namespace.yaml
-- ./airflow/ks.yaml
 - ./spark-operator/ks.yaml
