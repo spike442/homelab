@@ -10,6 +10,8 @@ services:
     networks:
       - dns
     environment:
+      # Accept LAN and subnet-router queries through the Docker bridge.
+      FTLCONF_dns_listeningMode: "ALL"
       PIHOLE_DNS_: "1.1.1.1;1.0.0.1;8.8.8.8;8.8.4.4"
     volumes:
       - "./pihole/config:/etc/dnsmasq.d"

@@ -68,6 +68,10 @@ spec:
         trustCRDsExist: true
     rollOutCiliumPods: true
     routingMode: native
+    # Keep pod traffic on the packet path required by Tailscale subnet routing.
+    socketLB:
+      enabled: true
+      hostNamespaceOnly: true
     securityContext:
       capabilities:
         ciliumAgent:
