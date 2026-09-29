@@ -1,5 +1,8 @@
 ---
 - Media:
+        - Jellyfin:
+                  icon: jellyfin.png
+                  href: http://192.168.1.220:8096
         - Sonarr:
                   icon: sonarr.png
                   href: http://192.168.1.213
