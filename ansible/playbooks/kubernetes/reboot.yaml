@@ -17,6 +17,14 @@
       environment:
         KUBECONFIG: "{{ kubeconfig }}"
 
+    - name: Drain node
+      ansible.builtin.command:
+        cmd: kubectl drain {{ inventory_hostname }} --ignore-daemonsets --delete-emptydir-data --timeout={{ kubectl_wait_timeout }}
+      delegate_to: localhost
+      become: false
+      environment:
+        KUBECONFIG: "{{ kubeconfig }}"
+
     - name: Reboot node
       ansible.builtin.reboot:
         msg: "Rolling reboot for {{ inventory_hostname }}"
@@ -37,4 +45,8 @@
 
     - name: Uncordon node
       ansible.builtin.command:
-        cmd: k3s kubectl uncordon {{ inventory_hostname }}
+        cmd: kubectl uncordon {{ inventory_hostname }}
+      delegate_to: localhost
+      become: false
+      environment:
+        KUBECONFIG: "{{ kubeconfig }}"

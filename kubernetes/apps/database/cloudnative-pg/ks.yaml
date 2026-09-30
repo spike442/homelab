@@ -8,7 +8,7 @@ spec:
   dependsOn:
   - name: openebs
     namespace: storage
-  - name: minio
+  - name: rustfs
     namespace: storage
   interval: 1h
   path: ./kubernetes/apps/database/cloudnative-pg/app

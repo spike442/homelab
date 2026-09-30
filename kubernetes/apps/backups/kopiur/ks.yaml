@@ -1,19 +1,18 @@
----
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: minio
+  namespace: flux-system
+  name: kopiur
 spec:
   dependsOn:
-  - name: external-secrets
+  - name: onepassword
     namespace: external-secrets
   interval: 1h
-  path: ./kubernetes/apps/storage/minio/app
+  path: ./kubernetes/apps/backups/kopiur/app
   prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: storage
+  targetNamespace: backups
   wait: true
