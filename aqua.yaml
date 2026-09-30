@@ -4,11 +4,11 @@ registries:
   ref: v4.323.0
 
 packages:
-- name: kubernetes/kubectl@v1.30.3
+- name: kubernetes/kubectl@v1.37.0
 - name: kubernetes-sigs/kustomize@kustomize/v5.4.3
 - name: fluxcd/flux2@v2.4.0
-- name: helm/helm@v3.16.2
-- name: helmfile/helmfile@v0.169.1
+- name: helm/helm@v3.22.0
+- name: helmfile/helmfile@v1.8.1
 - name: mikefarah/yq@v4.44.3
 - name: astral-sh/uv@0.5.5
 - name: pre-commit/pre-commit@v3.7.1

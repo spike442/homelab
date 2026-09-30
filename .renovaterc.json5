@@ -16,8 +16,15 @@
     'github>spike442/homelab//.renovate/packageGroups.json5',
   ],
   rebaseWhen: 'behind-base-branch',
+  minimumReleaseAge: '3 days',
+  lockFileMaintenance: {
+    enabled: true,
+    schedule: ['before 3am on the first day of the month'],
+    commitMessageExtra: '({{manager}})',
+    additionalBranchPrefix: '{{manager}}-',
+  },
   ignorePaths: [
-    '**/resources/**',
+    '**/.history/**',
   ],
   flux: {
     managerFilePatterns: [

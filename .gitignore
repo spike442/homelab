@@ -16,3 +16,6 @@ kubeconfig
 .ansible/
 
 .claude/
+.codex/
+.idea/
+.agents/

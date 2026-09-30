@@ -55,7 +55,7 @@ tasks:
   crds:
     desc: Apply helmfile crds
     cmds:
-    - helmfile -f "{{.BOOTSTRAP_DIR}}/helmfile.d/00-crds.yaml" template -q | kubectl apply --server-side --field-manager bootstrap --force-conflicts -f -;
+    - helmfile -f "{{.BOOTSTRAP_DIR}}/helmfile.d/00-crds.yaml" template -q | yq ea 'select(.kind == "CustomResourceDefinition")' - | kubectl apply --server-side --field-manager bootstrap --force-conflicts -f -;
 
   apps:
     desc: Apply helmfile apps

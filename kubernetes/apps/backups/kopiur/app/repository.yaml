@@ -1,0 +1,28 @@
+apiVersion: kopiur.home-operations.com/v1alpha1
+kind: ClusterRepository
+metadata:
+  name: nas-primary
+spec:
+  backend:
+    filesystem:
+      path: /repo
+      volume:
+        nfs:
+          server: 192.168.1.17
+          path: /mnt/oasis/Backups/kopia
+  allowedNamespaces:
+    list:
+    - backups
+    - media
+  encryption:
+    passwordSecretRef:
+      name: kopiur-repository
+      namespace: backups
+      key: KOPIA_PASSWORD
+  credentialProjection:
+    allowed: true
+  create:
+    enabled: true
+  bootstrap:
+    failurePolicy:
+      activeDeadlineSeconds: 600

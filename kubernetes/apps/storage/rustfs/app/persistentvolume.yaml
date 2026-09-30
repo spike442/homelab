@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: minio-appdata-pv
+  name: rustfs-appdata-pv
 spec:
   capacity:
     storage: 20Gi
@@ -17,4 +17,4 @@ spec:
     - noatime
   nfs:
     server: 192.168.1.17
-    path: /mnt/oasis/Appdata/minio
+    path: /mnt/oasis/Appdata/rustfs
