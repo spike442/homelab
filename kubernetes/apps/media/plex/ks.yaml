@@ -6,6 +6,8 @@ metadata:
   name: plex
 spec:
   dependsOn:
+  - name: kopiur
+    namespace: flux-system
   - name: openebs
     namespace: storage
   - name: onepassword
@@ -18,4 +20,7 @@ spec:
     name: flux-system
     namespace: flux-system
   targetNamespace: media
+  postBuild:
+    substitute:
+      APP: plex
   wait: false
