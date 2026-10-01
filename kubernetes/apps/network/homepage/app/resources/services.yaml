@@ -7,16 +7,14 @@
                     type: customapi
                     url: https://ipwho.is/?fields=success,ip,city,country
                     refreshInterval: 900000
+                    display: list
                     mappings:
                       - field: ip
                         label: Public IP
                         format: text
-                      - field: city
-                        label: City
-                        format: text
-                      - field: country
-                        label: Country
-                        format: text
+                        additionalField:
+                          field: city
+                          format: text
 - Media:
         - Plex:
                   icon: plex.png
