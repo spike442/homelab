@@ -18,15 +18,42 @@
                         label: Country
                         format: text
 - Media:
+        - Plex:
+                  icon: plex.png
+                  href: https://plex.timcasa.me
+                  siteMonitor: https://plex.timcasa.me
         - Sonarr:
                   icon: sonarr.png
-                  href: http://192.168.1.213
+                  href: https://sonarr.timcasa.me
+                  siteMonitor: https://sonarr.timcasa.me
         - Radarr:
                   icon: radarr.png
-                  href: http://192.168.1.214
+                  href: https://radarr.timcasa.me
+                  siteMonitor: https://radarr.timcasa.me
+        - Prowlarr:
+                  icon: prowlarr.png
+                  href: https://prowlarr.timcasa.me
+                  siteMonitor: https://prowlarr.timcasa.me
+        - Bazarr:
+                  icon: bazarr.png
+                  href: https://bazarr.timcasa.me
+                  siteMonitor: https://bazarr.timcasa.me
+        - qBittorrent:
+                  icon: qbittorrent.png
+                  href: https://qbittorrent.timcasa.me
+                  siteMonitor: https://qbittorrent.timcasa.me
+        - SABnzbd:
+                  icon: sabnzbd.png
+                  href: https://sabnzbd.timcasa.me
+                  siteMonitor: https://sabnzbd.timcasa.me
         - Filebrowser:
                   icon: filebrowser.png
                   href: http://192.168.1.219
+                  siteMonitor: http://192.168.1.219
+        - FlareSolverr:
+                  icon: flaresolverr.png
+                  href: https://flaresolverr.timcasa.me
+                  siteMonitor: https://flaresolverr.timcasa.me
 - Downloads:
         - YouTubeDL:
                   icon: youtube-dl.png
