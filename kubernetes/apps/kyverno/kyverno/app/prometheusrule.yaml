@@ -1,0 +1,26 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/monitoring.coreos.com/prometheusrule_v1.json
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: kyverno-controller-rules
+spec:
+  groups:
+    - name: kyverno.controller.rules
+      rules:
+        - alert: KyvernoCleanupControllerUnavailable
+          expr: |-
+            kube_deployment_status_replicas_available{
+              namespace="kyverno",
+              deployment="kyverno-cleanup-controller"
+            } < 1
+            or absent(kube_deployment_status_replicas_available{
+              namespace="kyverno",
+              deployment="kyverno-cleanup-controller"
+            })
+          for: 10m
+          annotations:
+            summary: >-
+              Kyverno cleanup controller is unavailable
+          labels:
+            severity: critical

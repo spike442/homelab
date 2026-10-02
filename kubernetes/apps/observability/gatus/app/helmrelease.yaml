@@ -39,9 +39,16 @@ spec:
               GATUS_CONFIG_PATH: /config
               GATUS_WEB_PORT: &port 80
               TZ: Europe/Paris
-            envFrom:
-            - secretRef:
-                name: "{{ .Release.Name }}-secret"
+              GATUS_PUSHOVER_TOKEN:
+                valueFrom:
+                  secretKeyRef:
+                    name: "{{ .Release.Name }}-secret"
+                    key: GATUS_PUSHOVER_TOKEN
+              GATUS_PUSHOVER_USER_KEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: "{{ .Release.Name }}-secret"
+                    key: GATUS_PUSHOVER_USER_KEY
             probes:
               liveness: &probes
                 enabled: true

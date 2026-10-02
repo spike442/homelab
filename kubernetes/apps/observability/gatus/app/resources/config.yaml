@@ -18,7 +18,16 @@ alerting:
     title: Gatus
     user-key: ${GATUS_PUSHOVER_USER_KEY}
 
-endpoints: []
+endpoints:
+  - name: TrueNAS
+    group: external
+    url: http://192.168.1.17
+    interval: 1m
+    conditions:
+      - "[STATUS] == 200"
+    alerts:
+      - type: pushover
+        description: TrueNAS is down
 
 metrics: true
 

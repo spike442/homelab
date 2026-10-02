@@ -15,4 +15,6 @@ spec:
     name: flux-system
     namespace: flux-system
   targetNamespace: backups
-  wait: true
+  # Repository bootstrap can run for hours while the NAS catalog is scanned.
+  # Do not block the Flux Kustomization health check on that one-shot job.
+  wait: false

@@ -7,3 +7,12 @@
       timeStyle: medium
       timeZone: Europe/Paris
       hour12: false
+- kubernetes:
+    cluster:
+      show: true
+      cpu: true
+      memory: true
+    nodes:
+      show: true
+      cpu: true
+      memory: true

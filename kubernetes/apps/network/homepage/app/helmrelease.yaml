@@ -22,6 +22,9 @@ spec:
             env:
               TZ: Europe/Paris
               HOMEPAGE_ALLOWED_HOSTS: 192.168.1.212,192.168.1.212:3000,homepage.timcasa.me
+            envFrom:
+              - secretRef:
+                  name: homepage-widgets
             probes:
               liveness: &probe
                 type: HTTP
@@ -44,6 +47,8 @@ spec:
             runAsGroup: 1000
             fsGroup: 1000
             fsGroupChangePolicy: OnRootMismatch
+    defaultPodOptions:
+      automountServiceAccountToken: true
     service:
       app:
         controller: *app
@@ -76,6 +81,8 @@ spec:
         globalMounts:
         - path: /app/config/bookmarks.yaml
           subPath: bookmarks.yaml
+        - path: /app/config/kubernetes.yaml
+          subPath: kubernetes.yaml
         - path: /app/config/services.yaml
           subPath: services.yaml
         - path: /app/config/settings.yaml

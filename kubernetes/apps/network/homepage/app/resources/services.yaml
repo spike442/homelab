@@ -2,7 +2,7 @@
 - Home Internet:
         - Home Connection:
                   icon: mdi-web
-                  description: Public IP and approximate location
+                  description: IP · City
                   widget:
                     type: customapi
                     url: https://ipwho.is/?fields=success,ip,city,country
@@ -10,7 +10,7 @@
                     display: list
                     mappings:
                       - field: ip
-                        label: Public IP
+                        label: IP · Location
                         format: text
                         additionalField:
                           field: city
@@ -20,49 +20,186 @@
                   icon: plex.png
                   href: https://plex.timcasa.me
                   siteMonitor: https://plex.timcasa.me
+                  widget:
+                    type: plex
+                    url: http://plex.media.svc.cluster.local:32400
+                    key: "{{HOMEPAGE_VAR_PLEX_TOKEN}}"
+                    fields: [streams, movies, tv, albums]
         - Sonarr:
                   icon: sonarr.png
                   href: https://sonarr.timcasa.me
                   siteMonitor: https://sonarr.timcasa.me
+                  widget:
+                    type: sonarr
+                    url: http://sonarr.media.svc.cluster.local
+                    key: "{{HOMEPAGE_VAR_SONARR_API_KEY}}"
+                    fields: [wanted, queued, series]
         - Radarr:
                   icon: radarr.png
                   href: https://radarr.timcasa.me
                   siteMonitor: https://radarr.timcasa.me
+                  widget:
+                    type: radarr
+                    url: http://radarr.media.svc.cluster.local
+                    key: "{{HOMEPAGE_VAR_RADARR_API_KEY}}"
+                    fields: [wanted, missing, queued, movies]
         - Prowlarr:
                   icon: prowlarr.png
                   href: https://prowlarr.timcasa.me
                   siteMonitor: https://prowlarr.timcasa.me
-        - Bazarr:
-                  icon: bazarr.png
-                  href: https://bazarr.timcasa.me
-                  siteMonitor: https://bazarr.timcasa.me
+                  widget:
+                    type: prowlarr
+                    url: http://prowlarr.media.svc.cluster.local
+                    key: "{{HOMEPAGE_VAR_PROWLARR_API_KEY}}"
+                    fields: [numberOfGrabs, numberOfQueries, numberOfFailGrabs, numberOfFailQueries]
+- Downloads:
         - qBittorrent:
                   icon: qbittorrent.png
                   href: https://qbittorrent.timcasa.me
                   siteMonitor: https://qbittorrent.timcasa.me
+                  widget:
+                    type: qbittorrent
+                    url: http://qbittorrent.media.svc.cluster.local
+                    key: "{{HOMEPAGE_VAR_QBITTORRENT_API_KEY}}"
+                    fields: [leech, download, seed, upload]
+        - GlueVPN:
+                  icon: gluetun.png
+                  href: https://qbittorrent.timcasa.me
+                  widget:
+                    type: gluetun
+                    url: http://qbittorrent-gluetun.media.svc.cluster.local:8000
+                    version: 2
+                    fields: [public_ip, region, country]
         - SABnzbd:
                   icon: sabnzbd.png
                   href: https://sabnzbd.timcasa.me
                   siteMonitor: https://sabnzbd.timcasa.me
+                  widget:
+                    type: sabnzbd
+                    url: http://sabnzbd.media.svc.cluster.local
+                    key: "{{HOMEPAGE_VAR_SABNZBD_API_KEY}}"
+                    fields: [rate, queue, timeleft]
+        - YouTubeDL:
+                  icon: youtube-dl.png
+                  href: http://192.168.1.207:17442
+                  siteMonitor: http://192.168.1.207:17442
+- Infrastructure:
+        - Pi-hole:
+                  icon: pi-hole.png
+                  href: http://192.168.1.11/admin
+                  ping: 192.168.1.11
+                  widget:
+                    type: pihole
+                    url: http://192.168.1.11
+                    version: 6
+                    key: "{{HOMEPAGE_VAR_PIHOLE_PASSWORD}}"
+                    fields: [queries, blocked, gravity]
+        - Grafana:
+                  icon: grafana.png
+                  href: http://192.168.1.201
+                  siteMonitor: http://192.168.1.201
+                  widget:
+                    type: prometheusmetric
+                    url: http://kube-prometheus-stack-prometheus.observability.svc.cluster.local:9090
+                    refreshInterval: 30000
+                    metrics:
+                      - label: Dashboards
+                        query: grafana_stat_totals_dashboard
+                      - label: Datasources
+                        query: grafana_stat_totals_datasource
+                      - label: Total Alerts
+                        query: grafana_stat_totals_alert_rules
+                      - label: Alerts Triggered
+                        query: sum(grafana_alerting_alerts{state=~"alerting|nodata|error"})
+        - Prometheus:
+                  icon: prometheus.png
+                  href: http://192.168.1.203
+                  siteMonitor: http://prometheus-lan.observability.svc.cluster.local
+                  widget:
+                    type: prometheus
+                    url: http://kube-prometheus-stack-prometheus.observability.svc.cluster.local:9090
+                    fields: [targets_up, targets_down, targets_total]
+        - Gatus:
+                  icon: gatus.png
+                  href: http://192.168.1.202
+                  siteMonitor: http://192.168.1.202
+                  widget:
+                    type: gatus
+                    url: http://192.168.1.202
+                    fields:
+                      - up
+                      - down
+                      - uptime
+        - VictoriaLogs:
+                  icon: victoriametrics.png
+                  href: http://192.168.1.204
+                  siteMonitor: http://192.168.1.204
+        - Tailscale:
+                  icon: tailscale.png
+                  href: https://login.tailscale.com/admin/machines
+                  widget:
+                    type: tailscale
+                    key: "{{HOMEPAGE_VAR_TAILSCALE_API_KEY}}"
+                    deviceid: "{{HOMEPAGE_VAR_TAILSCALE_DEVICE_ID}}"
+        - Kyverno:
+                  icon: mdi-shield-check
+                  widget:
+                    type: prometheusmetric
+                    url: http://kube-prometheus-stack-prometheus.observability.svc.cluster.local:9090
+                    refreshInterval: 30000
+                    metrics:
+                      - label: Controllers Available
+                        query: sum(kube_deployment_status_replicas_available{namespace="kyverno"})
+                      - label: Cleanup Controller
+                        query: kube_deployment_status_replicas_available{namespace="kyverno",deployment="kyverno-cleanup-controller"}
+- Storage:
+        - TrueNAS:
+                  icon: truenas.png
+                  href: http://192.168.1.17
+                  siteMonitor: http://192.168.1.17
+                  widget:
+                    type: truenas
+                    url: http://192.168.1.17
+                    version: 2
+                    key: "{{HOMEPAGE_VAR_TRUENAS_API_KEY}}"
+                    enablePools: true
+                    nasType: scale
+                    fields: [alerts, load, uptime]
         - Filebrowser:
                   icon: filebrowser.png
                   href: http://192.168.1.219
                   siteMonitor: http://192.168.1.219
-        - FlareSolverr:
-                  icon: flaresolverr.png
-                  href: https://flaresolverr.timcasa.me
-                  siteMonitor: https://flaresolverr.timcasa.me
-- Downloads:
-        - YouTubeDL:
-                  icon: youtube-dl.png
-                  href: http://192.168.1.207:17442
-- Observability:
-        - Grafana:
-                  icon: grafana.png
-                  href: http://192.168.1.201
-        - Gatus:
-                  icon: gatus.png
-                  href: http://192.168.1.202
-        - VictoriaLogs:
-                  icon: victoriametrics.png
-                  href: http://192.168.1.204
+                  widget:
+                    type: filebrowser
+                    url: http://filebrowser.media.svc.cluster.local
+                    username: "{{HOMEPAGE_VAR_FILEBROWSER_USERNAME}}"
+                    password: "{{HOMEPAGE_VAR_FILEBROWSER_PASSWORD}}"
+                    fields: [available, used, total]
+        - Kopiur:
+                  icon: kopia.png
+                  href: https://kopia.timcasa.me
+                  widget:
+                    type: prometheusmetric
+                    url: http://kube-prometheus-stack-prometheus.observability.svc.cluster.local:9090
+                    refreshInterval: 30000
+                    metrics:
+                      - label: Last Successful Backup
+                        query: max(kopiur_snapshot_last_success_timestamp_seconds)
+                        format:
+                          type: date
+                          scale: 1000
+                          options:
+                            dateStyle: short
+                            timeStyle: short
+                      - label: Failed Snapshots
+                        query: sum(kopiur_snapshot_consecutive_failures)
+                        format:
+                          type: number
+                      - label: Live Snapshots
+                        query: sum(kopiur_snapshots_live)
+                        format:
+                          type: number
+                      - label: Repository Size
+                        query: kopiur_repo_size_bytes{name="nas-primary",namespace="backups"}
+                        format:
+                          type: bytes

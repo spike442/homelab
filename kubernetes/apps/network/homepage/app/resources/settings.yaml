@@ -26,13 +26,16 @@ mobileButtonPosition: bottom-right
 layout:
   Home Internet:
     style: row
-    columns: 1
+    columns: 3
   Media:
     style: row
     columns: 3
   Downloads:
     style: row
     columns: 3
-  Observability:
+  Infrastructure:
     style: row
     columns: 2
+  Storage:
+    style: row
+    columns: 3

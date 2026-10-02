@@ -19,6 +19,8 @@ spec:
             image:
               repository: filebrowser/filebrowser
               tag: v2.63.23@sha256:a469ea076d4a1b4b1d86a41d130f2f536cd9da996a2b1fb39c0d7635f9d89b9a
+            args:
+            - --root=/data
             env:
               TZ: Europe/Paris
               FB_DATABASE: /config/filebrowser.db
@@ -69,6 +71,11 @@ spec:
             port: *port
     route:
       app:
+        annotations:
+          gatus.home-operations.com/endpoint: |-
+            alerts:
+            - type: pushover
+              description: health-check failed
         hostnames:
         - filebrowser.timcasa.me
         parentRefs:
@@ -77,23 +84,11 @@ spec:
     persistence:
       config:
         existingClaim: filebrowser
-      media:
+      truenas:
         type: nfs
         server: 192.168.1.17
-        path: /mnt/oasis/Media
+        path: /mnt/oasis
         globalMounts:
-        - path: /data/Media
-      backups:
-        type: nfs
-        server: 192.168.1.17
-        path: /mnt/oasis/Backups
-        globalMounts:
-        - path: /data/Backups
-      appdata:
-        type: nfs
-        server: 192.168.1.17
-        path: /mnt/oasis/Appdata
-        globalMounts:
-        - path: /data/Appdata
+        - path: /data
       tmp:
         type: emptyDir

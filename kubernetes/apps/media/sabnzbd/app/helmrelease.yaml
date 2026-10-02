@@ -75,6 +75,11 @@ spec:
             port: *port
     route:
       app:
+        annotations:
+          gatus.home-operations.com/endpoint: |-
+            alerts:
+            - type: pushover
+              description: health-check failed
         hostnames:
         - "{{ .Release.Name }}.timcasa.me"
         parentRefs:

@@ -21,8 +21,19 @@ spec:
       key: KOPIA_PASSWORD
   credentialProjection:
     allowed: true
+  server:
+    readOnly: true
+    namespace: backups
+    auth:
+      secretRef:
+        name: kopiur-repository
+        usernameKey: KOPIA_USERNAME
+        passwordKey: KOPIA_SERVER_PASSWORD
+    service:
+      type: ClusterIP
+      port: 51515
   create:
     enabled: true
   bootstrap:
     failurePolicy:
-      activeDeadlineSeconds: 600
+      activeDeadlineSeconds: 7200

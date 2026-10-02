@@ -1,0 +1,97 @@
+apiVersion: policies.kyverno.io/v1
+kind: DeletingPolicy
+metadata:
+  name: cleanup-finished-jobs
+spec:
+  schedule: "30 3 * * *"
+  deletionPropagationPolicy: Background
+  matchConstraints:
+    resourceRules:
+    - apiGroups:
+      - batch
+      apiVersions:
+      - v1
+      operations:
+      - '*'
+      resources:
+      - jobs
+      scope: Namespaced
+  conditions:
+  - name: finished
+    expression: "object.status.conditions.exists(c, c.type == 'Complete' && c.status == 'True') || object.status.conditions.exists(c, c.type == 'Failed' && c.status == 'True')"
+  - name: older-than-seven-days
+    expression: "time.now() - timestamp(object.metadata.creationTimestamp) > duration('168h')"
+---
+apiVersion: policies.kyverno.io/v1
+kind: DeletingPolicy
+metadata:
+  name: cleanup-released-persistent-volumes
+spec:
+  schedule: "0 4 * * *"
+  deletionPropagationPolicy: Background
+  matchConstraints:
+    resourceRules:
+    - apiGroups:
+      - ""
+      apiVersions:
+      - v1
+      operations:
+      - '*'
+      resources:
+      - persistentvolumes
+      scope: Cluster
+  conditions:
+  - name: released
+    expression: "object.status.phase == 'Released'"
+  - name: older-than-thirty-days
+    expression: "time.now() - timestamp(object.metadata.creationTimestamp) > duration('720h')"
+---
+apiVersion: policies.kyverno.io/v1
+kind: DeletingPolicy
+metadata:
+  name: cleanup-explicitly-labeled-namespaced-resources
+spec:
+  schedule: "0 4 * * *"
+  deletionPropagationPolicy: Background
+  matchConstraints:
+    resourceRules:
+    - apiGroups:
+      - ""
+      apiVersions:
+      - v1
+      operations:
+      - '*'
+      resources:
+      - persistentvolumeclaims
+      - secrets
+      - configmaps
+      scope: Namespaced
+  conditions:
+  - name: explicitly-approved
+    expression: "has(object.metadata.labels) && object.metadata.labels['cleanup.homelab.io/enabled'] == 'true'"
+  - name: older-than-thirty-days
+    expression: "time.now() - timestamp(object.metadata.creationTimestamp) > duration('720h')"
+---
+apiVersion: policies.kyverno.io/v1
+kind: DeletingPolicy
+metadata:
+  name: cleanup-failed-kopiur-snapshots
+spec:
+  schedule: "0 4 * * *"
+  deletionPropagationPolicy: Background
+  matchConstraints:
+    resourceRules:
+    - apiGroups:
+      - kopiur.home-operations.com
+      apiVersions:
+      - v1alpha1
+      operations:
+      - '*'
+      resources:
+      - snapshots
+      scope: Namespaced
+  conditions:
+  - name: failed
+    expression: "object.status.phase == 'Failed'"
+  - name: older-than-thirty-days
+    expression: "time.now() - timestamp(object.metadata.creationTimestamp) > duration('720h')"

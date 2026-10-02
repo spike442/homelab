@@ -32,10 +32,11 @@ spec:
               SERVER_COUNTRIES: Netherlands
               WIREGUARD_ADDRESSES: "10.14.0.2/16"
               WIREGUARD_ALLOWED_IPS: "0.0.0.0/0"
-              FIREWALL_INPUT_PORTS: "50413,80"
+              FIREWALL_INPUT_PORTS: "50413,80,8000"
               DNS_SERVER: "off"
               VPN_IPV6: "off"
               WIREGUARD_IMPLEMENTATION: userspace
+              HTTP_CONTROL_SERVER_AUTH_DEFAULT_ROLE: '{"auth":"none"}'
             lifecycle:
               postStart:
                 exec:
@@ -122,8 +123,19 @@ spec:
         ports:
           http:
             port: *httpPort
+      gluetun:
+        controller: *app
+        type: ClusterIP
+        ports:
+          http:
+            port: 8000
     route:
       app:
+        annotations:
+          gatus.home-operations.com/endpoint: |-
+            alerts:
+            - type: pushover
+              description: health-check failed
         hostnames:
         - "{{ .Release.Name }}.timcasa.me"
         - torrent.timcasa.me

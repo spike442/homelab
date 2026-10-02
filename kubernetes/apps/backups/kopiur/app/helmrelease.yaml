@@ -11,6 +11,20 @@ spec:
     features:
       credentialProjection:
         enabled: true
+      kopiaUi:
+        enabled: true
+    monitoring:
+      serviceMonitor:
+        enabled: true
+      prometheusRule:
+        enabled: true
+      dashboards:
+        enabled: true
+        namespace: observability
+        grafanaOperator:
+          enabled: true
+          matchLabels:
+            grafana.internal/instance: grafana
     installScope: cluster
     podSecurityContext:
       runAsUser: 1000

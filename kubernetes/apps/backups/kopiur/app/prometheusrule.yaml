@@ -1,0 +1,21 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/monitoring.coreos.com/prometheusrule_v1.json
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: kopiur-job-rules
+spec:
+  groups:
+    - name: kopiur.jobs.rules
+      rules:
+        - alert: KopiurJobFailed
+          expr: |-
+            kube_job_status_failed{namespace="backups"} > 0
+            and on (namespace, job_name)
+            (time() - kube_job_status_start_time{namespace="backups"} < 86400)
+          for: 10m
+          annotations:
+            summary: >-
+              Kopiur job {{ $labels.job_name }} has failed
+          labels:
+            severity: critical
