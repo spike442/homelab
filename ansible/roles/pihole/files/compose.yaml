@@ -6,16 +6,15 @@ services:
     ports:
       - "53:53/tcp"
       - "53:53/udp"
-      - "80:80/tcp"
+      - "8080:80/tcp"
     networks:
       - dns
     environment:
-      # Accept LAN and subnet-router queries through the Docker bridge.
       FTLCONF_dns_listeningMode: "ALL"
       PIHOLE_DNS_: "1.1.1.1;1.0.0.1;8.8.8.8;8.8.4.4"
     volumes:
-      - "./pihole/config:/etc/dnsmasq.d"
-      - "./pihole/etc-pihole:/etc/pihole"
+      - "/mnt/oasis/Appdata/pihole/dnsmasq.d:/etc/dnsmasq.d"
+      - "/mnt/oasis/Appdata/pihole/etc-pihole:/etc/pihole"
     restart: unless-stopped
 
 networks:

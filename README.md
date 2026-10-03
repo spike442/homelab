@@ -25,10 +25,11 @@ Git repository
 | --- | --- | --- | --- | --- | --- |
 | `nexus` | `192.168.1.9` | K3s server / control-plane | `16 CPU`, `32 GiB RAM`, `amd64` | Debian 13 | Main cluster node and workload host |
 | `atlas` | `192.168.1.12` | K3s server / control-plane | `8 CPU`, `16 GiB RAM`, `amd64` | Debian 13 | Secondary control-plane and workload host |
-| `rift` | `192.168.1.11` | External Pi-hole host | TBD | Debian 13 | DNS host managed by Ansible, outside K3s |
-| `truenas` | `192.168.1.17` | NAS / NFS storage | TBD | TrueNAS | Shared media, downloads, backups, and bulk storage |
+| `truenas` | `192.168.1.17` | NAS / Pi-hole host | TrueNAS 25.04 | Shared media, downloads, backups, bulk storage, and Pi-hole Docker Compose |
 
 Ansible manages the machine layer, then Flux manages Kubernetes state from this repository.
+
+Pi-hole runs as a Docker Compose application on TrueNAS, managed by the Ansible `pihole` playbook. Persistent state lives under `/mnt/oasis/Appdata/pihole`; DNS uses `192.168.1.17:53`; the web/API service is exposed at `http://192.168.1.17:8080/admin` because TrueNAS owns ports 80 and 443.
 
 ## Core Stack
 

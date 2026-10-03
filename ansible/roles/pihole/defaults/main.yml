@@ -1,0 +1,5 @@
+---
+pihole_root: /mnt/oasis/Appdata/pihole
+pihole_compose_file: "{{ pihole_root }}/compose.yaml"
+pihole_config_dir: "{{ pihole_root }}/dnsmasq.d"
+pihole_data_dir: "{{ pihole_root }}/etc-pihole"
