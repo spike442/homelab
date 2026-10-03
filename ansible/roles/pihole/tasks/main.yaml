@@ -1,24 +1,24 @@
 ---
 - name: Ensure pihole application directory exists
   ansible.builtin.file:
-    path: "{{ ansible_env.HOME }}/apps/pihole"
+    path: "{{ pihole_root }}"
     state: directory
     mode: '0755'
 
 - name: Ensure pihole config directory exists
   ansible.builtin.file:
-    path: '{{ ansible_env.HOME }}/apps/pihole/config'
+    path: '{{ pihole_config_dir }}'
     state: directory
     mode: '0755'
 
 - name: Copy dnsmasq config template
   ansible.builtin.template:
     src: '00-custom-dnsmasq-settings.conf.j2'
-    dest: '{{ ansible_env.HOME }}/apps/pihole/config/00-custom-dnsmasq-settings.conf'
+    dest: '{{ pihole_config_dir }}/00-custom-dnsmasq-settings.conf'
     mode: '0644'
 
 - name: Copy docker compose file
   ansible.builtin.copy:
     src: "{{ role_path }}/files/compose.yaml"
-    dest: "{{ ansible_env.HOME }}/apps/compose.yaml"
+    dest: "{{ pihole_compose_file }}"
     mode: '0644'

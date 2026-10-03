@@ -9,7 +9,7 @@
     - name: Copy dnsmasq config template
       ansible.builtin.template:
         src: '{{ playbook_dir }}/../../roles/pihole/templates/00-custom-dnsmasq-settings.conf.j2'
-        dest: '{{ ansible_env.HOME }}/apps/pihole/config/00-custom-dnsmasq-settings.conf'
+        dest: '{{ pihole_config_dir }}/00-custom-dnsmasq-settings.conf'
         mode: '0644'
       register: dnsmasq_config
 

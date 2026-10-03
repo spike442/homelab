@@ -7,5 +7,6 @@ resources:
 - ./helmrepository.yaml
 - ./helmrelease.yaml
 - ./httproute.yaml
+- ./job-cloudnative-pg-bucket.yaml
 - ./persistentvolume.yaml
 - ./persistentvolumeclaim.yaml

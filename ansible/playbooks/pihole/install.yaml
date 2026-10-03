@@ -10,44 +10,19 @@
       ansible.builtin.pause:
         seconds: 2
 
-    - name: Ensure applications directory exists
-      ansible.builtin.file:
-        path: "{{ ansible_env.HOME }}/apps"
-        state: directory
-        mode: '0755'
-
   roles:
-    - role: geerlingguy.docker
-      become: true
-
     - role: pihole
 
   tasks:
-    - name: Add user to docker group
-      ansible.builtin.user:
-        name: "{{ ansible_env.USER }}"
-        groups: docker
-        append: true
+    - name: Verify the TrueNAS Docker daemon is available
+      ansible.builtin.command:
+        cmd: docker info
       become: true
+      changed_when: false
 
-    - name: Check if the apps directory exists
-      ansible.builtin.stat:
-        path: "{{ ansible_env.HOME }}/apps/"
-      register: apps_dir
-
-    - name: Prune everything
-      community.docker.docker_prune:
-        containers: true
-        images: true
-        networks: true
-        volumes: true
-        builder_cache: true
-      failed_when: false
-      become: true
-
-    - name: Deploy and start docker compose services
+    - name: Deploy and start the Pi-hole Compose project
       community.docker.docker_compose_v2:
-        project_src: "{{ ansible_env.HOME }}/apps"
+        project_src: "{{ pihole_root }}"
         state: present
       register: compose_output
       become: true

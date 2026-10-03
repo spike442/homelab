@@ -86,11 +86,11 @@
 - Infrastructure:
         - Pi-hole:
                   icon: pi-hole.png
-                  href: http://192.168.1.11/admin
-                  ping: 192.168.1.11
+                  href: http://192.168.1.17:8080/admin
+                  ping: 192.168.1.17
                   widget:
                     type: pihole
-                    url: http://192.168.1.11
+                    url: http://192.168.1.17:8080
                     version: 6
                     key: "{{HOMEPAGE_VAR_PIHOLE_PASSWORD}}"
                     fields: [queries, blocked, gravity]
@@ -165,6 +165,25 @@
                     enablePools: true
                     nasType: scale
                     fields: [alerts, load, uptime]
+        - RustFS S3:
+                  icon: mdi-database
+                  href: https://rustfs.timcasa.me
+                  siteMonitor: http://rustfs-svc.storage.svc.cluster.local:9000/health/ready
+                  widget:
+                    type: customapi
+                    url: http://rustfs-svc.storage.svc.cluster.local:9000/health/ready
+                    refreshInterval: 30000
+                    display: list
+                    mappings:
+                      - field: status
+                        label: Status
+                        format: text
+                      - field: ready
+                        label: Ready
+                        format: text
+                      - field: version
+                        label: Version
+                        format: text
         - Filebrowser:
                   icon: filebrowser.png
                   href: http://192.168.1.219
