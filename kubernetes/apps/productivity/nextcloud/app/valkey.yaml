@@ -1,0 +1,61 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: valkey
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: valkey
+  interval: 1h
+  values:
+    controllers:
+      valkey:
+        containers:
+          app:
+            image:
+              repository: valkey/valkey
+              tag: 9.0.6-alpine
+            args:
+            - valkey-server
+            - --save
+            - ""
+            - --appendonly
+            - "no"
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  tcpSocket:
+                    port: &port 6379
+                  periodSeconds: 30
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  tcpSocket:
+                    port: *port
+                  periodSeconds: 10
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities: { drop: [ "ALL" ] }
+            resources:
+              requests:
+                cpu: 10m
+                memory: 64Mi
+              limits:
+                memory: 256Mi
+        pod:
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 999
+            runAsGroup: 1000
+            fsGroup: 1000
+    service:
+      app:
+        controller: valkey
+        ports:
+          redis:
+            port: *port

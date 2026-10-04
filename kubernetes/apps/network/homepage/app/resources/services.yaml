@@ -157,6 +157,16 @@
                       - label: Cleanup Controller
                         query: kube_deployment_status_replicas_available{namespace="kyverno",deployment="kyverno-cleanup-controller"}
 - Storage:
+        - Nextcloud:
+                  icon: nextcloud.png
+                  href: https://nextcloud.timcasa.me
+                  siteMonitor: https://nextcloud.timcasa.me/status.php
+                  widget:
+                    type: nextcloud
+                    url: http://nextcloud.productivity.svc.cluster.local
+                    username: "{{HOMEPAGE_VAR_NEXTCLOUD_USERNAME}}"
+                    password: "{{HOMEPAGE_VAR_NEXTCLOUD_PASSWORD}}"
+                    fields: [activeusers, numfiles, numshares, freespace]
         - TrueNAS:
                   icon: truenas.png
                   href: http://192.168.1.17

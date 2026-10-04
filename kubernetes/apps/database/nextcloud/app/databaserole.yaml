@@ -1,0 +1,16 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/postgresql.cnpg.io/databaserole_v1.json
+apiVersion: postgresql.cnpg.io/v1
+kind: DatabaseRole
+metadata:
+  name: nextcloud
+  annotations:
+    homelab.timcasa.me/password-reset: "1"
+spec:
+  cluster:
+    name: postgres0
+  name: nextcloud
+  login: true
+  superuser: false
+  passwordSecret:
+    name: nextcloud-db

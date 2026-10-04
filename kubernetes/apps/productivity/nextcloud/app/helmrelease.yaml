@@ -1,0 +1,148 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: nextcloud
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: nextcloud
+  interval: 1h
+  values:
+    controllers:
+      nextcloud:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: nextcloud
+              tag: 35.0.1-apache
+            env:
+              TZ: Europe/Paris
+              POSTGRES_DB: nextcloud
+              POSTGRES_HOST: postgres0-rw.database.svc.cluster.local
+              POSTGRES_PORT: 5432
+              POSTGRES_USER: nextcloud
+              REDIS_HOST: valkey
+              REDIS_HOST_PORT: 6379
+              NEXTCLOUD_TRUSTED_DOMAINS: nextcloud.timcasa.me
+              OVERWRITEHOST: nextcloud.timcasa.me
+              OVERWRITEPROTOCOL: https
+              PHP_MEMORY_LIMIT: 512M
+              PHP_UPLOAD_LIMIT: 10G
+            envFrom:
+            - secretRef:
+                name: nextcloud-secret
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /status.php
+                    port: &port 80
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 5
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /status.php
+                    port: *port
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 12
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /status.php
+                    port: *port
+                  failureThreshold: 60
+                  periodSeconds: 10
+            resources:
+              requests:
+                cpu: 250m
+                memory: 512Mi
+              limits:
+                memory: 2Gi
+      cron:
+        type: cronjob
+        cronjob:
+          schedule: "*/5 * * * *"
+          backoffLimit: 1
+          concurrencyPolicy: Forbid
+          successfulJobsHistory: 1
+          failedJobsHistory: 3
+        containers:
+          app:
+            image:
+              repository: nextcloud
+              tag: 35.0.1-apache
+            env:
+              TZ: Europe/Paris
+              POSTGRES_DB: nextcloud
+              POSTGRES_HOST: postgres0-rw.database.svc.cluster.local
+              POSTGRES_PORT: 5432
+              POSTGRES_USER: nextcloud
+              REDIS_HOST: valkey
+              REDIS_HOST_PORT: 6379
+              NEXTCLOUD_UPDATE: "1"
+            envFrom:
+            - secretRef:
+                name: nextcloud-secret
+            command:
+            - /usr/local/bin/php
+            args:
+            - -f
+            - /usr/src/nextcloud/cron.php
+            resources:
+              requests:
+                cpu: 25m
+                memory: 128Mi
+              limits:
+                memory: 1Gi
+        pod:
+          restartPolicy: Never
+    service:
+      app:
+        controller: nextcloud
+        ports:
+          http:
+            port: *port
+    route:
+      app:
+        annotations:
+          gatus.home-operations.com/endpoint: |-
+            alerts:
+            - type: pushover
+              description: health-check failed
+        hostnames:
+        - nextcloud.timcasa.me
+        parentRefs:
+        - name: envoy-internal
+          namespace: network
+        rules:
+        - backendRefs:
+          - identifier: app
+            port: *port
+    persistence:
+      config:
+        existingClaim: nextcloud
+        globalMounts:
+        - path: /var/www/html/config
+      data:
+        existingClaim: nextcloud-files
+        globalMounts:
+        - path: /var/www/html/data
+      custom-apps:
+        existingClaim: nextcloud
+        globalMounts:
+        - path: /var/www/html/custom_apps
+      tmp:
+        type: emptyDir
