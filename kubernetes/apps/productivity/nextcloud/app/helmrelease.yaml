@@ -100,7 +100,10 @@ spec:
             - /usr/local/bin/php
             args:
             - -f
-            - /var/www/html/cron.php
+            - /usr/src/nextcloud/cron.php
+            env:
+            - name: NEXTCLOUD_CONFIG_DIR
+              value: /var/www/html/config
             resources:
               requests:
                 cpu: 25m
