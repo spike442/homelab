@@ -5,8 +5,9 @@ connectivity:
     interval: 1m
 
 alerting:
-  pushover:
-    application-token: ${GATUS_PUSHOVER_TOKEN}
+  telegram:
+    token: ${GATUS_TELEGRAM_TOKEN}
+    id: 8580477808
     default-alert:
       description: health-check failed
       failure-threshold: 3
@@ -16,7 +17,6 @@ alerting:
     priority: 1
     resolved-priority: 0
     title: Gatus
-    user-key: ${GATUS_PUSHOVER_USER_KEY}
 
 endpoints:
   - name: TrueNAS
@@ -26,7 +26,7 @@ endpoints:
     conditions:
       - "[STATUS] == 200"
     alerts:
-      - type: pushover
+      - type: telegram
         description: TrueNAS is down
 
 metrics: true

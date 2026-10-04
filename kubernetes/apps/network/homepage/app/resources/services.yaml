@@ -167,6 +167,12 @@
                     username: "{{HOMEPAGE_VAR_NEXTCLOUD_USERNAME}}"
                     password: "{{HOMEPAGE_VAR_NEXTCLOUD_PASSWORD}}"
                     fields: [activeusers, numfiles, numshares, freespace]
+        - Vaultwarden:
+                  icon: vaultwarden.png
+                  href: https://vaultwarden.timcasa.me
+                  description: Password vault
+                  siteMonitor: https://vaultwarden.timcasa.me/alive
+                  statusStyle: dot
         - TrueNAS:
                   icon: truenas.png
                   href: http://192.168.1.17

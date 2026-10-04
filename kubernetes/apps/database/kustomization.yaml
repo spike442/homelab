@@ -11,3 +11,5 @@ resources:
 - ./namespace.yaml
 - ./cloudnative-pg/ks.yaml
 - ./nextcloud/ks.yaml
+- ./valkey/ks.yaml
+- ./vaultwarden/ks.yaml

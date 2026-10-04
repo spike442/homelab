@@ -5,7 +5,6 @@ kind: Kustomization
 components:
 - ../../../../components/backup
 resources:
-- ./pvc.yaml
 - ./nfs-persistentvolume.yaml
 - ./nfs-persistentvolumeclaim.yaml
 - ./externalsecret.yaml

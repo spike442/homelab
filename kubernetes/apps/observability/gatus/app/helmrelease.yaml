@@ -39,16 +39,11 @@ spec:
               GATUS_CONFIG_PATH: /config
               GATUS_WEB_PORT: &port 80
               TZ: Europe/Paris
-              GATUS_PUSHOVER_TOKEN:
+              GATUS_TELEGRAM_TOKEN:
                 valueFrom:
                   secretKeyRef:
                     name: "{{ .Release.Name }}-secret"
-                    key: GATUS_PUSHOVER_TOKEN
-              GATUS_PUSHOVER_USER_KEY:
-                valueFrom:
-                  secretKeyRef:
-                    name: "{{ .Release.Name }}-secret"
-                    key: GATUS_PUSHOVER_USER_KEY
+                    key: GATUS_TELEGRAM_TOKEN
             probes:
               liveness: &probes
                 enabled: true

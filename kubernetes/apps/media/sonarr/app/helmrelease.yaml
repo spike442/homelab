@@ -84,7 +84,7 @@ spec:
         annotations:
           gatus.home-operations.com/endpoint: |-
             alerts:
-            - type: pushover
+            - type: telegram
               description: health-check failed
         hostnames:
         - "{{ .Release.Name }}.timcasa.me"

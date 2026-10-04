@@ -1,0 +1,106 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app vaultwarden
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: vaultwarden
+  interval: 1h
+  values:
+    controllers:
+      vaultwarden:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: vaultwarden/server
+              tag: 1.37.2
+            env:
+              DOMAIN: https://vaultwarden.timcasa.me
+              DATABASE_URL:
+                valueFrom:
+                  secretKeyRef:
+                    name: vaultwarden-db
+                    key: DATABASE_URL
+              SIGNUPS_ALLOWED: "false"
+              INVITATIONS_ALLOWED: "false"
+              SHOW_PASSWORD_HINT: "false"
+              WEBSOCKET_ENABLED: "true"
+              TZ: Europe/Paris
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /alive
+                    port: &httpPort 80
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /alive
+                    port: *httpPort
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /alive
+                    port: *httpPort
+                  failureThreshold: 30
+                  periodSeconds: 10
+            resources:
+              requests:
+                cpu: 25m
+                memory: 128Mi
+              limits:
+                memory: 512Mi
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: *httpPort
+          websocket:
+            port: 3012
+    route:
+      app:
+        annotations:
+          gatus.home-operations.com/endpoint: |-
+            alerts:
+            - type: telegram
+              description: health-check failed
+        hostnames:
+        - vaultwarden.timcasa.me
+        parentRefs:
+        - name: envoy-internal
+          namespace: network
+        rules:
+        - matches:
+          - path:
+              type: PathPrefix
+              value: /notifications/hub
+          backendRefs:
+          - identifier: app
+            port: 3012
+        - backendRefs:
+          - identifier: app
+            port: *httpPort
+    persistence:
+      data:
+        existingClaim: vaultwarden
+        globalMounts:
+        - path: /data
