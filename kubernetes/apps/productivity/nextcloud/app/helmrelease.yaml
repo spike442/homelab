@@ -100,7 +100,7 @@ spec:
             - /usr/local/bin/php
             args:
             - -f
-            - /usr/src/nextcloud/cron.php
+            - /var/www/html/cron.php
             resources:
               requests:
                 cpu: 25m
