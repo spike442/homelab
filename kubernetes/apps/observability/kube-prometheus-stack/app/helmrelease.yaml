@@ -11,6 +11,10 @@ spec:
   interval: 1h
   values:
     cleanPrometheusOperatorObjectNames: true
+    defaultRules:
+      rules:
+        kubeControllerManager: false
+        kubeScheduler: false
     alertmanager:
       route:
         main:

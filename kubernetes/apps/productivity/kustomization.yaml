@@ -9,6 +9,5 @@ components:
 
 resources:
 - ./namespace.yaml
-- ./vikunja/ks.yaml
 - ./nextcloud/ks.yaml
-- ./vaultwarden/ks.yaml
+- ./vikunja/ks.yaml

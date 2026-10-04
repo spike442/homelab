@@ -84,10 +84,6 @@
                   href: http://192.168.1.207:17442
                   siteMonitor: http://192.168.1.207:17442
 - Infrastructure:
-        - Vikunja:
-                  icon: mdi-format-list-checks
-                  href: https://vikunja.timcasa.me
-                  siteMonitor: https://vikunja.timcasa.me
         - Pi-hole:
                   icon: pi-hole.png
                   href: http://192.168.1.17:8080/admin
@@ -167,12 +163,6 @@
                     username: "{{HOMEPAGE_VAR_NEXTCLOUD_USERNAME}}"
                     password: "{{HOMEPAGE_VAR_NEXTCLOUD_PASSWORD}}"
                     fields: [activeusers, numfiles, numshares, freespace]
-        - Vaultwarden:
-                  icon: vaultwarden.png
-                  href: https://vaultwarden.timcasa.me
-                  description: Password vault
-                  siteMonitor: https://vaultwarden.timcasa.me/alive
-                  statusStyle: dot
         - TrueNAS:
                   icon: truenas.png
                   href: http://192.168.1.17

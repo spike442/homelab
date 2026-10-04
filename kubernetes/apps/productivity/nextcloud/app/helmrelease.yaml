@@ -14,6 +14,7 @@ spec:
       nextcloud:
         annotations:
           reloader.stakater.com/auto: "true"
+          homelab.timcasa.me/restarted-at: "2026-10-05T00:30:00+02:00"
         containers:
           app:
             image:
@@ -164,7 +165,7 @@ spec:
         globalMounts:
         - path: /var/www/html/data
       custom-apps:
-        existingClaim: nextcloud
+        existingClaim: nextcloud-apps
         globalMounts:
         - path: /var/www/html/custom_apps
       tmp:
