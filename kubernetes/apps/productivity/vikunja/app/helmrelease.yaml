@@ -1,0 +1,90 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app vikunja
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: vikunja
+  interval: 1h
+  values:
+    controllers:
+      vikunja:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: vikunja/vikunja
+              tag: 2.7.0
+            env:
+              TZ: Europe/Paris
+              VIKUNJA_DATABASE_PATH: /db/vikunja.db
+              VIKUNJA_DATABASE_TYPE: sqlite
+              VIKUNJA_SERVICE_ENABLEREGISTRATION: "true"
+              VIKUNJA_SERVICE_PUBLICURL: https://vikunja.timcasa.me/
+              VIKUNJA_SERVICE_TIMEZONE: Europe/Paris
+            envFrom:
+            - secretRef:
+                name: vikunja-secret
+            probes:
+              liveness: &probe
+                type: HTTP
+                path: /api/v1/info
+              readiness: *probe
+              startup:
+                <<: *probe
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 10
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities: { drop: [ "ALL" ] }
+            resources:
+              requests:
+                cpu: 50m
+                memory: 256Mi
+              limits:
+                memory: 1Gi
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: &port 3456
+    route:
+      app:
+        annotations:
+          gatus.home-operations.com/endpoint: |-
+            alerts:
+            - type: pushover
+              description: health-check failed
+        hostnames:
+        - vikunja.timcasa.me
+        parentRefs:
+        - name: envoy-internal
+          namespace: network
+        rules:
+        - backendRefs:
+          - identifier: app
+            port: *port
+    persistence:
+      data:
+        existingClaim: vikunja
+        globalMounts:
+        - path: /db
+      files:
+        existingClaim: vikunja
+        globalMounts:
+        - path: /app/vikunja/files
+      tmp:
+        type: emptyDir
