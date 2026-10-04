@@ -93,6 +93,7 @@ spec:
               REDIS_HOST: valkey
               REDIS_HOST_PORT: 6379
               NEXTCLOUD_UPDATE: "1"
+              NEXTCLOUD_CONFIG_DIR: /var/www/html/config
             envFrom:
             - secretRef:
                 name: nextcloud-secret
@@ -101,9 +102,6 @@ spec:
             args:
             - -f
             - /usr/src/nextcloud/cron.php
-            env:
-            - name: NEXTCLOUD_CONFIG_DIR
-              value: /var/www/html/config
             resources:
               requests:
                 cpu: 25m
