@@ -12,7 +12,7 @@ spec:
   storageClassName: ""
   nfs:
     server: 192.168.1.17
-    path: /mnt/oasis/Documents/nextcloud
+    path: /mnt/oasis/Docs/nextcloud
   claimRef:
     namespace: productivity
     name: nextcloud-files

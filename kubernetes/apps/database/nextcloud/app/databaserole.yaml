@@ -5,7 +5,7 @@ kind: DatabaseRole
 metadata:
   name: nextcloud
   annotations:
-    homelab.timcasa.me/password-reset: "1"
+    homelab.timcasa.me/password-reset: "2"
 spec:
   cluster:
     name: postgres0

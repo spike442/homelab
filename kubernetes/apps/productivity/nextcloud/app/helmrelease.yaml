@@ -30,11 +30,15 @@ spec:
               NEXTCLOUD_TRUSTED_DOMAINS: nextcloud.timcasa.me
               OVERWRITEHOST: nextcloud.timcasa.me
               OVERWRITEPROTOCOL: https
+              OVERWRITECLIURL: https://nextcloud.timcasa.me
+              TRUSTED_PROXIES: 10.42.0.0/16
               PHP_MEMORY_LIMIT: 512M
               PHP_UPLOAD_LIMIT: 10G
-            envFrom:
-            - secretRef:
-                name: nextcloud-secret
+              POSTGRES_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: nextcloud-secret
+                    key: POSTGRES_PASSWORD
             probes:
               liveness:
                 enabled: true
@@ -110,6 +114,10 @@ spec:
                 memory: 1Gi
         pod:
           restartPolicy: Never
+          securityContext:
+            runAsUser: 33
+            runAsGroup: 33
+            fsGroup: 33
     service:
       app:
         controller: nextcloud
@@ -129,6 +137,20 @@ spec:
         - name: envoy-internal
           namespace: network
         rules:
+        - matches:
+          - path:
+              type: PathPrefix
+              value: /.well-known/caldav
+          - path:
+              type: PathPrefix
+              value: /.well-known/carddav
+          filters:
+          - type: RequestRedirect
+            requestRedirect:
+              path:
+                type: ReplaceFullPath
+                replaceFullPath: /remote.php/dav/
+              statusCode: 301
         - backendRefs:
           - identifier: app
             port: *port
