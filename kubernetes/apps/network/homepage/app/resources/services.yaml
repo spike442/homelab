@@ -84,6 +84,19 @@
                   href: http://192.168.1.207:17442
                   siteMonitor: http://192.168.1.207:17442
 - Infrastructure:
+        - Headlamp:
+                  icon: mdi-kubernetes
+                  href: https://headlamp.timcasa.me
+                  siteMonitor: https://headlamp.timcasa.me
+                  widget:
+                    type: prometheusmetric
+                    url: http://kube-prometheus-stack-prometheus.observability.svc.cluster.local:9090
+                    refreshInterval: 30000
+                    metrics:
+                      - label: Available
+                        query: kube_deployment_status_replicas_available{namespace="observability",deployment="headlamp"}
+                      - label: Ready
+                        query: kube_deployment_status_replicas_ready{namespace="observability",deployment="headlamp"}
         - Pi-hole:
                   icon: pi-hole.png
                   href: http://192.168.1.17:8080/admin
