@@ -13,6 +13,16 @@ spec:
   - name: envoy-internal
     namespace: network
   rules:
-  - backendRefs:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /rustfs/console
+    - path:
+        type: PathPrefix
+        value: /api
+    backendRefs:
     - name: rustfs-svc
       port: 9001
+  - backendRefs:
+    - name: rustfs-svc
+      port: 9000

@@ -5,18 +5,25 @@ connectivity:
     interval: 1m
 
 alerting:
-  telegram:
-    token: ${GATUS_TELEGRAM_TOKEN}
-    id: 8580477808
+  custom:
+    url: http://anton.agents.svc.cluster.local:8080/webhooks/alerts?source=gatus
+    method: POST
+    headers:
+      Content-Type: application/json
+      Authorization: "Bearer ${GATUS_ALERT_TOKEN}"
     default-alert:
-      description: health-check failed
+      description: Gatus endpoint health check failed
       failure-threshold: 3
-      minimum-reminder-interval: 1h
-      send-on-resolved: true
       success-threshold: 2
-    priority: 1
-    resolved-priority: 0
-    title: Gatus
+      send-on-resolved: true
+    body: |
+      {
+        "status": "[ALERT_TRIGGERED_OR_RESOLVED]",
+        "endpoint_group": "[ENDPOINT_GROUP]",
+        "endpoint_name": "[ENDPOINT_NAME]",
+        "endpoint_url": "[ENDPOINT_URL]",
+        "description": "[ALERT_DESCRIPTION]"
+      }
 
 endpoints:
   - name: TrueNAS
@@ -26,9 +33,11 @@ endpoints:
     conditions:
       - "[STATUS] == 200"
     alerts:
-      - type: telegram
+      - type: custom
         description: TrueNAS is down
-
+        failure-threshold: 3
+        success-threshold: 2
+        send-on-resolved: true
 metrics: true
 
 storage:

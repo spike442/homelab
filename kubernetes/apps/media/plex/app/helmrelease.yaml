@@ -82,9 +82,6 @@ spec:
         annotations:
           gatus.home-operations.com/endpoint: |-
             conditions: ["[STATUS] == 401"]
-            alerts:
-            - type: telegram
-              description: health-check failed
         hostnames:
         - "{{ .Release.Name }}.timcasa.me"
         parentRefs:

@@ -84,6 +84,19 @@
                   href: http://192.168.1.207:17442
                   siteMonitor: http://192.168.1.207:17442
 - Infrastructure:
+        - Anton:
+                  icon: mdi-robot-outline
+                  href: https://anton.timcasa.me
+                  siteMonitor: https://anton.timcasa.me/healthz
+                  widget:
+                    type: customapi
+                    url: http://anton.agents.svc.cluster.local:8080/healthz
+                    refreshInterval: 30000
+                    display: list
+                    mappings:
+                      - field: status
+                        label: Status
+                        format: text
         - Headlamp:
                   icon: mdi-kubernetes
                   href: https://headlamp.timcasa.me

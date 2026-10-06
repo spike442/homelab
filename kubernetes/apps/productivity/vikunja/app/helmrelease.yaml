@@ -63,11 +63,6 @@ spec:
             port: &port 3456
     route:
       app:
-        annotations:
-          gatus.home-operations.com/endpoint: |-
-            alerts:
-            - type: telegram
-              description: health-check failed
         hostnames:
         - vikunja.timcasa.me
         parentRefs:
