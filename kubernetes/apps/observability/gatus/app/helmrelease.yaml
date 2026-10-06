@@ -38,12 +38,12 @@ spec:
             env:
               GATUS_CONFIG_PATH: /config
               GATUS_WEB_PORT: &port 80
-              TZ: Europe/Paris
-              GATUS_TELEGRAM_TOKEN:
+              GATUS_ALERT_TOKEN:
                 valueFrom:
                   secretKeyRef:
-                    name: "{{ .Release.Name }}-secret"
-                    key: GATUS_TELEGRAM_TOKEN
+                    name: gatus-secret
+                    key: GATUS_ALERT_TOKEN
+              TZ: Europe/Paris
             probes:
               liveness: &probes
                 enabled: true
