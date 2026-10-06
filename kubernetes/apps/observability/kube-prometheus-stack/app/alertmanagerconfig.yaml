@@ -6,7 +6,7 @@ metadata:
   name: alertmanager
 spec:
   route:
-    receiver: telegram
+    receiver: anton
     repeatInterval: 12h
     groupBy:
     - alertname
@@ -29,11 +29,11 @@ spec:
       matchType: =
 
   receivers:
-  - name: telegram
-    telegramConfigs:
-    - botToken:
-        name: alertmanager-secret
-        key: TELEGRAM_BOT_TOKEN
-      chatID: 8580477808
-      parseMode: HTML
+  - name: anton
+    webhookConfigs:
+    - url: http://anton.agents.svc.cluster.local:8080/webhooks/alertmanager
       sendResolved: true
+      httpConfig:
+        bearerTokenSecret:
+          name: sre-alertmanager
+          key: token
