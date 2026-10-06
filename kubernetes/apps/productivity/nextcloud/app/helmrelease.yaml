@@ -127,11 +127,6 @@ spec:
             port: *port
     route:
       app:
-        annotations:
-          gatus.home-operations.com/endpoint: |-
-            alerts:
-            - type: telegram
-              description: health-check failed
         hostnames:
         - nextcloud.timcasa.me
         parentRefs:

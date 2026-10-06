@@ -1,0 +1,12 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: DatabaseRole
+metadata:
+  name: anton
+spec:
+  cluster:
+    name: postgres0
+  name: anton
+  login: true
+  superuser: false
+  passwordSecret:
+    name: anton-db
