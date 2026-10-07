@@ -15,6 +15,10 @@ spec:
       rules:
         kubeControllerManager: false
         kubeScheduler: false
+        kubeSchedulerAlerting: false
+        kubeSchedulerRecording: false
+    kubeScheduler:
+      enabled: false
     alertmanager:
       route:
         main:
