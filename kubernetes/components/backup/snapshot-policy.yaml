@@ -1,36 +1,4 @@
-apiVersion: kopiur.home-operations.com/v1alpha1
-kind: SnapshotPolicy
-metadata:
-  name: ${APP}-config
-spec:
-  copyMethod: Direct
-  credentialProjection:
-    enabled: true
-  mover:
-    podSecurityContext:
-      fsGroup: 1000
-      supplementalGroups:
-      - 65532
-    securityContext:
-      runAsGroup: 1000
-      runAsUser: 1000
-  repository:
-    kind: ClusterRepository
-    name: nas-primary
-  sources:
-  - pvc:
-      name: ${APP}
-  retention:
-    keepWeekly: 1
----
-apiVersion: kopiur.home-operations.com/v1alpha1
-kind: SnapshotSchedule
-metadata:
-  name: ${APP}-config-nightly
-spec:
-  policyRef:
-    name: ${APP}-config
-  schedule:
-    cron: "H 3 * * 0"
-    jitter: 30m
-    runOnCreate: false
+apiVersion: kustomize.config.k8s.io/v1alpha1
+kind: Component
+resources:
+- ./snapshot-policy.yaml
