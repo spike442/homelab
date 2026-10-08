@@ -18,6 +18,7 @@ spec:
         enabled: true
       prometheusRule:
         enabled: true
+        backupStaleAfterSeconds: 691200
       dashboards:
         enabled: true
         namespace: observability
