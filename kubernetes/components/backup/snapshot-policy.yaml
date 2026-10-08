@@ -31,6 +31,6 @@ spec:
   policyRef:
     name: ${APP}-config
   schedule:
-    cron: "H 3 * * 0"
+    cron: "H * * * *"
     jitter: 30m
     runOnCreate: false
