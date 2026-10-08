@@ -1,4 +1,4 @@
-apiVersion: kopiur.home-operations.com/v1alpha1
+apiVersion: kopiur.k8s.home-operations.com/v1alpha1
 kind: SnapshotPolicy
 metadata:
   name: ${APP}-config
@@ -31,6 +31,6 @@ spec:
   policyRef:
     name: ${APP}-config
   schedule:
-    cron: "H 3 * * 0"
+    cron: "H 3 * * *"
     jitter: 30m
     runOnCreate: false
