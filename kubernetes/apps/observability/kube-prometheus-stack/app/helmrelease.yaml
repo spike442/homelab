@@ -14,7 +14,8 @@ spec:
     defaultRules:
       rules:
         kubeControllerManager: false
-        kubeScheduler: false
+        kubeSchedulerAlerting: false
+        kubeSchedulerRecording: false
     alertmanager:
       route:
         main:
@@ -40,6 +41,8 @@ spec:
         selector:
           component: kube-apiserver # etcd runs on control plane nodes
     kubeProxy:
+      enabled: false
+    kubeScheduler:
       enabled: false
     prometheus:
       route:
