@@ -50,6 +50,13 @@ metadata:
   name: envoy-internal
   annotations:
     external-dns.alpha.kubernetes.io/target: 192.168.1.200
+    gatus.home-operations.com/endpoint: |-
+      alerts:
+      - type: custom
+        description: Internal application endpoint health check failed
+        failure-threshold: 3
+        success-threshold: 2
+        send-on-resolved: true
 spec:
   gatewayClassName: envoy
   infrastructure:
