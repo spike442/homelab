@@ -35,6 +35,11 @@ spec:
               resources:
                 requests:
                   storage: 1Gi
+    kubeScheduler:
+      jobNameOverride: k3s-server
+      endpoints:
+      - 192.168.1.9
+      - 192.168.1.12
     kubeEtcd:
       service:
         selector:
