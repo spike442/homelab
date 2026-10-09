@@ -15,5 +15,8 @@ spec:
       enabled: false
     cleanupController:
       replicas: 1
+      resources:
+        limits:
+          memory: 256Mi
     reportsController:
       enabled: false
