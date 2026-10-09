@@ -39,6 +39,8 @@ spec:
       service:
         selector:
           component: kube-apiserver # etcd runs on control plane nodes
+    kubeScheduler:
+      enabled: false
     kubeProxy:
       enabled: false
     prometheus:
