@@ -103,6 +103,7 @@ spec:
             resources:
               requests:
                 cpu: 100m
+                memory: 256Mi
               limits:
                 memory: 2Gi
     defaultPodOptions:
@@ -138,7 +139,11 @@ spec:
         - name: envoy-internal
           namespace: network
         rules:
-        - backendRefs:
+        - matches:
+          - path:
+              type: PathPrefix
+              value: /
+          backendRefs:
           - identifier: app
             port: *httpPort
     persistence:
