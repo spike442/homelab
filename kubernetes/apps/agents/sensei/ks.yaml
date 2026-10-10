@@ -1,14 +1,14 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: anton
+  name: sensei
   namespace: agents
 spec:
   dependsOn:
   - name: hive-db
     namespace: database
   interval: 1h
-  path: ./kubernetes/apps/agents/anton/app
+  path: ./kubernetes/apps/agents/sensei/app
   prune: true
   sourceRef:
     kind: GitRepository

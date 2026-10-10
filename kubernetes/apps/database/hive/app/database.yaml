@@ -1,9 +1,9 @@
 apiVersion: postgresql.cnpg.io/v1
 kind: Database
 metadata:
-  name: postgres0-anton
+  name: postgres0-hive
 spec:
-  name: anton
-  owner: anton
+  name: hive
+  owner: hive
   cluster:
     name: postgres0

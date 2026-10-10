@@ -4,3 +4,5 @@ kind: Kustomization
 resources:
 - ./namespace.yaml
 - ./anton/ks.yaml
+- ./sensei/ks.yaml
+- ./hive/ks.yaml

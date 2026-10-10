@@ -1,0 +1,102 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sensei
+  namespace: agents
+  labels:
+    app.kubernetes.io/name: sensei
+    app.kubernetes.io/part-of: hive
+spec:
+  replicas: 0
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: sensei
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: sensei
+        app.kubernetes.io/part-of: hive
+    spec:
+      serviceAccountName: sensei
+      automountServiceAccountToken: true
+      securityContext:
+        runAsNonRoot: true
+        fsGroup: 65532
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+      - name: sensei
+        image: ghcr.io/spike442/hive-sensei:1.0.0
+        imagePullPolicy: Always
+        ports:
+        - name: http
+          containerPort: 8090
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: http
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+        env:
+        - name: HOME
+          value: /home/reviewer
+        - name: SENSEI_LLM_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: sensei-secrets
+              key: LLM_API_KEY
+        - name: SENSEI_GITHUB_APP_ID
+          valueFrom:
+            secretKeyRef:
+              name: sensei-secrets
+              key: GITHUB_APP_ID
+        - name: SENSEI_GITHUB_INSTALLATION_ID
+          valueFrom:
+            secretKeyRef:
+              name: sensei-secrets
+              key: GITHUB_INSTALLATION_ID
+        - name: SENSEI_GITHUB_APP_PRIVATE_KEY
+          valueFrom:
+            secretKeyRef:
+              name: sensei-secrets
+              key: GITHUB_APP_PRIVATE_KEY
+        - name: SENSEI_CONTROL_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: sensei-secrets
+              key: CONTROL_TOKEN
+        - name: SENSEI_S3_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: sensei-secrets
+              key: S3_ACCESS_KEY_ID
+        - name: SENSEI_S3_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: sensei-secrets
+              key: S3_SECRET_ACCESS_KEY
+        - name: SENSEI_DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: sensei-secrets
+              key: DATABASE_PASSWORD
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop: [ALL]
+        resources:
+          requests:
+            cpu: 50m
+            memory: 128Mi
+          limits:
+            memory: 512Mi
+        volumeMounts:
+        - name: tmp
+          mountPath: /tmp
+      volumes:
+      - name: tmp
+        emptyDir: {}

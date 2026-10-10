@@ -4,3 +4,7 @@ resources:
 - database.yaml
 - databaserole.yaml
 - externalsecret.yaml
+- anton-databaserole.yaml
+- anton-externalsecret.yaml
+- sensei-databaserole.yaml
+- sensei-externalsecret.yaml

@@ -8,7 +8,7 @@ metadata:
     gatus.home-operations.com/enabled: "false"
 spec:
   hostnames:
-  - rustfs.timcasa.me
+  - s3.timcasa.me
   parentRefs:
   - name: envoy-internal
     namespace: network

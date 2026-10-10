@@ -1,0 +1,12 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: DatabaseRole
+metadata:
+  name: sensei
+spec:
+  cluster:
+    name: postgres0
+  name: sensei
+  login: true
+  superuser: false
+  passwordSecret:
+    name: sensei-db

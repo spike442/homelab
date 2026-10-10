@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: hive
+  namespace: agents
+spec:
+  selector:
+    app.kubernetes.io/name: hive
+  ports:
+  - name: http
+    port: 8070
+    targetPort: http

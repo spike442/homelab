@@ -84,6 +84,26 @@
                   href: http://192.168.1.207:17442
                   siteMonitor: http://192.168.1.207:17442
 - Infrastructure:
+        - Hive:
+                  icon: mdi-view-dashboard-outline
+                  href: https://hive.timcasa.me
+                  siteMonitor: https://hive.timcasa.me
+        - Sensei:
+                  icon: mdi-shield-check-outline
+                  href: https://github.com/spike442/hive
+                  siteMonitor: http://sensei.agents.svc.cluster.local:8090/health
+                  widget:
+                    type: customapi
+                    url: http://sensei.agents.svc.cluster.local:8090/health
+                    refreshInterval: 30000
+                    display: list
+                    mappings:
+                      - field: status
+                        label: Status
+                        format: text
+                      - field: version
+                        label: Version
+                        format: text
         - Anton:
                   icon: mdi-robot-outline
                   href: https://anton.timcasa.me
@@ -201,9 +221,9 @@
                     enablePools: true
                     nasType: scale
                     fields: [alerts, load, uptime]
-        - RustFS S3:
+        - S3:
                   icon: mdi-database
-                  href: https://rustfs.timcasa.me
+                  href: https://s3.timcasa.me
                   siteMonitor: http://rustfs-svc.storage.svc.cluster.local:9000/health/ready
                   widget:
                     type: customapi

@@ -1,18 +1,18 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: anton-db
+  name: hive
+  namespace: agents
 spec:
   dependsOn:
-  - name: cloudnative-pg
-  - name: onepassword
-    namespace: external-secrets
+  - name: hive-db
+    namespace: database
   interval: 1h
-  path: ./kubernetes/apps/database/anton/app
+  path: ./kubernetes/apps/agents/hive/app
   prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: database
+  targetNamespace: agents
   wait: true
