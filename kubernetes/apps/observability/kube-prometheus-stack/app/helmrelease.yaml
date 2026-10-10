@@ -16,6 +16,8 @@ spec:
         kubeControllerManager: false
         kubeScheduler: false
     alertmanager:
+      enableFeatures:
+      - event-recorder
       route:
         main:
           enabled: true
@@ -25,8 +27,7 @@ spec:
           - name: envoy-internal
             namespace: network
       alertmanagerSpec:
-        alertmanagerConfiguration:
-          name: alertmanager
+        configSecret: alertmanager
         externalUrl: https://alertmanager.timcasa.me
         storage:
           volumeClaimTemplate:
@@ -67,8 +68,10 @@ spec:
         podMonitorSelectorNilUsesHelmValues: false
         probeSelectorNilUsesHelmValues: false
         ruleSelectorNilUsesHelmValues: false
+        ruleNamespaceSelector: {}
         scrapeConfigSelectorNilUsesHelmValues: false
         serviceMonitorSelectorNilUsesHelmValues: false
+        serviceMonitorNamespaceSelector: {}
         retention: 14d
         retentionSize: 15GB
         resources:

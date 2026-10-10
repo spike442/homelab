@@ -6,8 +6,8 @@ components:
 - ../../../../components/backup
 resources:
 - ./pvc.yaml
-- ./nfs-persistentvolume.yaml
-- ./nfs-persistentvolumeclaim.yaml
+- ./nfs-pv.yaml
+- ./nfs-pvc.yaml
 - ./externalsecret.yaml
 - ./helmrelease.yaml
 - ./ocirepository.yaml

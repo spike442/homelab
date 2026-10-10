@@ -13,6 +13,7 @@ spec:
   allowedNamespaces:
     list:
     - backups
+    - messaging
     - media
     - productivity
   encryption:

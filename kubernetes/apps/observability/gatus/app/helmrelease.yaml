@@ -38,11 +38,6 @@ spec:
             env:
               GATUS_CONFIG_PATH: /config
               GATUS_WEB_PORT: &port 80
-              GATUS_ALERT_TOKEN:
-                valueFrom:
-                  secretKeyRef:
-                    name: gatus-secret
-                    key: GATUS_ALERT_TOKEN
               TZ: Europe/Paris
             probes:
               liveness: &probes

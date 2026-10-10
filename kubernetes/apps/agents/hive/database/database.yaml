@@ -1,0 +1,13 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: postgres0-hive
+  namespace: database
+spec:
+  name: hive
+  owner: hive
+  extensions:
+  - name: vector
+    ensure: present
+  cluster:
+    name: postgres0

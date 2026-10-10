@@ -1,0 +1,15 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: DatabaseRole
+metadata:
+  name: nextcloud
+  namespace: database
+  annotations:
+    homelab.timcasa.me/password-reset: "2"
+spec:
+  cluster:
+    name: postgres0
+  name: nextcloud
+  login: true
+  superuser: false
+  passwordSecret:
+    name: nextcloud-db

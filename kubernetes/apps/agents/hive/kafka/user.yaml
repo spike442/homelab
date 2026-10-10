@@ -1,0 +1,38 @@
+apiVersion: kafka.strimzi.io/v1
+kind: KafkaUser
+metadata:
+  name: hive
+  labels:
+    strimzi.io/cluster: kafka
+spec:
+  authentication:
+    type: scram-sha-512
+    password:
+      valueFrom:
+        secretKeyRef:
+          name: hive-kafka-password
+          key: password
+  authorization:
+    type: simple
+    acls:
+    - resource:
+        type: topic
+        name: hive.alerts
+        patternType: literal
+      operations:
+      - Read
+      - Describe
+    - resource:
+        type: topic
+        name: hive.dead-letter
+        patternType: literal
+      operations:
+      - Read
+      - Write
+      - Describe
+    - resource:
+        type: group
+        name: hive-alerts
+        patternType: literal
+      operations:
+      - Read

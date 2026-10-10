@@ -1,0 +1,13 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: DatabaseRole
+metadata:
+  name: hive
+  namespace: database
+spec:
+  cluster:
+    name: postgres0
+  name: hive
+  login: true
+  superuser: false
+  passwordSecret:
+    name: hive-db

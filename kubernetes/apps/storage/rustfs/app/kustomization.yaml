@@ -7,5 +7,5 @@ resources:
 - ./helmrepository.yaml
 - ./helmrelease.yaml
 - ./httproute.yaml
-- ./persistentvolume.yaml
-- ./persistentvolumeclaim.yaml
+- ./pv.yaml
+- ./pvc.yaml

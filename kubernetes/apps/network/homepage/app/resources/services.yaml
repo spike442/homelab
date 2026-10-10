@@ -84,13 +84,33 @@
                   href: http://192.168.1.207:17442
                   siteMonitor: http://192.168.1.207:17442
 - Infrastructure:
-        - Anton:
-                  icon: mdi-robot-outline
-                  href: https://anton.timcasa.me
-                  siteMonitor: https://anton.timcasa.me/healthz
+        - Hive:
+                  icon: mdi-view-dashboard-outline
+                  href: https://hive.timcasa.me
+                  siteMonitor: https://hive.timcasa.me
+        - PR Review:
+                  icon: mdi-shield-check-outline
+                  href: https://hive.timcasa.me
+                  siteMonitor: http://pr-review.agents.svc.cluster.local:8090/healthz
                   widget:
                     type: customapi
-                    url: http://anton.agents.svc.cluster.local:8080/healthz
+                    url: http://pr-review.agents.svc.cluster.local:8090/healthz
+                    refreshInterval: 30000
+                    display: list
+                    mappings:
+                      - field: status
+                        label: Status
+                        format: text
+                      - field: version
+                        label: Version
+                        format: text
+        - SRE:
+                  icon: mdi-robot-outline
+                  href: https://hive.timcasa.me
+                  siteMonitor: http://sre.agents.svc.cluster.local:8080/healthz
+                  widget:
+                    type: customapi
+                    url: http://sre.agents.svc.cluster.local:8080/healthz
                     refreshInterval: 30000
                     display: list
                     mappings:
@@ -201,9 +221,9 @@
                     enablePools: true
                     nasType: scale
                     fields: [alerts, load, uptime]
-        - RustFS S3:
+        - S3:
                   icon: mdi-database
-                  href: https://rustfs.timcasa.me
+                  href: https://s3.timcasa.me
                   siteMonitor: http://rustfs-svc.storage.svc.cluster.local:9000/health/ready
                   widget:
                     type: customapi

@@ -6,24 +6,29 @@ connectivity:
 
 alerting:
   custom:
-    url: http://anton.agents.svc.cluster.local:8080/webhooks/alerts?source=gatus
+    url: http://alertmanager-operated.observability.svc.cluster.local:9093/api/v2/alerts
     method: POST
     headers:
       Content-Type: application/json
-      Authorization: "Bearer ${GATUS_ALERT_TOKEN}"
     default-alert:
       description: Gatus endpoint health check failed
       failure-threshold: 3
       success-threshold: 2
       send-on-resolved: true
     body: |
-      {
-        "status": "[ALERT_TRIGGERED_OR_RESOLVED]",
-        "endpoint_group": "[ENDPOINT_GROUP]",
-        "endpoint_name": "[ENDPOINT_NAME]",
-        "endpoint_url": "[ENDPOINT_URL]",
-        "description": "[ALERT_DESCRIPTION]"
-      }
+      [{
+        "labels": {
+          "alertname": "GatusEndpointAlert",
+          "source": "gatus",
+          "endpoint_group": "[ENDPOINT_GROUP]",
+          "endpoint_name": "[ENDPOINT_NAME]",
+          "severity": "critical"
+        },
+        "annotations": {
+          "summary": "Gatus endpoint [ENDPOINT_NAME] is [ALERT_TRIGGERED_OR_RESOLVED]",
+          "description": "[ALERT_DESCRIPTION] URL=[ENDPOINT_URL]"
+        }
+      }]
 
 endpoints:
   - name: TrueNAS

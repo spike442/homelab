@@ -1,0 +1,73 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: temporal
+  namespace: messaging
+spec:
+  interval: 1h
+  chart:
+    spec:
+      chart: temporal
+      version: 1.6.0
+      sourceRef:
+        kind: HelmRepository
+        name: temporal
+        namespace: messaging
+  values:
+    server:
+      replicaCount: 1
+      metrics:
+        serviceMonitor:
+          enabled: true
+          interval: 30s
+      config:
+        logLevel: info
+        persistence:
+          defaultStore: default
+          visibilityStore: visibility
+          numHistoryShards: 512
+          datastores:
+            default:
+              sql:
+                createDatabase: false
+                manageSchema: true
+                pluginName: postgres12_pgx
+                driverName: postgres12_pgx
+                databaseName: temporal
+                connectAddr: postgres0-rw.database.svc.cluster.local:5432
+                connectProtocol: tcp
+                user: temporal
+                existingSecret: temporal-db
+                secretKey: password
+                maxConns: 20
+                maxIdleConns: 10
+                maxConnLifetime: 1h
+            visibility:
+              sql:
+                createDatabase: false
+                manageSchema: true
+                pluginName: postgres12_pgx
+                driverName: postgres12_pgx
+                databaseName: temporal_visibility
+                connectAddr: postgres0-rw.database.svc.cluster.local:5432
+                connectProtocol: tcp
+                user: temporal
+                existingSecret: temporal-db
+                secretKey: password
+                maxConns: 20
+                maxIdleConns: 10
+                maxConnLifetime: 1h
+    namespaces:
+      create: true
+      useHelmHooks: false
+      namespace:
+      - name: hive
+        retention: 7d
+    schema:
+      useHelmHooks: false
+    web:
+      enabled: true
+      service:
+        type: ClusterIP
+      ingress:
+        enabled: false

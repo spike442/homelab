@@ -1,0 +1,13 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: DatabaseRole
+metadata:
+  name: temporal
+  namespace: database
+spec:
+  cluster:
+    name: postgres0
+  name: temporal
+  login: true
+  superuser: false
+  passwordSecret:
+    name: temporal-db

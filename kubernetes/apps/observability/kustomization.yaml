@@ -8,7 +8,6 @@ components:
 - ../../components/alerts
 
 resources:
-- ./headlamp/ks.yaml
 - ./namespace.yaml
 - ./gatus/ks.yaml
 - ./kube-prometheus-stack/ks.yaml

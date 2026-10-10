@@ -1,0 +1,14 @@
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: temporal-sdk
+  namespace: agents
+spec:
+  allowCrossNamespaceImport: true
+  instanceSelector:
+    matchLabels:
+      grafana.internal/instance: grafana
+  datasources:
+  - datasourceName: prometheus
+    inputName: DS_PROMETHEUS
+  url: https://raw.githubusercontent.com/temporalio/dashboards/fe62b4e4567951497c511696b527b9037ef0a04f/sdk/sdk-general.json
