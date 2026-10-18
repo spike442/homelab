@@ -16,8 +16,6 @@ spec:
         kubeControllerManager: false
         kubeScheduler: false
     alertmanager:
-      enableFeatures:
-      - event-recorder
       route:
         main:
           enabled: true
