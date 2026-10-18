@@ -36,6 +36,6 @@ server_config_yaml:
   - "system-reserved=cpu=250m,memory=512Mi"
   - "eviction-hard=memory.available<200Mi"
   kube-controller-manager-arg:
-  - "bind-address=0.0.0.0" # Required to monitor kube-controller-manager with kube-prometheus-stack
+  - "bind-address=0.0.0.0"
   kube-scheduler-arg:
-  - "bind-address=0.0.0.0" # Required to monitor kube-scheduler with kube-prometheus-stack
+  - "bind-address=0.0.0.0"

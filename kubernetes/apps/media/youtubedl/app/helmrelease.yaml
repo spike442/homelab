@@ -1,5 +1,4 @@
 ---
-# adapted from https://github.com/clarknova99/talos-cluster/tree/main/_archive/youtubedl
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:

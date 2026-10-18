@@ -1,0 +1,91 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: clickhouse
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: clickhouse
+  values:
+    controllers:
+      clickhouse:
+        type: statefulset
+        annotations:
+          reloader.stakater.com/auto: "true"
+        replicas: 1
+        containers:
+          app:
+            image:
+              repository: clickhouse/clickhouse-server
+              tag: "26.8.25.14"
+            env:
+              CLICKHOUSE_SKIP_USER_SETUP: "1"
+            ports:
+            - name: http
+              containerPort: 8123
+            - name: native
+              containerPort: 9000
+            - name: metrics
+              containerPort: 9363
+            probes:
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet: {path: /ping, port: 8123}
+                  periodSeconds: 5
+                  failureThreshold: 60
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet: {path: /ping, port: 8123}
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet: {path: /ping, port: 8123}
+            resources:
+              requests: {cpu: 500m, memory: 1Gi}
+              limits: {cpu: "4", memory: 4Gi}
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities: {drop: [ALL]}
+        pod:
+          automountServiceAccountToken: false
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 101
+            runAsGroup: 101
+            fsGroup: 101
+    service:
+      app:
+        controller: clickhouse
+        ports:
+          http: {port: 8123}
+          native: {port: 9000}
+          metrics: {port: 9363}
+    persistence:
+      data:
+        existingClaim: clickhouse
+        globalMounts:
+        - path: /var/lib/clickhouse
+      backups:
+        existingClaim: clickhouse-backups
+        globalMounts:
+        - path: /var/lib/clickhouse/backups
+      config:
+        type: configMap
+        name: clickhouse-config
+        globalMounts:
+        - path: /etc/clickhouse-server/config.d/homelab.xml
+          subPath: homelab.xml
+          readOnly: true
+      auth:
+        type: secret
+        name: clickhouse-auth
+        globalMounts:
+        - path: /etc/clickhouse-server/users.d/accounts.xml
+          subPath: accounts.xml
+          readOnly: true

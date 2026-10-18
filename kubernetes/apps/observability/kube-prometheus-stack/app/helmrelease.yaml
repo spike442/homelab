@@ -39,7 +39,7 @@ spec:
     kubeEtcd:
       service:
         selector:
-          component: kube-apiserver # etcd runs on control plane nodes
+          component: kube-apiserver
     kubeScheduler:
       enabled: false
     kubeProxy:
@@ -55,7 +55,7 @@ spec:
             namespace: network
       prometheusSpec:
         externalUrl: https://prometheus.timcasa.me
-        version: v2.55.1 # override 'unsupported Prometheus version' error
+        version: v2.55.1
         image:
           registry: docker.io
           repository: prompp/prompp

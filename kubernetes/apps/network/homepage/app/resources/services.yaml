@@ -84,39 +84,10 @@
                   href: http://192.168.1.207:17442
                   siteMonitor: http://192.168.1.207:17442
 - Infrastructure:
-        - Hive:
+        - Sentinel:
                   icon: mdi-view-dashboard-outline
-                  href: https://hive.timcasa.me
-                  siteMonitor: https://hive.timcasa.me
-        - PR Review:
-                  icon: mdi-shield-check-outline
-                  href: https://hive.timcasa.me
-                  siteMonitor: http://pr-review.agents.svc.cluster.local:8090/healthz
-                  widget:
-                    type: customapi
-                    url: http://pr-review.agents.svc.cluster.local:8090/healthz
-                    refreshInterval: 30000
-                    display: list
-                    mappings:
-                      - field: status
-                        label: Status
-                        format: text
-                      - field: version
-                        label: Version
-                        format: text
-        - SRE:
-                  icon: mdi-robot-outline
-                  href: https://hive.timcasa.me
-                  siteMonitor: http://sre.agents.svc.cluster.local:8080/healthz
-                  widget:
-                    type: customapi
-                    url: http://sre.agents.svc.cluster.local:8080/healthz
-                    refreshInterval: 30000
-                    display: list
-                    mappings:
-                      - field: status
-                        label: Status
-                        format: text
+                  href: https://sentinel.timcasa.me
+                  siteMonitor: https://sentinel.timcasa.me
         - Headlamp:
                   icon: mdi-kubernetes
                   href: https://headlamp.timcasa.me

@@ -35,7 +35,8 @@ Pi-hole runs as a Docker Compose application on TrueNAS, managed by the Ansible 
 
 - **Flux:** GitOps controller applying everything from `kubernetes/apps`.
 - **HelmRelease + Kustomize:** app deployment and environment composition.
-- **Cilium:** CNI, service routing, and LAN LoadBalancer IPs.
+- **Cilium:** CNI, service routing, and LAN LoadBalancer IPs. Pods use the `veth` datapath: under `netkit` with this configuration, replies from a same-node Service backend are rejected by the receiving pod's ingress NetworkPolicy, which broke the Strimzi-managed Kafka pods. The agent refuses to start in a new datapath mode while pods created under the old one exist, so changing `bpf.datapathMode` requires recreating every pod on each node.
+- **Sentinel:** SRE and PR review agents in `agents`, deployed from the Sentinel chart. The `sentinel-infra` Flux Kustomization (`sentinel/infra/`) creates its PostgreSQL database and roles, Kafka users, and their ExternalSecrets, and must be ready before the `sentinel` Kustomization (`sentinel/app/`) installs the chart. Every Sentinel ExternalSecret reads the `sentinel` 1Password item.
 - **Envoy Gateway:** HTTPRoute ingress for internal domains.
 - **External Secrets:** syncs secrets from 1Password.
 - **OpenEBS:** local persistent volumes for app state.

@@ -61,7 +61,7 @@ spec:
   gatewayClassName: envoy
   infrastructure:
     annotations:
-      external-dns.alpha.kubernetes.io/hostname: internal.timcasa.me
+      external-dns.alpha.kubernetes.io/hostname: postgresql.timcasa.me,clickhouse.timcasa.me
       lbipam.cilium.io/ips: 192.168.1.200
   listeners:
   - name: http
@@ -83,6 +83,12 @@ spec:
   - name: tcp
     protocol: TCP
     port: 9000
+    allowedRoutes:
+      namespaces:
+        from: All
+  - name: clickhouse
+    protocol: TCP
+    port: 9001
     allowedRoutes:
       namespaces:
         from: All

@@ -1,0 +1,47 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  labels:
+    app.kubernetes.io/name: sentinel
+  name: postgres0-sentinel
+  namespace: database
+spec:
+  name: sentinel
+  owner: sentinel
+  cluster:
+    name: postgres0
+
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: DatabaseRole
+metadata:
+  labels:
+    app.kubernetes.io/name: sentinel
+  name: sentinel
+  namespace: database
+spec:
+  cluster:
+    name: postgres0
+  name: sentinel
+  login: true
+  superuser: false
+  passwordSecret:
+    name: sentinel-db
+
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: DatabaseRole
+metadata:
+  labels:
+    app.kubernetes.io/name: sentinel
+  name: sentinel-knowledge
+  namespace: database
+spec:
+  cluster:
+    name: postgres0
+  name: sentinel_knowledge
+  login: true
+  superuser: false
+  passwordSecret:
+    name: sentinel-knowledge-db

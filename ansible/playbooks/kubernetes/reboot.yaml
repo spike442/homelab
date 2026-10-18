@@ -3,50 +3,99 @@
   hosts: "{{ target | default('k3s_cluster') }}"
   any_errors_fatal: true
   serial: 1
-  become: true
   gather_facts: false
   vars:
     kubectl_wait_timeout: 15m
     kubeconfig: "{{ lookup('env', 'KUBECONFIG') | default(lookup('env', 'HOME') + '/.kube/config', true) }}"
   tasks:
-    - name: Cordon node
-      ansible.builtin.command:
-        cmd: kubectl cordon {{ inventory_hostname }}
+    - name: Reboot node with maintenance
       delegate_to: localhost
-      become: false
       environment:
         KUBECONFIG: "{{ kubeconfig }}"
+      block:
+        - name: Cordon node
+          ansible.builtin.command:
+            cmd: kubectl cordon {{ inventory_hostname }}
+          changed_when: true
 
-    - name: Drain node
-      ansible.builtin.command:
-        cmd: kubectl drain {{ inventory_hostname }} --ignore-daemonsets --delete-emptydir-data --timeout={{ kubectl_wait_timeout }}
-      delegate_to: localhost
-      become: false
-      environment:
-        KUBECONFIG: "{{ kubeconfig }}"
+        - name: List CloudNativePG clusters
+          ansible.builtin.command:
+            argv:
+              - kubectl
+              - get
+              - clusters.postgresql.cnpg.io
+              - --all-namespaces
+              - --output
+              - 'jsonpath={range .items[*]}{.metadata.namespace}/{.metadata.name}{"\n"}{end}'
+          changed_when: false
+          register: reboot_cnpg_clusters
 
-    - name: Reboot node
-      ansible.builtin.reboot:
-        msg: "Rolling reboot for {{ inventory_hostname }}"
-        reboot_timeout: 900
-        connect_timeout: 10
-        pre_reboot_delay: 5
-        post_reboot_delay: 15
+        - name: Start CloudNativePG node maintenance
+          ansible.builtin.command:
+            cmd: >-
+              kubectl --namespace {{ item.split('/')[0] }} patch clusters.postgresql.cnpg.io {{ item.split('/')[1] }}
+              --type merge --patch '{"spec":{"nodeMaintenanceWindow":{"inProgress":true,"reusePVC":true}}}'
+          loop: "{{ reboot_cnpg_clusters.stdout_lines }}"
+          changed_when: true
 
-    - name: Wait for node Ready
-      ansible.builtin.shell: |
-        set -euo pipefail
-        timeout 900 bash -c '
-          until k3s kubectl get --raw=/readyz >/dev/null 2>&1; do
-            sleep 5
-          done
-        '
-        k3s kubectl wait node/{{ inventory_hostname }} --for=condition=Ready --timeout={{ kubectl_wait_timeout }}
+        - name: Drain node
+          ansible.builtin.command:
+            cmd: kubectl drain {{ inventory_hostname }} --ignore-daemonsets --delete-emptydir-data --timeout={{ kubectl_wait_timeout }}
+          changed_when: true
 
-    - name: Uncordon node
-      ansible.builtin.command:
-        cmd: kubectl uncordon {{ inventory_hostname }}
-      delegate_to: localhost
-      become: false
-      environment:
-        KUBECONFIG: "{{ kubeconfig }}"
+        - name: Reboot node
+          ansible.builtin.reboot:
+            msg: "Rolling reboot for {{ inventory_hostname }}"
+            reboot_timeout: 900
+            connect_timeout: 10
+            pre_reboot_delay: 5
+            post_reboot_delay: 15
+          delegate_to: "{{ inventory_hostname }}"
+          become: true
+
+        - name: Wait for API server Ready
+          ansible.builtin.command:
+            cmd: kubectl get --raw=/readyz
+          changed_when: false
+          register: reboot_api_ready
+          until: reboot_api_ready.rc == 0
+          retries: 180
+          delay: 5
+
+        - name: Wait for node Ready
+          ansible.builtin.command:
+            cmd: kubectl wait node/{{ inventory_hostname }} --for=condition=Ready --timeout={{ kubectl_wait_timeout }}
+          changed_when: false
+
+        - name: Wait for Cilium agent Ready
+          ansible.builtin.command:
+            cmd: >-
+              kubectl --namespace kube-system wait pod --selector k8s-app=cilium
+              --field-selector spec.nodeName={{ inventory_hostname }}
+              --for=condition=Ready --timeout={{ kubectl_wait_timeout }}
+          changed_when: false
+
+        - name: Wait for CloudNativePG webhook
+          ansible.builtin.command:
+            cmd: >-
+              kubectl --namespace database wait deployment/cloudnative-pg
+              --for=condition=Available --timeout={{ kubectl_wait_timeout }}
+          changed_when: false
+
+      always:
+        - name: End CloudNativePG node maintenance
+          ansible.builtin.command:
+            cmd: >-
+              kubectl --namespace {{ item.split('/')[0] }} patch clusters.postgresql.cnpg.io {{ item.split('/')[1] }}
+              --type merge --patch '{"spec":{"nodeMaintenanceWindow":{"inProgress":false}}}'
+          loop: "{{ reboot_cnpg_clusters.stdout_lines | default([]) }}"
+          changed_when: true
+          register: reboot_end_cnpg_maintenance
+          until: reboot_end_cnpg_maintenance.rc == 0
+          retries: 18
+          delay: 10
+
+        - name: Uncordon node
+          ansible.builtin.command:
+            cmd: kubectl uncordon {{ inventory_hostname }}
+          changed_when: true

@@ -29,7 +29,6 @@ spec:
         interval: 1h
       kustomize:
         patches:
-        # Enable Helm repositories caching
         - patch: |-
             - op: add
               path: /spec/template/spec/containers/0/args/-
@@ -43,7 +42,6 @@ spec:
           target:
             kind: Deployment
             name: source-controller
-        # Cache Secrets and ConfigMaps
         - patch: |-
             - op: add
               path: /spec/template/spec/containers/0/args/-
@@ -51,7 +49,6 @@ spec:
           target:
             kind: Deployment
             name: source-controller
-        # Flux near OOM detection for Helm
         - patch: |-
             - op: add
               path: /spec/template/spec/containers/0/args/-
@@ -65,7 +62,6 @@ spec:
           target:
             kind: Deployment
             name: helm-controller
-        # Disable chart digest tracking
         - patch: |-
             - op: add
               path: /spec/template/spec/containers/0/args/-
@@ -73,7 +69,6 @@ spec:
           target:
             kind: Deployment
             name: helm-controller
-        # Watch configmaps and secrets attached to HelmReleases and Kustomizations
         - patch: |-
             - op: add
               path: /spec/template/spec/containers/0/args/-
@@ -81,7 +76,6 @@ spec:
           target:
             kind: Deployment
             name: (helm-controller|kustomize-controller)
-        # Cancel health checks on new Kustomizations revisions
         - patch: |-
             - op: add
               path: /spec/template/spec/containers/0/args/-

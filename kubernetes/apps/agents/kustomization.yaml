@@ -3,6 +3,4 @@ kind: Kustomization
 
 resources:
 - ./namespace.yaml
-- ./sre/ks.yaml
-- ./pr-review/ks.yaml
-- ./hive/ks.yaml
+- ./sentinel/ks.yaml

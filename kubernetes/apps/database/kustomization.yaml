@@ -10,4 +10,5 @@ components:
 resources:
 - ./namespace.yaml
 - ./cloudnative-pg/ks.yaml
+- ./clickhouse/ks.yaml
 - ./valkey/ks.yaml

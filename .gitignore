@@ -19,3 +19,4 @@ kubeconfig
 .codex/
 .idea/
 .agents/
+.aws/

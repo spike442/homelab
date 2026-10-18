@@ -2,6 +2,18 @@
   $schema: "https://docs.renovatebot.com/renovate-schema.json",
   packageRules: [
     {
+      description: "Sentinel release group: chart and images deploy together as soon as Sentinel Publish releases them",
+      groupName: "sentinel",
+      matchPackageNames: ["/^ghcr\\.io\\/spike442\\/sentinel/", "/spike442\\/charts\\/sentinel$/"],
+      minimumReleaseAge: "0 days",
+      automerge: true,
+      automergeType: "branch",
+      ignoreTests: true,
+      group: {
+        commitMessageTopic: "{{{groupName}}} release",
+      },
+    },
+    {
       description: "1Password Connect Group",
       groupName: "1password-connect",
       matchDatasources: ["docker"],

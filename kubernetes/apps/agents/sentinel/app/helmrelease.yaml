@@ -1,0 +1,48 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: sentinel
+  namespace: agents
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: sentinel
+  interval: 1h
+  values:
+    agents:
+      sre:
+        enabled: true
+      pr-review:
+        enabled: true
+    spark:
+      enabled: true
+      storageClass: openebs-hostpath
+    secrets:
+      app: sentinel-secrets
+    postgres:
+      host: postgres0-rw.database.svc.cluster.local
+      database: sentinel
+      user: sentinel
+      knowledgeUser: sentinel_knowledge
+    clickhouse:
+      host: clickhouse.database.svc.cluster.local
+      database: sentinel
+      user: sentinel
+    kafka:
+      bootstrapServers: kafka-kafka-bootstrap.messaging.svc.cluster.local:9093
+      username: sentinel
+      consumerGroup: sentinel
+      users:
+        sre: sentinel-sre
+        pr-review: sentinel-pr-review
+        executor: sentinel-executor
+    s3:
+      endpoint: http://rustfs-svc.storage.svc.cluster.local:9000
+      region: us-east-1
+      bucket: sentinel
+    prometheus:
+      url: http://kube-prometheus-stack-prometheus.observability.svc.cluster.local:9090
+    route:
+      hostname: sentinel.timcasa.me
+      gatewayName: envoy-internal
+      gatewayNamespace: network

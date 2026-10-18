@@ -27,3 +27,10 @@ spec:
           memory: 512Mi
     webhook:
       enable: true
+    spark:
+      jobNamespaces:
+      - agents
+      serviceAccount:
+        create: false
+      rbac:
+        create: false
