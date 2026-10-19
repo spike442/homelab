@@ -9,12 +9,12 @@ spec:
     enabled: true
   mover:
     podSecurityContext:
-      fsGroup: 1000
+      fsGroup: 0
       supplementalGroups:
       - 65532
     securityContext:
-      runAsGroup: 1000
-      runAsUser: 1000
+      runAsGroup: 0
+      runAsUser: 1001
   repository:
     kind: ClusterRepository
     name: nas-primary

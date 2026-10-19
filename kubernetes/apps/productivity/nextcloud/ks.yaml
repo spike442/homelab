@@ -48,4 +48,6 @@ spec:
   postBuild:
     substitute:
       APP: nextcloud
+      BACKUP_UID: "33"
+      BACKUP_GID: "33"
   wait: false
