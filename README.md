@@ -28,5 +28,3 @@ Git repository
 | `truenas` | `192.168.1.17` | NAS / Pi-hole host | TrueNAS 25.04 | Shared media, downloads, backups, bulk storage, and Pi-hole Docker Compose |
 
 Ansible manages the machine layer, then Flux manages Kubernetes state from this repository.
-item.
-- 
