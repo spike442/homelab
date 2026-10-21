@@ -1,0 +1,103 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: navidrome
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: navidrome
+  interval: 1h
+  values:
+    controllers:
+      navidrome:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: ghcr.io/navidrome/navidrome
+              tag: 0.64.2@sha256:38dc2727bfcfd5ede290f8ada114fc90368146f265ae4701ddddbcbe2a44ee52
+            env:
+              ND_DATAFOLDER: /data
+              ND_MUSICFOLDER: /music
+              ND_CACHEFOLDER: /cache
+              ND_PORT: &port 4533
+              ND_LOGLEVEL: info
+              ND_SCANNER_SCHEDULE: "@every 1h"
+              ND_SESSIONTIMEOUT: 168h
+              ND_ENABLESHARING: "true"
+              TZ: Europe/Paris
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /ping
+                    port: *port
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 5
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /ping
+                    port: *port
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 5
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 10
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: [ "ALL" ] }
+            resources:
+              requests:
+                cpu: 100m
+              limits:
+                memory: 1Gi
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+    service:
+      app:
+        ports:
+          http:
+            port: *port
+    route:
+      app:
+        hostnames:
+        - "{{ .Release.Name }}.timcasa.me"
+        parentRefs:
+        - name: envoy-internal
+          namespace: network
+    persistence:
+      data:
+        existingClaim: "{{ .Release.Name }}"
+        globalMounts:
+        - path: /data
+      music:
+        type: nfs
+        server: 192.168.1.17
+        path: /mnt/oasis/Media/Music
+        globalMounts:
+        - path: /music
+          readOnly: true
+      cache:
+        type: emptyDir
+        globalMounts:
+        - path: /cache
+      tmp:
+        type: emptyDir
