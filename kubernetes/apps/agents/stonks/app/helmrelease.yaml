@@ -1,0 +1,21 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: stonks
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: stonks
+  interval: 1h
+  values:
+    s3:
+      endpoint: http://rustfs-svc.storage.svc.cluster.local:9000
+      region: us-east-1
+      bucket: stonks
+    search:
+      url: http://searxng.agents.svc.cluster.local:8080/search
+    airflow:
+      namespace: datalakehouse
+      serviceAccount: airflow-worker

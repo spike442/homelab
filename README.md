@@ -28,3 +28,11 @@ Git repository
 | `truenas` | `192.168.1.17` | NAS / Pi-hole host | TrueNAS 25.04 | Shared media, downloads, backups, bulk storage, and Pi-hole Docker Compose |
 
 Ansible manages the machine layer, then Flux manages Kubernetes state from this repository.
+
+## Renovate
+
+Renovate runs hourly from `.github/workflows/renovate.yaml`, on Renovate config changes, and on `sentinel-release` / `stonks-release` repository dispatches. The workflows authenticate as the bot GitHub App through the `BOT_APP_ID` and `BOT_APP_PRIVATE_KEY` secrets; the token action's `client-id` input accepts the App ID.
+
+Flux, Helm values, and Kubernetes manifests are tracked by the built-in managers. Values those managers cannot read carry a `# renovate: datasource=<datasource> depName=<package>` comment on the line above (CloudNativePG `imageName`, the Flux distribution artifact, the Airflow Stonks version, the Kafka version). Raw GitHub URLs are pinned either to `refs/tags/<tag>`, updated from GitHub tags, or to a commit SHA on `main` for repositories without releases.
+
+Kafka version updates wait for approval on the Dependency Dashboard: approve one only when the deployed Strimzi operator lists that version as supported.

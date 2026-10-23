@@ -14,6 +14,34 @@
       },
     },
     {
+      description: "Stonks release group: chart, images and the Airflow DAG version deploy together as soon as Stonks releases them",
+      groupName: "stonks",
+      matchPackageNames: ["/^ghcr\\.io\\/spike442\\/stonks/", "/spike442\\/charts\\/stonks$/"],
+      minimumReleaseAge: "0 days",
+      automerge: true,
+      automergeType: "branch",
+      ignoreTests: true,
+      group: {
+        commitMessageTopic: "{{{groupName}}} release",
+      },
+    },
+    {
+      description: "Envoy Gateway Group",
+      groupName: "envoy-gateway",
+      matchPackageNames: ["/envoyproxy\\/gateway/"],
+      group: {
+        commitMessageTopic: "{{{groupName}}} group",
+      },
+    },
+    {
+      description: "Recyclarr Group",
+      groupName: "recyclarr",
+      matchPackageNames: ["/recyclarr\\/recyclarr/"],
+      group: {
+        commitMessageTopic: "{{{groupName}}} group",
+      },
+    },
+    {
       description: "1Password Connect Group",
       groupName: "1password-connect",
       matchDatasources: ["docker"],
@@ -26,7 +54,6 @@
     {
       description: "Flux Operator Group",
       groupName: "flux-operator",
-      matchDatasources: ["docker"],
       matchPackageNames: ["/flux-operator/", "/flux-instance/", "/flux-operator-manifests/"],
       group: {
         commitMessageTopic: "{{{groupName}}} group",

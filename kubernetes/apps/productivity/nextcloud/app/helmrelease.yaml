@@ -19,7 +19,7 @@ spec:
           app:
             image:
               repository: nextcloud
-              tag: 35.0.1-apache
+              tag: 35.0.1-apache@sha256:8f2f0e93aca5e9457019933936dea1f313052e72c696b4aecb31580a208b859f
             env:
               TZ: Europe/Paris
               POSTGRES_DB: nextcloud
@@ -88,7 +88,7 @@ spec:
           app:
             image:
               repository: nextcloud
-              tag: 35.0.1-apache
+              tag: 35.0.1-apache@sha256:8f2f0e93aca5e9457019933936dea1f313052e72c696b4aecb31580a208b859f
             env:
               TZ: Europe/Paris
               POSTGRES_DB: nextcloud

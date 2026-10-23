@@ -1,0 +1,103 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: airflow
+spec:
+  interval: 1h
+  chart:
+    spec:
+      chart: airflow
+      version: "1.22.0"
+      sourceRef:
+        kind: HelmRepository
+        name: apache-airflow
+  valuesFrom:
+  - kind: Secret
+    name: airflow-secret
+    valuesKey: admin-password
+    targetPath: createUserJob.defaultUser.password
+  install:
+    remediation:
+      retries: -1
+  values:
+    executor: KubernetesExecutor
+    fernetKeySecretName: airflow-secret
+    apiSecretKeySecretName: airflow-secret
+    jwtSecretName: airflow-secret
+    data:
+      metadataSecretName: airflow-secret
+    env:
+    - name: AIRFLOW_VAR_STONKS_VERSION
+      # renovate: datasource=docker depName=ghcr.io/spike442/charts/stonks
+      value: "0.1.0"
+    config:
+      core:
+        parallelism: 8
+      api:
+        workers: 1
+      dag_processor:
+        parsing_processes: 1
+    migrateDatabaseJob:
+      useHelmHooks: false
+    createUserJob:
+      useHelmHooks: false
+      defaultUser:
+        username: admin
+        email: admin@timcasa.me
+        firstName: Admin
+        lastName: User
+    apiServer:
+      replicas: 1
+      resources:
+        requests:
+          cpu: 50m
+          memory: 384Mi
+        limits:
+          memory: 1Gi
+    scheduler:
+      replicas: 1
+      resources:
+        requests:
+          cpu: 50m
+          memory: 256Mi
+        limits:
+          memory: 1Gi
+    dagProcessor:
+      resources:
+        requests:
+          cpu: 25m
+          memory: 256Mi
+        limits:
+          memory: 1Gi
+    triggerer:
+      enabled: false
+    workers:
+      kubernetes:
+        resources:
+          requests:
+            cpu: 50m
+            memory: 256Mi
+          limits:
+            memory: 1Gi
+    postgresql:
+      enabled: false
+    redis:
+      enabled: false
+    statsd:
+      enabled: false
+    logs:
+      persistence:
+        enabled: false
+    dags:
+      persistence:
+        enabled: false
+      gitSync:
+        enabled: true
+        repo: https://github.com/spike442/stonks.git
+        branch: main
+        rev: HEAD
+        depth: 1
+        subPath: airflow/dags
+        period: 60s

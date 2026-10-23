@@ -1,0 +1,13 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: DatabaseRole
+metadata:
+  name: airflow
+spec:
+  cluster:
+    name: postgres0
+  name: airflow
+  login: true
+  superuser: false
+  passwordSecret:
+    name: airflow-db
