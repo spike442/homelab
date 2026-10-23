@@ -31,7 +31,7 @@ spec:
     env:
     - name: AIRFLOW_VAR_STONKS_VERSION
       # renovate: datasource=docker depName=ghcr.io/spike442/charts/stonks
-      value: "0.1.0"
+      value: "0.1.1"
     config:
       core:
         parallelism: 8
