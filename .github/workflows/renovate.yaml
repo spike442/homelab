@@ -13,7 +13,6 @@ on:
   repository_dispatch:
     types:
     - sentinel-release
-    - stonks-release
   workflow_dispatch:
     inputs:
       dryRun:

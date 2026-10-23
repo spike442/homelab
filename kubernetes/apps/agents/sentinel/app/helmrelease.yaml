@@ -12,11 +12,6 @@ spec:
     agents:
       sre:
         enabled: true
-      pr-review:
-        enabled: true
-    spark:
-      enabled: true
-      storageClass: openebs-hostpath
     secrets:
       app: sentinel-secrets
     postgres:
@@ -34,7 +29,6 @@ spec:
       consumerGroup: sentinel
       users:
         sre: sentinel-sre
-        pr-review: sentinel-pr-review
         executor: sentinel-executor
     s3:
       endpoint: http://rustfs-svc.storage.svc.cluster.local:9000

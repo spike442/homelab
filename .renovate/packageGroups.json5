@@ -2,21 +2,14 @@
   $schema: "https://docs.renovatebot.com/renovate-schema.json",
   packageRules: [
     {
-      description: "Sentinel release group: chart and images deploy together as soon as Sentinel Publish releases them",
+      description: "Sentinel release group: the sentinel and stonks charts, their images, and the Airflow Stonks version deploy together as soon as Sentinel Publish releases them",
       groupName: "sentinel",
-      matchPackageNames: ["/^ghcr\\.io\\/spike442\\/sentinel/", "/spike442\\/charts\\/sentinel$/"],
-      minimumReleaseAge: "0 days",
-      automerge: true,
-      automergeType: "branch",
-      ignoreTests: true,
-      group: {
-        commitMessageTopic: "{{{groupName}}} release",
-      },
-    },
-    {
-      description: "Stonks release group: chart, images and the Airflow DAG version deploy together as soon as Stonks releases them",
-      groupName: "stonks",
-      matchPackageNames: ["/^ghcr\\.io\\/spike442\\/stonks/", "/spike442\\/charts\\/stonks$/"],
+      matchPackageNames: [
+        "/^ghcr\\.io\\/spike442\\/sentinel/",
+        "/^ghcr\\.io\\/spike442\\/stonks/",
+        "/spike442\\/charts\\/sentinel$/",
+        "/spike442\\/charts\\/stonks$/",
+      ],
       minimumReleaseAge: "0 days",
       automerge: true,
       automergeType: "branch",

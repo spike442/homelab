@@ -55,27 +55,6 @@ spec:
       operations: [Write, Describe]
     - resource: {type: group, name: sentinel-incident, patternType: literal}
       operations: [Read]
-
----
-apiVersion: kafka.strimzi.io/v1
-kind: KafkaUser
-metadata:
-  namespace: messaging
-  name: sentinel-pr-review
-  labels:
-    app.kubernetes.io/name: sentinel
-    strimzi.io/cluster: kafka
-spec:
-  authentication:
-    type: scram-sha-512
-    password:
-      valueFrom:
-        secretKeyRef:
-          name: sentinel-kafka-password
-          key: pr-review
-  authorization:
-    type: simple
-    acls:
     - resource: {type: topic, name: sentinel.pr-review.commands, patternType: literal}
       operations: [Read, Describe]
     - resource: {type: topic, name: sentinel.pr-review.returns, patternType: literal}
