@@ -19,3 +19,7 @@ spec:
     airflow:
       namespace: datalakehouse
       serviceAccount: airflow-worker
+    route:
+      hostname: sentinel.timcasa.me
+      gatewayName: envoy-internal
+      gatewayNamespace: network
