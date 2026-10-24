@@ -51,7 +51,14 @@ spec:
         runAsGroup: 1000
     persistence:
       config:
+        type: emptyDir
+        globalMounts:
+        - path: /config
+      config-file:
         type: configMap
         name: "{{ .Release.Name }}-configmap"
+        globalMounts:
+        - path: /config/recyclarr.yml
+          subPath: recyclarr.yml
       tmp:
         type: emptyDir
