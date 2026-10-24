@@ -9,5 +9,5 @@ spec:
     operation: copy
   ref:
     # renovate: datasource=helm registryUrl=oci://ghcr.io/home-operations/charts depName=kopiur
-    tag: 0.10.11
+    tag: 0.10.16
   url: oci://ghcr.io/home-operations/charts/kopiur
