@@ -12,7 +12,7 @@ spec:
   datasources:
     - datasourceName: prometheus
       inputName: DS_PROMETHEUS
-  url: https://raw.githubusercontent.com/controlplaneio-fluxcd/flux-operator/refs/tags/v0.60.0/config/monitoring/dashboards/flux-k8s-api-performance.json
+  url: https://raw.githubusercontent.com/controlplaneio-fluxcd/flux-operator/refs/tags/v0.61.0/config/monitoring/dashboards/flux-k8s-api-performance.json
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/grafana.integreatly.org/grafanadashboard_v1beta1.json
 apiVersion: grafana.integreatly.org/v1beta1
@@ -27,7 +27,7 @@ spec:
   datasources:
     - datasourceName: prometheus
       inputName: DS_PROMETHEUS
-  url: https://raw.githubusercontent.com/controlplaneio-fluxcd/flux-operator/refs/tags/v0.60.0/config/monitoring/dashboards/flux-performance.json
+  url: https://raw.githubusercontent.com/controlplaneio-fluxcd/flux-operator/refs/tags/v0.61.0/config/monitoring/dashboards/flux-performance.json
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/grafana.integreatly.org/grafanadashboard_v1beta1.json
 apiVersion: grafana.integreatly.org/v1beta1
