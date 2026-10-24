@@ -30,7 +30,7 @@ spec:
       metadataSecretName: airflow-secret
     env:
     - name: AIRFLOW_VAR_STONKS_VERSION
-      # renovate: datasource=docker depName=ghcr.io/spike442/charts/stonks
+      # renovate: datasource=docker depName=ghcr.io/spike442/charts/sentinel/stonks
       value: "1.0.0"
     config:
       core:

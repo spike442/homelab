@@ -6,9 +6,8 @@
       groupName: "sentinel",
       matchPackageNames: [
         "/^ghcr\\.io\\/spike442\\/sentinel/",
-        "/^ghcr\\.io\\/spike442\\/stonks/",
         "/spike442\\/charts\\/sentinel$/",
-        "/spike442\\/charts\\/stonks$/",
+        "/spike442\\/charts\\/sentinel\\/stonks$/",
       ],
       minimumReleaseAge: "0 days",
       automerge: true,
