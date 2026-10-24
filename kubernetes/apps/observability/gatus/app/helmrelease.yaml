@@ -58,7 +58,8 @@ spec:
               capabilities: { add: [ "NET_RAW" ], drop: [ "ALL" ] }
             resources:
               requests:
-                cpu: 100m
+                cpu: 10m
+                memory: 128Mi
               limits:
                 memory: 256Mi
         statefulset:
@@ -80,7 +81,6 @@ spec:
         type: LoadBalancer
         annotations:
           lbipam.cilium.io/ips: 192.168.1.202
-        externalTrafficPolicy: Cluster
         ports:
           http:
             port: *port

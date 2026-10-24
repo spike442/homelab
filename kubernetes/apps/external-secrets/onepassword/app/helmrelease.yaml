@@ -57,6 +57,7 @@ spec:
             resources: &resources
               requests:
                 cpu: 10m
+                memory: 64Mi
               limits:
                 memory: 256M
           sync:
@@ -105,7 +106,6 @@ spec:
         seccompProfile: { type: RuntimeDefault }
     service:
       app:
-        controller: onepassword
         ports:
           http:
             port: *apiPort

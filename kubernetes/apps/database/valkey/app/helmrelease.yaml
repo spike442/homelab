@@ -55,7 +55,6 @@ spec:
             fsGroup: 1000
     service:
       app:
-        controller: valkey
         ports:
           redis:
             port: *port

@@ -27,9 +27,10 @@ spec:
     reusePVC: true
   resources:
     requests:
-      cpu: 300m
+      cpu: 50m
+      memory: 512Mi
     limits:
-      memory: 3Gi
+      memory: 2Gi
   monitoring:
     enablePodMonitor: true
   backup:

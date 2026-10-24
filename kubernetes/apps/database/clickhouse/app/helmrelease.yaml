@@ -47,7 +47,7 @@ spec:
                 spec:
                   httpGet: {path: /ping, port: 8123}
             resources:
-              requests: {cpu: 500m, memory: 1Gi}
+              requests: {cpu: 200m, memory: 2560Mi}
               limits: {cpu: "4", memory: 4Gi}
             securityContext:
               allowPrivilegeEscalation: false
@@ -61,7 +61,6 @@ spec:
             fsGroup: 101
     service:
       app:
-        controller: clickhouse
         ports:
           http: {port: 8123}
           native: {port: 9000}

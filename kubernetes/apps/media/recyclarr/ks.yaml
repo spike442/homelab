@@ -6,10 +6,6 @@ metadata:
   name: recyclarr
 spec:
   dependsOn:
-  - name: kopiur
-    namespace: flux-system
-  - name: openebs
-    namespace: storage
   - name: onepassword
     namespace: external-secrets
   interval: 1h
@@ -20,7 +16,4 @@ spec:
     name: flux-system
     namespace: flux-system
   targetNamespace: media
-  postBuild:
-    substitute:
-      APP: recyclarr
   wait: false

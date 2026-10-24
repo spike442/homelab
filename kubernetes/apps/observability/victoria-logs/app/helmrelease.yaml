@@ -18,6 +18,12 @@ spec:
         enabled: true
         existingClaim: victoria-logs
       retentionPeriod: 14d
+      resources:
+        requests:
+          cpu: 25m
+          memory: 2Gi
+        limits:
+          memory: 4Gi
       route:
         enabled: true
         hostnames:

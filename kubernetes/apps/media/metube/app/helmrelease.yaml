@@ -38,7 +38,7 @@ spec:
             resources:
               requests:
                 cpu: 50m
-                memory: 256Mi
+                memory: 384Mi
               limits:
                 memory: 2Gi
     defaultPodOptions:
@@ -53,7 +53,6 @@ spec:
         type: LoadBalancer
         annotations:
           lbipam.cilium.io/ips: 192.168.1.207
-        externalTrafficPolicy: Cluster
         ports:
           http:
             port: *port

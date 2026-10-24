@@ -54,10 +54,10 @@ spec:
               - name: gpu
               requests:
                 cpu: 100m
-                memory: 2Gi
+                memory: 512Mi
               limits:
                 cpu: "4"
-                memory: 5Gi
+                memory: 2Gi
     defaultPodOptions:
       resourceClaims:
       - name: gpu
@@ -73,7 +73,6 @@ spec:
         type: LoadBalancer
         annotations:
           lbipam.cilium.io/ips: 192.168.1.210
-        externalTrafficPolicy: Cluster
         ports:
           http:
             port: *port

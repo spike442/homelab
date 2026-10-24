@@ -71,19 +71,6 @@
                   icon: mdi-view-dashboard-outline
                   href: https://sentinel.timcasa.me
                   siteMonitor: https://sentinel.timcasa.me
-        - Headlamp:
-                  icon: mdi-kubernetes
-                  href: https://headlamp.timcasa.me
-                  siteMonitor: https://headlamp.timcasa.me
-                  widget:
-                    type: prometheusmetric
-                    url: http://kube-prometheus-stack-prometheus.observability.svc.cluster.local:9090
-                    refreshInterval: 30000
-                    metrics:
-                      - label: Available
-                        query: kube_deployment_status_replicas_available{namespace="observability",deployment="headlamp"}
-                      - label: Ready
-                        query: kube_deployment_status_replicas_ready{namespace="observability",deployment="headlamp"}
         - Pi-hole:
                   icon: pi-hole.png
                   href: http://192.168.1.17:8080/admin
@@ -141,17 +128,6 @@
                     type: tailscale
                     key: "{{HOMEPAGE_VAR_TAILSCALE_API_KEY}}"
                     deviceid: "{{HOMEPAGE_VAR_TAILSCALE_DEVICE_ID}}"
-        - Kyverno:
-                  icon: mdi-shield-check
-                  widget:
-                    type: prometheusmetric
-                    url: http://kube-prometheus-stack-prometheus.observability.svc.cluster.local:9090
-                    refreshInterval: 30000
-                    metrics:
-                      - label: Controllers Available
-                        query: sum(kube_deployment_status_replicas_available{namespace="kyverno"})
-                      - label: Cleanup Controller
-                        query: kube_deployment_status_replicas_available{namespace="kyverno",deployment="kyverno-cleanup-controller"}
 - Storage:
         - Nextcloud:
                   icon: nextcloud.png
