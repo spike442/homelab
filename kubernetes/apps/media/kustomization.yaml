@@ -9,7 +9,6 @@ components:
 
 resources:
 - ./namespace.yaml
-- ./qbittorrent/ks.yaml
 - ./filebrowser/ks.yaml
 - ./prowlarr/ks.yaml
 - ./navidrome/ks.yaml

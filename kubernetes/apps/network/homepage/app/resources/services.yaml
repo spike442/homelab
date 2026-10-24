@@ -53,23 +53,6 @@
                     key: "{{HOMEPAGE_VAR_PROWLARR_API_KEY}}"
                     fields: [numberOfGrabs, numberOfQueries, numberOfFailGrabs, numberOfFailQueries]
 - Downloads:
-        - qBittorrent:
-                  icon: qbittorrent.png
-                  href: https://qbittorrent.timcasa.me
-                  siteMonitor: https://qbittorrent.timcasa.me
-                  widget:
-                    type: qbittorrent
-                    url: http://qbittorrent.media.svc.cluster.local
-                    key: "{{HOMEPAGE_VAR_QBITTORRENT_API_KEY}}"
-                    fields: [leech, download, seed, upload]
-        - GlueVPN:
-                  icon: gluetun.png
-                  href: https://qbittorrent.timcasa.me
-                  widget:
-                    type: gluetun
-                    url: http://qbittorrent-gluetun.media.svc.cluster.local:8000
-                    version: 2
-                    fields: [public_ip, region, country]
         - SABnzbd:
                   icon: sabnzbd.png
                   href: https://sabnzbd.timcasa.me
