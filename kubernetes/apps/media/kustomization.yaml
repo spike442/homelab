@@ -18,4 +18,4 @@ resources:
 - ./recyclarr/ks.yaml
 - ./plex/ks.yaml
 - ./sabnzbd/ks.yaml
-- ./youtubedl/ks.yaml
+- ./metube/ks.yaml

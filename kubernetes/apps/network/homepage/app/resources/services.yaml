@@ -79,10 +79,10 @@
                     url: http://sabnzbd.media.svc.cluster.local
                     key: "{{HOMEPAGE_VAR_SABNZBD_API_KEY}}"
                     fields: [rate, queue, timeleft]
-        - YouTubeDL:
-                  icon: youtube-dl.png
-                  href: http://192.168.1.207:17442
-                  siteMonitor: http://192.168.1.207:17442
+        - MeTube:
+                  icon: metube.png
+                  href: https://yt.timcasa.me
+                  siteMonitor: https://yt.timcasa.me
 - Infrastructure:
         - Sentinel:
                   icon: mdi-view-dashboard-outline

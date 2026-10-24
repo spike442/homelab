@@ -1,0 +1,91 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: metube
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: metube
+  interval: 1h
+  values:
+    controllers:
+      metube:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: ghcr.io/alexta69/metube
+              tag: 2026.10.23@sha256:367d9d1b5122f2e88263a689998f8b11c4e9a188c9cbdace0ace8bd197935ad8
+            env:
+              TZ: Europe/Paris
+              PORT: &port 8081
+              DOWNLOAD_DIR: /downloads
+              AUDIO_DOWNLOAD_DIR: /music
+              STATE_DIR: /config
+              TEMP_DIR: /temp
+              DEFAULT_THEME: auto
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities: { drop: [ "ALL" ] }
+            resources:
+              requests:
+                cpu: 50m
+                memory: 256Mi
+              limits:
+                memory: 2Gi
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+    service:
+      app:
+        type: LoadBalancer
+        annotations:
+          lbipam.cilium.io/ips: 192.168.1.207
+        externalTrafficPolicy: Cluster
+        ports:
+          http:
+            port: *port
+    route:
+      app:
+        hostnames:
+        - yt.timcasa.me
+        parentRefs:
+        - name: envoy-internal
+          namespace: network
+    persistence:
+      config:
+        existingClaim: "{{ .Release.Name }}"
+        globalMounts:
+        - path: /config
+      video:
+        type: nfs
+        server: 192.168.1.17
+        path: /mnt/oasis/Media/Youtube
+        globalMounts:
+        - path: /downloads
+      music:
+        type: nfs
+        server: 192.168.1.17
+        path: /mnt/oasis/Media/Music/Youtube
+        globalMounts:
+        - path: /music
+      temp:
+        type: emptyDir
+        globalMounts:
+        - path: /temp
+      tmp:
+        type: emptyDir
+        globalMounts:
+        - path: /tmp

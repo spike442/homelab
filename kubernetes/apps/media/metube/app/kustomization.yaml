@@ -6,5 +6,5 @@ components:
 - ../../../../components/backup
 resources:
 - ./pvc.yaml
-- ./helmrepository.yaml
+- ./ocirepository.yaml
 - ./helmrelease.yaml
