@@ -1,0 +1,22 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: knowledge
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: knowledge
+  interval: 1h
+  values:
+    secret: knowledge-secrets
+    domainSecrets:
+      sentinel: sentinel-secrets
+    clickhouse:
+      host: clickhouse.database.svc.cluster.local
+      database: knowledge
+      user: knowledge
+    s3:
+      endpoint: http://rustfs-svc.storage.svc.cluster.local:9000
+      region: us-east-1

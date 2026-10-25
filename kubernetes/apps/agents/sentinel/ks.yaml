@@ -29,8 +29,6 @@ spec:
   dependsOn:
   - name: sentinel-infra
     namespace: agents
-  - name: clickhouse
-    namespace: database
   - name: onepassword
     namespace: external-secrets
   - name: openebs

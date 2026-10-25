@@ -2,12 +2,12 @@
   $schema: "https://docs.renovatebot.com/renovate-schema.json",
   packageRules: [
     {
-      description: "Shed release group: whichever of the shed, sentinel, and stonks charts Shed Publish released, their images, and for Stonks the Airflow Stonks version and the stonks release tag Airflow git-syncs its DAGs from, deploy together as soon as Publish releases them",
+      description: "Shed release group: whichever of the knowledge, shed, sentinel, and stonks charts Shed Publish released, their images, and for Stonks the Airflow Stonks version and the stonks release tag Airflow git-syncs its DAGs from, deploy together as soon as Publish releases them",
       groupName: "shed",
       matchPackageNames: [
         "spike442/shed",
         "/^ghcr\\.io\\/spike442\\/shed\\//",
-        "/spike442\\/charts\\/shed\\/(shed|sentinel|stonks)$/",
+        "/spike442\\/charts\\/shed\\/(knowledge|shed|sentinel|stonks)$/",
       ],
       minimumReleaseAge: "0 days",
       automerge: true,

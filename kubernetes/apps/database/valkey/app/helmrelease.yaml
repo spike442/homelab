@@ -16,7 +16,7 @@ spec:
           app:
             image:
               repository: valkey/valkey
-              tag: 9.0.6-alpine@sha256:187679e3bd4036959631e3f03983ab2ba503ab21e6fd0454d508e909db2ee989
+              tag: 9.1.2-alpine@sha256:48332870af354a799964c0012ae1194a0bf2bf894eb508f945810596dc2d8d11
             args:
             - valkey-server
             - --save

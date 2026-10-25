@@ -3,6 +3,7 @@ kind: Kustomization
 
 resources:
   - ./namespace.yaml
+  - ./knowledge/ks.yaml
   - ./searxng/ks.yaml
   - ./sentinel/ks.yaml
   - ./shed/ks.yaml
