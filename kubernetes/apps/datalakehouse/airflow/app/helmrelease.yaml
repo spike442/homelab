@@ -28,10 +28,14 @@ spec:
     jwtSecretName: airflow-secret
     data:
       metadataSecretName: airflow-secret
+    secret:
+    - envName: AIRFLOW_CONN_S3_LOGS
+      secretName: airflow-secret
+      secretKey: s3-logs-connection
     env:
     - name: AIRFLOW_VAR_STONKS_VERSION
-      # renovate: datasource=docker depName=ghcr.io/spike442/charts/sentinel/stonks
-      value: "1.0.1"
+      # renovate: datasource=docker depName=ghcr.io/spike442/charts/shed/stonks
+      value: "0.1.0"
     config:
       core:
         parallelism: 8
@@ -39,6 +43,10 @@ spec:
         workers: 1
       dag_processor:
         parsing_processes: 1
+      logging:
+        remote_logging: "True"
+        remote_base_log_folder: s3://logs/airflow
+        remote_log_conn_id: s3_logs
     migrateDatabaseJob:
       useHelmHooks: false
     createUserJob:
@@ -95,9 +103,10 @@ spec:
         enabled: false
       gitSync:
         enabled: true
-        repo: https://github.com/spike442/sentinel.git
-        branch: main
-        rev: HEAD
+        repo: https://github.com/spike442/shed.git
+        ref: stonks-0.1.0
+        branch: ""
+        rev: ""
         depth: 1
-        subPath: airflow/dags
+        subPath: infra/stonks/airflow/dags
         period: 60s

@@ -31,8 +31,6 @@ spec:
     namespace: agents
   - name: clickhouse
     namespace: database
-  - name: spark-operator
-    namespace: datalakehouse
   - name: onepassword
     namespace: external-secrets
   - name: openebs

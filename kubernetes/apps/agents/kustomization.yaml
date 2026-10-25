@@ -5,4 +5,5 @@ resources:
   - ./namespace.yaml
   - ./searxng/ks.yaml
   - ./sentinel/ks.yaml
+  - ./shed/ks.yaml
   - ./stonks/ks.yaml

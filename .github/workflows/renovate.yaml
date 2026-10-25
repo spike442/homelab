@@ -12,7 +12,7 @@ on:
   - cron: 0 * * * *
   repository_dispatch:
     types:
-    - sentinel-release
+    - shed-release
   workflow_dispatch:
     inputs:
       dryRun:

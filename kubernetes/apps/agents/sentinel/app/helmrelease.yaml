@@ -36,7 +36,3 @@ spec:
       bucket: sentinel
     prometheus:
       url: http://kube-prometheus-stack-prometheus.observability.svc.cluster.local:9090
-    route:
-      hostname: sentinel.timcasa.me
-      gatewayName: envoy-internal
-      gatewayNamespace: network
