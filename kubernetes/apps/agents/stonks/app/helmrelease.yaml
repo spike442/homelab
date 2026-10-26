@@ -19,7 +19,3 @@ spec:
     airflow:
       namespace: datalakehouse
       serviceAccount: airflow-worker
-    route:
-      hostname: shed.timcasa.me
-      gatewayName: envoy-internal
-      gatewayNamespace: network
