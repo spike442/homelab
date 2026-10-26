@@ -11,8 +11,6 @@ spec:
     namespace: database
   - name: onepassword
     namespace: external-secrets
-  - name: sentinel
-    namespace: agents
   interval: 1h
   path: ./kubernetes/apps/agents/knowledge/app
   prune: true

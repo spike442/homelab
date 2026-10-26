@@ -10,10 +10,15 @@ spec:
     name: shed
   interval: 1h
   values:
-    sentinel:
-      configMap: sentinel-config
-      secret: sentinel-secrets
-      kafkaUsername: sentinel
+    secret: shed-secrets
+    postgres:
+      host: postgres0-rw.database.svc.cluster.local
+      database: sentinel
+      user: sentinel
+    kafka:
+      bootstrapServers: kafka-kafka-bootstrap.messaging.svc.cluster.local:9093
+      username: sentinel
+      consumerGroup: sentinel
     annotations:
       reloader.stakater.com/auto: "true"
     route:

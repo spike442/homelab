@@ -11,8 +11,6 @@ spec:
   interval: 1h
   values:
     secret: knowledge-secrets
-    domainSecrets:
-      sentinel: sentinel-secrets
     clickhouse:
       host: clickhouse.database.svc.cluster.local
       database: knowledge

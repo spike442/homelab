@@ -12,8 +12,7 @@ spec:
     agents:
       sre:
         enabled: true
-    secrets:
-      app: sentinel-secrets
+    secret: sentinel-secrets
     postgres:
       host: postgres0-rw.database.svc.cluster.local
       database: sentinel
