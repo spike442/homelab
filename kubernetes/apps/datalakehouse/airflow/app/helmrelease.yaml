@@ -35,7 +35,7 @@ spec:
     env:
     - name: AIRFLOW_VAR_STONKS_VERSION
       # renovate: datasource=docker depName=ghcr.io/spike442/charts/shed/stonks
-      value: "0.1.3"
+      value: "0.2.0"
     config:
       core:
         parallelism: 8
@@ -104,7 +104,7 @@ spec:
       gitSync:
         enabled: true
         repo: https://github.com/spike442/shed.git
-        ref: stonks-0.1.3
+        ref: stonks-0.2.0
         branch: ""
         rev: ""
         depth: 1
