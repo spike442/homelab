@@ -22,6 +22,7 @@ spec:
             env:
               PUID: "1000"
               PGID: "1000"
+              METADATA_URL: http://rreading-glasses.media.svc.cluster.local:8788
               READARR__APP__INSTANCENAME: Bookshelf
               READARR__APP__THEME: dark
               READARR__AUTH__METHOD: External

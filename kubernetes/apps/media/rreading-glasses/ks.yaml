@@ -1,0 +1,41 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: rreading-glasses-db
+spec:
+  dependsOn:
+  - name: cloudnative-pg
+    namespace: database
+  - name: onepassword
+    namespace: external-secrets
+  interval: 1h
+  path: ./kubernetes/apps/media/rreading-glasses/database
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: database
+  wait: true
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: rreading-glasses
+spec:
+  dependsOn:
+  - name: rreading-glasses-db
+    namespace: media
+  - name: onepassword
+    namespace: external-secrets
+  interval: 1h
+  path: ./kubernetes/apps/media/rreading-glasses/app
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: media

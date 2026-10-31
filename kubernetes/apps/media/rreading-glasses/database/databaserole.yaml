@@ -1,0 +1,14 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: DatabaseRole
+metadata:
+  name: rreading-glasses
+  namespace: database
+spec:
+  cluster:
+    name: postgres0
+  name: rreading-glasses
+  login: true
+  superuser: false
+  passwordSecret:
+    name: rreading-glasses-db

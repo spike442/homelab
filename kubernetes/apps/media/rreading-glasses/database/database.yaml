@@ -1,0 +1,11 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: postgres0-rreading-glasses
+  namespace: database
+spec:
+  name: rreading-glasses
+  owner: rreading-glasses
+  cluster:
+    name: postgres0
