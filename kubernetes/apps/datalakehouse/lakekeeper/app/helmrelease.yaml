@@ -1,0 +1,44 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: lakekeeper
+spec:
+  interval: 1h
+  chart:
+    spec:
+      chart: lakekeeper
+      version: "0.12.0"
+      sourceRef:
+        kind: HelmRepository
+        name: lakekeeper
+  values:
+    catalog:
+      replicas: 1
+      resources:
+        requests: {cpu: 20m, memory: 64Mi}
+        limits: {memory: 256Mi}
+      podSecurityContext:
+        runAsNonRoot: true
+        seccompProfile: {type: RuntimeDefault}
+      containerSecurityContext:
+        allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: true
+        capabilities: {drop: [ALL]}
+    postgresql:
+      enabled: false
+    externalDatabase:
+      host_read: postgres0-rw.database.svc.cluster.local
+      host_write: postgres0-rw.database.svc.cluster.local
+      database: lakekeeper
+      user: lakekeeper
+      passwordSecret: lakekeeper-secret
+      passwordSecretKey: postgresql-password
+    secretBackend:
+      type: Postgres
+      postgres:
+        encryptionKeySecret: lakekeeper-secret
+        encryptionKeySecretKey: encryption-key
+    authz:
+      backend: allowall

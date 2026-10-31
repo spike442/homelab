@@ -22,14 +22,6 @@ spec:
     name: tailscale-operator-secret
     valuesKey: TAILSCALE_OAUTH_CLIENT_SECRET
     targetPath: oauth.clientSecret
-  install:
-    crds: CreateReplace
-    remediation:
-      retries: -1
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      retries: 3
   values:
     installCRDs: true
     operatorConfig:

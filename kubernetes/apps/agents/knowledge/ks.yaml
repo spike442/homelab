@@ -11,6 +11,8 @@ spec:
     namespace: database
   - name: onepassword
     namespace: external-secrets
+  - name: s3
+    namespace: external-secrets
   interval: 1h
   path: ./kubernetes/apps/agents/knowledge/app
   prune: true

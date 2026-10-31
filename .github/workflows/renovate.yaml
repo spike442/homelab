@@ -12,7 +12,9 @@ on:
   - cron: 0 * * * *
   repository_dispatch:
     types:
-    - shed-release
+    - sre-release
+    - knowledge-release
+    - stonks-release
   workflow_dispatch:
     inputs:
       dryRun:

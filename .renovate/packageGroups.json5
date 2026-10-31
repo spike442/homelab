@@ -2,12 +2,42 @@
   $schema: "https://docs.renovatebot.com/renovate-schema.json",
   packageRules: [
     {
-      description: "Shed release group: whichever of the knowledge, shed, sentinel, and stonks charts Shed Publish released, their images, and for Stonks the Airflow Stonks version and the stonks release tag Airflow git-syncs its DAGs from, deploy together as soon as Publish releases them",
-      groupName: "shed",
+      description: "SRE release group: the sre chart and images SRE Publish released deploys as soon as it is published",
+      groupName: "sre",
       matchPackageNames: [
-        "spike442/shed",
-        "/^ghcr\\.io\\/spike442\\/shed\\//",
-        "/spike442\\/charts\\/shed\\/(knowledge|shed|sentinel|stonks)$/",
+        "/^ghcr\\.io\\/spike442\\/sre\\//",
+        "/spike442\\/charts\\/sre\\/sre$/",
+      ],
+      minimumReleaseAge: "0 days",
+      automerge: true,
+      automergeType: "branch",
+      ignoreTests: true,
+      group: {
+        commitMessageTopic: "{{{groupName}}} release",
+      },
+    },
+    {
+      description: "Knowledge release group: the knowledge chart Knowledge Publish released deploys as soon as it is published",
+      groupName: "knowledge",
+      matchPackageNames: [
+        "/^ghcr\\.io\\/spike442\\/knowledge\\//",
+        "/spike442\\/charts\\/knowledge\\/knowledge$/",
+      ],
+      minimumReleaseAge: "0 days",
+      automerge: true,
+      automergeType: "branch",
+      ignoreTests: true,
+      group: {
+        commitMessageTopic: "{{{groupName}}} release",
+      },
+    },
+    {
+      description: "Stonks release group: the stonks chart, the Airflow Stonks version, and the release tag Airflow git-syncs the DAGs from deploy together as soon as Stonks Publish releases them",
+      groupName: "stonks",
+      matchPackageNames: [
+        "spike442/stonks",
+        "/^ghcr\\.io\\/spike442\\/stonks\\//",
+        "/spike442\\/charts\\/stonks\\/stonks$/",
       ],
       minimumReleaseAge: "0 days",
       automerge: true,

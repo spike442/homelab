@@ -14,6 +14,17 @@ spec:
       endpoint: http://rustfs-svc.storage.svc.cluster.local:9000
       region: us-east-1
       bucket: stonks
+    catalog:
+      uri: http://lakekeeper.datalakehouse.svc.cluster.local:8181/catalog
+      warehouse: stonks
+    trino:
+      host: trino.datalakehouse.svc.cluster.local
+      port: 8080
+      catalog: stonks
+    route:
+      hostname: stonks.timcasa.me
+      gatewayName: envoy-internal
+      gatewayNamespace: network
     search:
       url: http://searxng.agents.svc.cluster.local:8080/search
     airflow:

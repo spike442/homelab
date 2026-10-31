@@ -13,12 +13,6 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: rustfs
-  install:
-    remediation:
-      retries: -1
-  upgrade:
-    remediation:
-      retries: -1
   values:
     replicaCount: 1
     mode:

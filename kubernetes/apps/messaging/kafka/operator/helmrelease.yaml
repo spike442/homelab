@@ -7,10 +7,6 @@ spec:
     kind: OCIRepository
     name: strimzi
   interval: 1h
-  install:
-    crds: Create
-  upgrade:
-    crds: CreateReplace
   values:
     watchNamespaces:
     - messaging

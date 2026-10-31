@@ -13,10 +13,6 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: spark-operator
-  install:
-    crds: CreateReplace
-    remediation:
-      retries: -1
   values:
     controller:
       resources:

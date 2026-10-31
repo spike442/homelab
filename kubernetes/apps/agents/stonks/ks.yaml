@@ -13,6 +13,8 @@ spec:
     namespace: datalakehouse
   - name: searxng
     namespace: agents
+  - name: s3
+    namespace: external-secrets
   interval: 1h
   path: ./kubernetes/apps/agents/stonks/app
   prune: true

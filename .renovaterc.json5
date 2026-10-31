@@ -92,10 +92,10 @@
         '/(^|/)kubernetes/.+\\.ya?ml$/',
       ],
       matchStrings: [
-        'repo: https://github\\.com/(?<depName>spike442/shed)\\.git\\n\\s+ref: stonks-(?<currentValue>\\d+\\.\\d+\\.\\d+)',
+        'repo: https://github\\.com/(?<depName>spike442/stonks)\\.git\\n\\s+ref: v(?<currentValue>\\d+\\.\\d+\\.\\d+)',
       ],
       datasourceTemplate: 'github-tags',
-      extractVersionTemplate: '^stonks-(?<version>\\d+\\.\\d+\\.\\d+)$',
+      extractVersionTemplate: '^v(?<version>\\d+\\.\\d+\\.\\d+)$',
     },
     {
       customType: 'regex',

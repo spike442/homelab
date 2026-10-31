@@ -1,0 +1,41 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: lakekeeper-db
+spec:
+  dependsOn:
+  - name: onepassword
+    namespace: external-secrets
+  - name: pg-cluster
+    namespace: database
+  interval: 1h
+  path: ./kubernetes/apps/datalakehouse/lakekeeper/database
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: database
+  wait: true
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: lakekeeper
+spec:
+  dependsOn:
+  - name: external-secrets
+    namespace: external-secrets
+  - name: lakekeeper-db
+    namespace: datalakehouse
+  interval: 1h
+  path: ./kubernetes/apps/datalakehouse/lakekeeper/app
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: datalakehouse
