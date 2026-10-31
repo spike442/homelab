@@ -67,10 +67,14 @@
                   href: https://yt.timcasa.me
                   siteMonitor: https://yt.timcasa.me
 - Infrastructure:
-        - Shed:
+        - SRE:
                   icon: mdi-view-dashboard-outline
-                  href: https://shed.timcasa.me
-                  siteMonitor: https://shed.timcasa.me
+                  href: https://sre.timcasa.me
+                  siteMonitor: https://sre.timcasa.me
+        - Stonks:
+                  icon: mdi-chart-line
+                  href: https://stonks.timcasa.me
+                  siteMonitor: https://stonks.timcasa.me
         - Pi-hole:
                   icon: pi-hole.png
                   href: http://192.168.1.17:8080/admin

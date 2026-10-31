@@ -1,0 +1,38 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: sre
+  namespace: agents
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: sre
+  interval: 1h
+  values:
+    secret: sre-secrets
+    route:
+      hostname: sre.timcasa.me
+      gatewayName: envoy-internal
+      gatewayNamespace: network
+    postgres:
+      host: postgres0-rw.database.svc.cluster.local
+      database: sre
+      user: sre
+    knowledge:
+      url: http://knowledge.agents.svc.cluster.local:9092
+      domain: sre
+    kafka:
+      bootstrapServers: kafka-kafka-bootstrap.messaging.svc.cluster.local:9093
+      username: sre
+      consumerGroup: sre
+      users:
+        worker: sre-worker
+        executor: sre-executor
+    s3:
+      endpoint: http://rustfs-svc.storage.svc.cluster.local:9000
+      region: us-east-1
+      bucket: sre
+    prometheus:
+      url: http://kube-prometheus-stack-prometheus.observability.svc.cluster.local:9090
+    alertmanager:
+      url: http://kube-prometheus-stack-alertmanager.observability.svc.cluster.local:9093

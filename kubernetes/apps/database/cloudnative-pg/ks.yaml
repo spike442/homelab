@@ -37,3 +37,5 @@ spec:
   wait: true
   dependsOn:
   - name: cloudnative-pg
+  - name: s3
+    namespace: external-secrets

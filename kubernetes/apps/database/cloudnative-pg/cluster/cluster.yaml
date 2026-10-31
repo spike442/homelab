@@ -46,8 +46,8 @@ spec:
       serverName: &currentCluster postgres0-v1
       s3Credentials:
         accessKeyId:
-          name: cloudnative-pg-secret
-          key: aws-access-key-id
+          name: s3
+          key: S3_ACCESS_KEY_ID
         secretAccessKey:
-          name: cloudnative-pg-secret
-          key: aws-secret-access-key
+          name: s3
+          key: S3_SECRET_ACCESS_KEY

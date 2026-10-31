@@ -1,0 +1,10 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: postgres0-lakekeeper
+spec:
+  name: lakekeeper
+  owner: lakekeeper
+  cluster:
+    name: postgres0

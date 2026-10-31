@@ -1,0 +1,96 @@
+---
+apiVersion: kafka.strimzi.io/v1
+kind: KafkaUser
+metadata:
+  namespace: messaging
+  name: sre
+  labels:
+    app.kubernetes.io/name: sre
+    strimzi.io/cluster: kafka
+spec:
+  authentication:
+    type: scram-sha-512
+    password:
+      valueFrom:
+        secretKeyRef:
+          name: sre-kafka-password
+          key: password
+  authorization:
+    type: simple
+    acls:
+    - resource:
+        type: topic
+        name: sre.
+        patternType: prefix
+      operations: [Read, Write, Describe]
+    - resource:
+        type: group
+        name: sre-
+        patternType: prefix
+      operations: [Read]
+
+---
+apiVersion: kafka.strimzi.io/v1
+kind: KafkaUser
+metadata:
+  namespace: messaging
+  name: sre-worker
+  labels:
+    app.kubernetes.io/name: sre
+    strimzi.io/cluster: kafka
+spec:
+  authentication:
+    type: scram-sha-512
+    password:
+      valueFrom:
+        secretKeyRef:
+          name: sre-kafka-password
+          key: worker
+  authorization:
+    type: simple
+    acls:
+    - resource: {type: topic, name: sre.investigator.commands, patternType: literal}
+      operations: [Read, Describe]
+    - resource: {type: topic, name: sre.investigator.returns, patternType: literal}
+      operations: [Write, Describe]
+    - resource: {type: group, name: sre-incident, patternType: literal}
+      operations: [Read]
+    - resource: {type: topic, name: sre.reviewer.commands, patternType: literal}
+      operations: [Read, Describe]
+    - resource: {type: topic, name: sre.reviewer.returns, patternType: literal}
+      operations: [Write, Describe]
+    - resource: {type: group, name: sre-review, patternType: literal}
+      operations: [Read]
+    - resource: {type: topic, name: sre.curator.commands, patternType: literal}
+      operations: [Read, Describe]
+    - resource: {type: topic, name: sre.curator.returns, patternType: literal}
+      operations: [Write, Describe]
+    - resource: {type: group, name: sre-context, patternType: literal}
+      operations: [Read]
+
+---
+apiVersion: kafka.strimzi.io/v1
+kind: KafkaUser
+metadata:
+  namespace: messaging
+  name: sre-executor
+  labels:
+    app.kubernetes.io/name: sre
+    strimzi.io/cluster: kafka
+spec:
+  authentication:
+    type: scram-sha-512
+    password:
+      valueFrom:
+        secretKeyRef:
+          name: sre-kafka-password
+          key: executor
+  authorization:
+    type: simple
+    acls:
+    - resource: {type: topic, name: sre.executor.commands, patternType: literal}
+      operations: [Read, Describe]
+    - resource: {type: topic, name: sre.executor.returns, patternType: literal}
+      operations: [Write, Describe]
+    - resource: {type: group, name: sre-executor, patternType: literal}
+      operations: [Read]

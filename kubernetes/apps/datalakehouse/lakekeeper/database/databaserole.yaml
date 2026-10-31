@@ -1,0 +1,13 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: DatabaseRole
+metadata:
+  name: lakekeeper
+spec:
+  cluster:
+    name: postgres0
+  name: lakekeeper
+  login: true
+  superuser: false
+  passwordSecret:
+    name: lakekeeper-db

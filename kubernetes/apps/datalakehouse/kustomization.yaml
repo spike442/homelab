@@ -10,4 +10,6 @@ components:
 resources:
 - ./namespace.yaml
 - ./airflow/ks.yaml
+- ./lakekeeper/ks.yaml
+- ./trino/ks.yaml
 - ./spark-operator/ks.yaml
