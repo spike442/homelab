@@ -65,7 +65,7 @@ spec:
           sync-kindle:
             image: &kindle
               repository: ghcr.io/spike442/containers/kindle
-              tag: 1.2.0
+              tag: 1.3.0
             command:
             - sync-kindle
             env:
@@ -95,6 +95,7 @@ spec:
             - fetch-articles
             env:
               STATE: /data/fetch-articles.json
+              FLARESOLVERR_URL: http://flaresolverr.media.svc.cluster.local:8191
             envFrom: *kindleSecret
             securityContext:
               runAsUser: 1000
