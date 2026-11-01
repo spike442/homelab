@@ -63,15 +63,17 @@ spec:
               limits:
                 memory: 1Gi
           sync-kindle:
-            image:
-              repository: ghcr.io/spike442/containers/sync_kindle
-              tag: 1.1.1
+            image: &kindle
+              repository: ghcr.io/spike442/containers/kindle
+              tag: 1.2.0
+            command:
+            - sync-kindle
             env:
               LIBRARY: /media/Books
               STATE: /data/sync-kindle.json
-            envFrom:
+            envFrom: &kindleSecret
             - secretRef:
-                name: sync-kindle-secret
+                name: kindle-secret
             securityContext:
               runAsUser: 1000
               runAsGroup: 1000
@@ -87,6 +89,28 @@ spec:
                 memory: 32Mi
               limits:
                 memory: 256Mi
+          fetch-articles:
+            image: *kindle
+            command:
+            - fetch-articles
+            env:
+              STATE: /data/fetch-articles.json
+            envFrom: *kindleSecret
+            securityContext:
+              runAsUser: 1000
+              runAsGroup: 1000
+              runAsNonRoot: true
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                - ALL
+            resources:
+              requests:
+                cpu: 10m
+                memory: 64Mi
+              limits:
+                memory: 512Mi
     service:
       app:
         type: LoadBalancer
@@ -111,6 +135,8 @@ spec:
             app:
             - path: /config
             sync-kindle:
+            - path: /data
+            fetch-articles:
             - path: /data
       media:
         type: nfs
