@@ -65,7 +65,7 @@ spec:
           sync-kindle:
             image: &kindle
               repository: ghcr.io/spike442/containers/kindle
-              tag: 1.5.0
+              tag: 1.6.1
             command:
             - sync-kindle
             env:
@@ -111,7 +111,7 @@ spec:
                 cpu: 10m
                 memory: 64Mi
               limits:
-                memory: 512Mi
+                memory: 1Gi
     service:
       app:
         type: LoadBalancer
@@ -150,3 +150,9 @@ spec:
             sync-kindle:
             - path: /media
               readOnly: true
+      tmp:
+        type: emptyDir
+        advancedMounts:
+          bookshelf:
+            fetch-articles:
+            - path: /tmp
